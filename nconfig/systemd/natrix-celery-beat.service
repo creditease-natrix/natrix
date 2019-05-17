@@ -1,0 +1,13 @@
+[Unit]
+Description=Natrix Server Celery Beat Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/natrix/
+ExecStart=/bin/sh -c 'celery beat -A natrix --pidfile=/var/run/natrix_celery_beat.pid --logfile=/var/log/natrix/natrix_celery_beat.log --loglevel=info --scheduler=django_celery_beat.schedulers:DatabaseScheduler'
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,17 @@
+celery>=4.1.0
+Django>=1.11.5, <2.0
+django-auditlog>=0.4.3
+django-auth-ldap>=1.2.15
+django-celery-beat>=1.0.1
+django-celery-results>=1.0.1
+django-cors-headers>=2.2.0
+django-filter>=1.0.4, <2.0.0
+django-redis>=4.8.0
+djangorestframework>=3.6.4
+elasticsearch>=7.0.0
+ipy>=0.83
+mysqlclient>=1.3.12
+pika>=0.13.1, < 1.0.0
+psutil>=5.4.8
+requests>=2.18.4
+simplejson>=3.16.0

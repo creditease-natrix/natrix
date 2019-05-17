@@ -1,0 +1,13 @@
+[Unit]
+Description=Natrix Server Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/natrix/
+ExecStart=/usr/bin/python manage.py runserver 0.0.0.0:8000
+
+[Install]
+WantedBy=multi-user.target

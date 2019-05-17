@@ -1,0 +1,15 @@
+[Unit]
+Description=Natrix Server Celery Service
+After=network.target
+
+[Service]
+Type=forking
+User=root
+Group=root
+WorkingDirectory=/opt/natrix/
+ExecStart=/bin/sh -c 'celery multi start worker -A natrix --pidfile=/var/run/natrix_celery.pid --logfile=/var/log/natrix/natrix_celery.log --loglevel=info --concurrency=6'
+ExecStop=/bin/sh -c 'celery multi stopwait worker -A natrix --pidfile=/var/run/natrix_celery.pid'
+ExecReload=/bin/sh -c 'celery multi restart worker -A natrix --pidfile=/var/run/natrix_celery.pid --logfile=/var/log/natrix/natrix_celery.log --loglevel=info --concurrency=6'
+
+[Install]
+WantedBy=multi-user.target
