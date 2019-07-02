@@ -187,7 +187,7 @@ class DeviceListAPI(NonAuthenticatedAPIView):
                 terminal_devices = serializer.query_result()
                 is_paginate = post_data.get('is_paginate', False)
                 if is_paginate:
-                    per_page = self.get_per_page(request)
+                    per_page = self.get_per_page()
                     pagenum = post_data.get('pagenum', 1)
 
                     paginator = Paginator(terminal_devices, per_page)
@@ -409,7 +409,7 @@ class DeviceExceptionsAPI(NonAuthenticatedAPIView):
                 terminal_devices = serializer.query_result()
                 is_paginate = get_data.get('is_paginate', False)
                 if is_paginate:
-                    per_page = self.get_per_page(request)
+                    per_page = self.get_per_page()
                     pagenum = get_data.get('pagenum', 1)
 
                     paginator = Paginator(terminal_devices, per_page)
@@ -485,7 +485,7 @@ class TerminalListAPI(NonAuthenticatedAPIView):
                 is_paginate = serializer.data.get('is_paginate')
                 if is_paginate:
                     pagenum = serializer.data.get('pagenum', 1)
-                    per_page = self.get_per_page(request)
+                    per_page = self.get_per_page()
                     paginator = Paginator(terminals, per_page)
 
                     try:
@@ -564,7 +564,7 @@ class TerminalPostAPI(NonAuthenticatedAPIView):
             get_data = request.GET
             serializer = terminal_serializer.TerminalPostSerializer(data=get_data)
             if serializer.is_valid():
-                per_page = self.get_per_page(request)
+                per_page = self.get_per_page()
                 data = serializer.query_result(per_page=per_page)
                 feedback['data'] = {
                     'code': 200,

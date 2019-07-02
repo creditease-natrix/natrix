@@ -1,0 +1,60 @@
+.el-input {
+    width: 500px;
+}
+
+.el-date-editor.el-input {
+    width: 150px;
+}
+
+.el-textarea {
+    width: 500px;
+}
+
+.el-table {
+    width: 100%;
+}
+
+.el-button--off {
+    color: #fff;
+    background-color: rgba(255, 69, 0, 0.64);
+    /* border-color: rgba(255, 69, 0, 0.64); */
+}
+
+.el-button--off:hover {
+    opacity: 0.8;
+}
+
+.el-button--followed {
+    color: #fff;
+    background-color: #3ac2a9;
+    /* border-color: #3ac2a9; */
+}
+
+.el-button--followed:hover {
+    opacity: 0.8;
+}
+
+.el-button--unfollowed {
+    color: #fff;
+    background-color: rgba(255, 69, 0, 0.78);
+    /* border-color: rgba(255, 69, 0, 0.78); */
+}
+
+.el-button--unfollowed:hover {
+    opacity: 0.8;
+}
+
+.el-button--default {
+    color: #fff;
+    background-color: #3a3afb61;
+    /* border-color: #3a3afb61; */
+}
+
+.el-button--default:hover {
+    opacity: 0.8;
+}
+
+.submitBox{
+    text-align:right;
+}
+

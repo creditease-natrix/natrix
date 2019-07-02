@@ -10,7 +10,11 @@ from celery import shared_task, task
 from celery.utils import log
 
 from natrix.common import natrix_celery, exception as natrix_exception, mqservice
-from benchmark.backends.command_adapter import adapter, adapter_settting
+
+from benchmark.backends.command_dispatcher import (
+    processor, get_process_client, response_expired_process)
+from benchmark.models import Task
+from benchmark.backends.command_dispatcher import dispatch_command
 
 logger = log.get_task_logger(__name__)
 
@@ -72,6 +76,19 @@ def command_adapter_guardian(self):
 
 
 @task(bind=True)
+def command_dead_task(self, data):
+    try:
+        command_processor = processor.CommandExpiredProcessor(data)
+        command_processor.process()
+    except natrix_exception.BaseException as e:
+        logger.error('Process dead message ERROR: {}'.format(e.get_log()))
+    except Exception as e:
+        logger.error('Get an expected Exception: {}'.format(e))
+
+
+
+
+@task(bind=True)
 def command_dead_processor(self):
     """Porcess Dead Command
 
@@ -81,26 +98,34 @@ def command_dead_processor(self):
     def dead_data_process(ch, method, properties, body):
         command_data = json.loads(body)
         try:
-            command_processor = adapter.CommandProcessor(stage='dead', command=command_data)
-            command_processor.do()
+            command_dead_task.delay(command_data)
+            # ack receive message
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+
         except natrix_exception.BaseException as e:
             logger.error('Process dead message ERROR: {}'.format(e.get_log()))
-        finally:
-            ch.basic_ack(delivery_tag=method.delivery_tag)
+
 
     with mqservice.MQService.get_purge_channel() as channel:
         try:
-            # TODO:
-            adapter_settting.AdapterMQSetting.init_dead_queue(channel)
-            channel.basic_consume(consumer_callback=dead_data_process,
-                                  queue=adapter_settting.QUEUE_DEAD)
-            channel.start_consuming()
+            process_client = get_process_client(channel, 'dead')
+            process_client.consume(dead_data_process)
 
         except Exception as e:
-            # TODO:
             logger.error(u'{}'.format(e))
         finally:
             logger.info('Task End! - {}'.format(self.name))
+
+@task(bind=True)
+def command_response_task(self, data):
+    try:
+        command_processor = processor.ResponseProcessor(data)
+        command_processor.process()
+    except natrix_exception.BaseException as e:
+        natrix_exception.natrix_traceback()
+        logger.error('Consume reponse data error: {}'.format(e.get_log()))
+    except Exception as e:
+        logger.error('Get an expected Exception: {}'.format(e))
 
 
 @task(bind=True)
@@ -112,21 +137,17 @@ def command_response_processor(self):
     def response_data_process(ch, method, properties, body):
         try:
             command_data = json.loads(body)
-
-            command_processor = adapter.CommandProcessor(stage='response', command=command_data)
-            command_processor.do()
+            command_response_task.delay(command_data)
+            # ack receive message
+            ch.basic_ack(delivery_tag=method.delivery_tag)
         except natrix_exception.BaseException:
             natrix_exception.natrix_traceback()
             logger.error('Consume reponse data error: {}'.format(command_data))
-        finally:
-            ch.basic_ack(delivery_tag=method.delivery_tag)
 
     with mqservice.MQService.get_purge_channel() as channel:
         try:
-            adapter_settting.AdapterMQSetting.init_response_queue(channel)
-            channel.basic_consume(consumer_callback=response_data_process,
-                                  queue=adapter_settting.QUEUE_RESPONSE)
-            channel.start_consuming()
+            process_client = get_process_client(channel, 'response')
+            process_client.consume(response_data_process)
 
         except Exception as e:
             natrix_exception.natrix_traceback()
@@ -141,11 +162,28 @@ def command_clean_processor(self):
 
     :return:
     """
+    logger.info('Start to clean unresponse command')
     try:
-        adapter.CommandProcessor.process_unresponse()
+        response_expired_process()
     except Exception as e:
         # TODO:
         logger.error(u'{}'.format(e))
+
+
+@shared_task(bind=True)
+def timed_task_process(self, frequency=0):
+
+    tasks = Task.objects.filter(time_type='timed', schedule__frequency=frequency)
+
+    logger.info('Process {}-schedule task ({})'.format(frequency, len(tasks)))
+
+    for task in tasks:
+        if task.schedule.is_alive():
+            logger.debug('Process {} task'.format(task.id))
+            res = dispatch_command(task.task_command_represent())
+            logger.debug('Dispatch timed-task result: {}'.format(res))
+        else:
+            logger.debug('Timed task{} is expired or turn-off'.format(str(task.id)))
 
 
 

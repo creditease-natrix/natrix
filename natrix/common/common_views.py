@@ -141,6 +141,21 @@ class NatrixAPIView(APIView):
     def get_exception_handler(self):
         return natrix_exception_handler
 
+    def get_user(self):
+        """获取当前用户"""
+        user_rbac = self.request.user_rbac
+        if user_rbac:
+            return user_rbac.user
+        else:
+            return None
+
+    def get_group(self):
+        """获取用户当前组"""
+        user_rbac = self.request.user_rbac
+        group = user_rbac.get_group() if user_rbac else None
+        return group
+
+
 
 
 # copy django.decortors.api_view

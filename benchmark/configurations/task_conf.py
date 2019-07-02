@@ -35,10 +35,10 @@ TASK_SCOPE = {
         'name': 'public',
         'verbose_name': u'公共任务'
     },
-    'inactive': {
-        'name': 'inactive',
-        'verbose_name': u'失效任务'
-    }
+    # 'inactive': {
+    #     'name': 'inactive',
+    #     'verbose_name': u'失效任务'
+    # }
 }
 
 TASK_TIME_TYPE = {
@@ -46,8 +46,8 @@ TASK_TIME_TYPE = {
         'name': 'instant',
         'verbose_name': u'即时测'
     },
-    'timing':{
-        'name': 'timing',
+    'timed':{
+        'name': 'timed',
         'verbose_name': u'定时测'
     }
 }

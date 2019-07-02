@@ -24,6 +24,32 @@ BENCHMARK_MENU = {
             'tag': [None]
 
         },
+        {
+            'name': u'定时测',
+            'type': 'category',
+            'desc': u'定时测',
+            'tag': ['login'],
+            'children': [
+                {
+                    'name': u'定时测',
+                    'type': 'link',
+                    'desc': u'定时测',
+                    'reverse_name': 'natrix_vue',
+                    'path': 'timedTaskList',
+                    'reverse_args': []
+                },
+                {
+                    'name': u'任务分析',
+                    'type': 'link',
+                    'desc': u'任务分析',
+                    'reverse_name': 'natrix_vue',
+                    'path': 'timedAnalysis',
+                    'reverse_args': []
+                }
+            ]
+
+
+        }
         # {
         #     'name': u'组管理',
         #     'type': 'link',

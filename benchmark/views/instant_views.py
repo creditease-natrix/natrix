@@ -16,8 +16,8 @@ from natrix.common import exception as natrix_exception
 from natrix.common.errorcode import ErrorCode
 
 from benchmark.models import Task
-from benchmark.serializers import task_serializer
-from benchmark.backends import command_adapter
+from benchmark.serializers import task_serializer, analyse_serializer
+from benchmark.backends import command_dispatcher
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +146,7 @@ class InstantStatus(NatrixAPIView):
             try:
                 task = Task.objects.get(id=task_id, time_type='instant')
                 # response_count = success + wrong
-                res = command_adapter.get_command_data(task.command.id)
+                res = command_dispatcher.get_task_data(task.id)
                 success = len(res.get('success'))
                 wrong = len(res.get('error'))
                 response_count = success + wrong
@@ -210,7 +210,7 @@ class InstantStatus(NatrixAPIView):
                 task = Task.objects.get(id=task_id, time_type='instant')
 
                 if task.status:
-                    res = command_adapter.get_command_data(task.command.id)
+                    res = command_dispatcher.get_task_data(task.id)
                     task.status = False
                     task.result_snapshot = json.dumps(res)
                     task.save()
@@ -261,7 +261,7 @@ class InstantAnalyse(NatrixAPIView):
                 'chart_name': request.GET.get('chart_name')
             }
 
-            serializer = task_serializer.InstantTaskAnalyseSerializer(data=get_data)
+            serializer = analyse_serializer.InstantTaskAnalyseSerializer(data=get_data)
             if serializer.is_valid():
                 analyse_data = serializer.analyse()
                 feedback['data'] = {

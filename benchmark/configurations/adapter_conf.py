@@ -51,4 +51,4 @@ config.read(config_file)
 
 ES_SERVICE_URL = config.get("ELASTICSEARCH", "host")
 ES_SERVICE_PORT = config.get("ELASTICSEARCH", "port")
-BENCHMARK_INDEX = 'benchmark10'
+BENCHMARK_INDEX = 'benchmark1'

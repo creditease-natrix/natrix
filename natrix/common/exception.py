@@ -114,9 +114,9 @@ class PermissionException(BaseException):
     """ The exception about permission
 
     """
-    def __init__(self, err='Natrix PermissionException', reasson=''):
+    def __init__(self, err='Natrix PermissionException', reason=''):
         self.err = err
-        self.reason = reasson
+        self.reason = reason
 
     def get_log(self):
         return u'{}: {}'.format(self.err, self.reason)

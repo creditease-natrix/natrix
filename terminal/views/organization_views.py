@@ -18,7 +18,7 @@ from rest_framework.decorators import permission_classes as natrix_permission_cl
 from natrix.common.errorcode import ErrorCode
 from natrix.common.natrix_views.views import NatrixAPIView, natrix_api_view
 from natrix.common.natrix_views.serializers import IDSerializer
-from natrix.common import exception as natrix_exception, user_api
+from natrix.common import exception as natrix_exception
 
 from terminal.models import Operator, Address
 from terminal.models import Organization, Broadband, Contact, Network
@@ -483,7 +483,7 @@ class OrganizationList(NatrixAPIView):
                 'message': u'职场信息列表'
             }
             if is_paginate:
-                per_page = user_api.get_per_page(request)
+                per_page = self.get_per_page()
                 painator = Paginator(organizations, per_page)
                 try:
                     organizations = painator.page(pagenum)

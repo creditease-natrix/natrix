@@ -21,8 +21,14 @@ benchmark_command_mapping = {
             },
             'command_generate_time': {
                 'type': 'date',
-                "format": "epoch_millis"
-
+                'format': 'epoch_millis'
+            },
+            'task_id': {
+                'type': 'keyword'
+            },
+            'task_generate_time': {
+                'type': 'date',
+                'format': 'epoch_millis'
             },
 
             # terminal info
@@ -38,16 +44,21 @@ benchmark_command_mapping = {
             'organization_isp': {
                 'type': 'keyword'
             },
+            'province': {
+                'type': 'keyword'
+            },
+            'city': {
+                'type': 'keyword'
+            },
 
             # timestamp info
             'terminal_request_receive_time': {
                 'type': 'date',
-                "format": "epoch_millis"
+                'format': 'epoch_millis'
             },
             'terminal_request_send_time': {
                 'type': 'date',
-                "format": "epoch_millis"
-
+                'format': 'epoch_millis'
             },
             'terminal_response_receive_time': {
                 'type': 'date',

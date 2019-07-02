@@ -55,10 +55,19 @@ class ErrorCode(object):
         return data
 
     @staticmethod
-    def permission_deny(message=u'权限问题'):
+    def permission_deny(message=u'Permission Issues'):
         data = {
             'code': 405,
             'subcode': 'isv.permission-deny',
+            'message': message
+        }
+        return data
+
+    @staticmethod
+    def unauthenticated(message=u'Authentication failed!'):
+        data = {
+            'code': 406,
+            'subcode': 'isv,unauthenticated',
             'message': message
         }
         return data

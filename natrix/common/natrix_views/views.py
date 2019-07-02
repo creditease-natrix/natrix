@@ -31,7 +31,6 @@ def natrix_exception_handler(exc, context):
     :param context:
     :return:
     """
-    logger.info('Exception attribute : {}'.format(dir(exc)))
     logger.info('Exception Happened: {}'.format(exc))
 
     if isinstance(exc, rest_exceptions.MethodNotAllowed):
@@ -64,14 +63,14 @@ class NatrixAPIView(APIView):
     def get_exception_handler(self):
         return natrix_exception_handler
 
-    def get_per_page(self, request):
+    def get_per_page(self):
         """get
 
         :param request:
         :return:
         """
 
-        user = self.get_user(request)
+        user = self.get_user()
         if user is None or isinstance(user, AnonymousUser):
             return 10
 
@@ -80,12 +79,12 @@ class NatrixAPIView(APIView):
         else:
             return 10
 
-    def get_user(self, request):
+    def get_user(self):
         """get request user
 
-        :param request:
         :return:
         """
+        request = self.request
         if not hasattr(request, 'user_rbac'):
             return AnonymousUser()
         user_rbac = request.user_rbac
@@ -93,6 +92,12 @@ class NatrixAPIView(APIView):
             return AnonymousUser()
 
         return user_rbac.user
+
+    def get_group(self):
+        """获取用户当前组"""
+        user_rbac = self.request.user_rbac
+        group = user_rbac.get_group() if user_rbac else None
+        return group
 
 
 class NonAuthenticatedAPIView(NatrixAPIView):

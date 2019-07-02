@@ -3,9 +3,12 @@
 
 """
 from __future__ import unicode_literals
+import logging
 
 from django.contrib.auth.models import Group, AnonymousUser
 from rest_framework import permissions
+
+logger = logging.getLogger(__name__)
 
 
 class AdminPermission(permissions.IsAuthenticated):
@@ -47,6 +50,7 @@ class LoginPermission(permissions.IsAuthenticated):
 
             group = user_rbac.get_group()
             if group is None or not isinstance(group, Group):
+                logger.error('Login user ({}) without group!'.format(user_rbac.user))
                 return False
             else:
                 return True
