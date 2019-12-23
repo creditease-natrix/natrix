@@ -1,5 +1,5 @@
 celery>=4.1.0
-Django==2.0
+Django==2.0.12
 django-auditlog>=0.4.3
 django-auth-ldap>=1.2.15
 django-celery-beat>=1.0.1
