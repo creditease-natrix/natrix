@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from messenger import *
+from .messenger import *

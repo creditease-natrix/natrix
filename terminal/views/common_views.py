@@ -28,9 +28,9 @@ class TerminalListAPI(NonAuthenticatedAPIView):
         try:
             post_data = request.data
 
-            serializer = common_serializer.TerminalFilterSerializer(data=post_data)
+            serializer = common_serializer.TerminalFilterSerializer(data=post_data, group=self.get_group())
             if serializer.is_valid():
-                res = serializer.query_result()
+                res = list(serializer.query_result())
                 feedback['data'] = {
                     'code': 200,
                     'message': 'Terminal list info',
@@ -60,7 +60,7 @@ class TerminalCountAPI(NonAuthenticatedAPIView):
         }
         try:
             post_data = request.data
-            serializer = common_serializer.TerminalFilterSerializer(data=post_data)
+            serializer = common_serializer.TerminalFilterSerializer(data=post_data, group=self.get_group())
             if serializer.is_valid():
                 terminals = serializer.query_terminals()
                 feedback['data'] = {

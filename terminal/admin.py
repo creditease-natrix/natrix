@@ -5,12 +5,11 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
 from terminal.models import History, Region, Address, Contact, Organization
-from terminal.models import Network, Broadband, Operator, Export
 
-from terminal.models import OrganizationContact, OrganizationNetwork, \
-    OrganizationAddress, OrganizationBroadBand
-
+from terminal.models import OrganizationContact, OrganizationAddress
 from terminal.models import Terminal, TerminalDevice, RegisterOrganization, PostOperator
+from terminal.models import AccessLicense, BindingHistory, GroupLicenseACL
+
 # Register your models here.
 
 @admin.register(History)
@@ -35,37 +34,14 @@ class ContactAdmin(ModelAdmin):
     list_display = ['pk', 'name', 'telephone']
 
 
-@admin.register(Network)
-class NetworkAdmin(ModelAdmin):
-    list_display = ['pk', 'segment', 'gateway', 'segment_type']
-
-
-@admin.register(Operator)
-class OperatorAdmin(ModelAdmin):
-    list_display = ['pk', 'name']
-
-
-@admin.register(Broadband)
-class BroadbandAdmin(ModelAdmin):
-    list_display = ['pk', 'name', 'operator', 'access_type', 'speed']
-    list_filter = ['operator', 'access_type']
-
-
 @admin.register(Organization)
 class OrganizationAdmin(ModelAdmin):
     list_display = ['pk', 'name', 'parent', 'level']
 
 
-@admin.register(Export)
-class ExportAdmin(ModelAdmin):
-    list_display = ['pk', 'type', 'ip', 'device']
-
-
 # register relation table
 admin.site.register(OrganizationContact)
-admin.site.register(OrganizationNetwork)
 admin.site.register(OrganizationAddress)
-admin.site.register(OrganizationBroadBand)
 
 
 @admin.register(TerminalDevice)
@@ -85,3 +61,18 @@ class RegisterOrgAdmin(ModelAdmin):
 @admin.register(PostOperator)
 class PostOperatorAdmin(ModelAdmin):
     list_display = ['id', 'name']
+
+
+@admin.register(AccessLicense)
+class AccessLicenseAdmin(ModelAdmin):
+    list_display = ['pk', 'bind_device', 'group']
+    list_filter = ['group']
+
+@admin.register(BindingHistory)
+class BindingHistoryAdmin(ModelAdmin):
+    list_display =['pk', 'access_license', 'device_key', 'bind_time']
+
+
+@admin.register(GroupLicenseACL)
+class GroupLicenseACLAdmin(ModelAdmin):
+    list_display = ['pk', 'group', 'max_count']

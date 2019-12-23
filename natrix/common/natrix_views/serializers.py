@@ -2,7 +2,6 @@
 """
 
 """
-from __future__ import unicode_literals
 import logging
 
 from django.db.models import Model
@@ -12,7 +11,9 @@ from natrix.common import exception as natrix_exception
 
 from .fields import (SchemeURLField, NullFloatField)
 
+
 logger = logging.getLogger(__name__)
+
 
 class NatrixSerializer(serializers.Serializer):
     """
@@ -28,8 +29,9 @@ class NatrixSerializer(serializers.Serializer):
         self.group = group
 
     def format_errors(self):
+        print(self._errors.items())
         if self._errors:
-            errors_list = map(lambda (key, values): u'{}: {}'.format(key, ';'.join(values)),
+            errors_list = map(lambda values: u'{}: {}'.format(values[0], ';'.join(values[1])),
                               self._errors.items())
             return '\n'.join(errors_list)
         else:

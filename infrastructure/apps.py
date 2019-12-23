@@ -33,7 +33,7 @@ class InfrastructureConfig(AppConfig):
                 logger.error('Infrastructure applciation [alive master] with an error configuration: '
                              'with ({}) alive master'.format(len(alive_masters)))
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.error('Infrastructure application initialize error: {}'.format(e.get_log()))
 
 

@@ -21,7 +21,7 @@ class CommandInfo(natrix_serializers.NatrixSerializer):
     """
     command_uuid = rest_serializers.UUIDField()
     command_protocol = rest_serializers.ChoiceField(
-                    choices=map(choice_filter, task_conf.PROTOCOL_INFO.values()))
+                    choices=list(map(choice_filter, task_conf.PROTOCOL_INFO.values())))
     command_destination = natrix_serializers.SchemeURLField()
     command_parameters = rest_serializers.DictField()
 

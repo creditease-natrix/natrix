@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
 
-from __future__ import unicode_literals
-
+"""
 import logging, time, json
 import uuid
 
@@ -17,8 +17,7 @@ logger = logging.getLogger(__name__)
 
 choice_filter = lambda x: (x.get('name'), x.get('verbose_name'))
 
-PROTOCOL_CHOICES = map(choice_filter, CONF.PROTOCOL_INFO.values())
-
+PROTOCOL_CHOICES = list(map(choice_filter, CONF.PROTOCOL_INFO.values()))
 
 class Command(models.Model):
 
@@ -26,7 +25,6 @@ class Command(models.Model):
                           primary_key=True,
                           default=uuid.uuid4,
                           editable=False)
-
     protocol_type = models.CharField(verbose_name=u'协议类型', choices=PROTOCOL_CHOICES,
                                      max_length=16, editable=False, null=False)
     protocol_parameters = models.TextField(verbose_name=u'协议配置(JSON)', editable=False, default='{}')
@@ -98,9 +96,9 @@ class Schedule(models.Model):
         return u'{}-{}'.format(self.status, self.frequency)
 
 
-SCOPE_CHOICES = map(choice_filter, CONF.TASK_SCOPE.values())
-TIME_CHOICES = map(choice_filter, CONF.TASK_TIME_TYPE.values())
-PURPOSE_CHOICES = map(choice_filter, CONF.TASK_PURPOSE.values())
+SCOPE_CHOICES = list(map(choice_filter, CONF.TASK_SCOPE.values()))
+TIME_CHOICES = list(map(choice_filter, CONF.TASK_TIME_TYPE.values()))
+PURPOSE_CHOICES = list(map(choice_filter, CONF.TASK_PURPOSE.values()))
 
 class Task(models.Model):
 
@@ -141,12 +139,20 @@ class Task(models.Model):
 
     result_snapshot = models.TextField(verbose_name=u'结果快照', null=True, blank=True)
 
-    owner = models.ForeignKey(User, verbose_name=u'创建用户', null=True, related_name='owner')
-    group = models.ForeignKey(Group, verbose_name=u'关联组', null=True, related_name='group')
+    owner = models.ForeignKey(User, verbose_name=u'创建用户', null=True,
+                              related_name='owner', on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, verbose_name=u'关联组', null=True,
+                              related_name='group', on_delete=models.CASCADE)
     access_ip = models.GenericIPAddressField(verbose_name=u'访问IP', null=True)
     create_time = models.DateTimeField(verbose_name=u'创建时间', default=timezone.now,
                                        editable=False)
     update_time = models.DateTimeField(verbose_name=u'更新时间', default=timezone.now)
+
+    def get_protocol_type(self):
+        return self.protocol_type
+
+    def get_frequency(self):
+        return self.schedule.frequency
 
     def turn_on(self):
         with transaction.atomic():
@@ -188,7 +194,7 @@ class Task(models.Model):
     def get_terminals(self):
         try:
             condition = json.loads(self.terminal_condition)
-            terminals = terminal_policy(self.terminal_switch, conditions=condition)
+            terminals = terminal_policy(self.terminal_switch, conditions=condition, group=self.group)
 
         except Exception as e:
             natrix_exception.natrix_traceback()

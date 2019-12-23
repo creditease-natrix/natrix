@@ -8,6 +8,7 @@ import json, time
 from rest_framework import serializers as rest_serializers
 
 from natrix.common.natrix_views import serializers as natrix_serializers
+from natrix.common.natrix_views import fields as natrix_fields
 from natrix.common import exception as natrix_exception
 from ..states import CommandAPI
 
@@ -31,8 +32,8 @@ class ResponseTimestampTag(natrix_serializers.NatrixSerializer):
     server_request_generate_time = rest_serializers.FloatField(min_value=0)
     terminal_request_receive_time = rest_serializers.FloatField(min_value=0)
     terminal_request_send_time = rest_serializers.FloatField(min_value=0)
-    terminal_response_receive_time = rest_serializers.FloatField(min_value=0, allow_null=True)
-    terminal_response_return_time = natrix_serializers.NullFloatField(min_value=0, allow_null=True)
+    terminal_response_receive_time = rest_serializers.FloatField(min_value=0, allow_null=True, required=False)
+    terminal_response_return_time = natrix_serializers.NullFloatField(min_value=0, allow_null=True, required=False)
 
 
 class LocationSerializer(natrix_serializers.NatrixSerializer):
@@ -73,9 +74,9 @@ class PingSerializer(ProtocolSerializer):
     packet_receive = rest_serializers.IntegerField()
     packet_loss = rest_serializers.IntegerField()
     packet_size = rest_serializers.IntegerField()
-    avg_time = rest_serializers.FloatField()
-    max_time = rest_serializers.FloatField()
-    min_time = rest_serializers.FloatField()
+    avg_time = natrix_fields.NullFloatField(default=-1)
+    max_time = natrix_fields.NullFloatField(default=-1)
+    min_time = natrix_fields.NullFloatField(default=-1)
 
 
 class HttpSerializer(ProtocolSerializer):
@@ -107,8 +108,8 @@ class HttpSerializer(ProtocolSerializer):
     size_download = rest_serializers.FloatField()
     speed_upload = rest_serializers.FloatField()
     speed_download = rest_serializers.FloatField()
-    response_header = rest_serializers.CharField(required=False)
-    response_body = rest_serializers.CharField(required=False)
+    response_header = rest_serializers.CharField(default='')
+    response_body = rest_serializers.CharField(default='')
 
 
 class IPLocationSerializer(natrix_serializers.NatrixSerializer):
@@ -188,6 +189,8 @@ class TerminalResponse(natrix_serializers.NatrixSerializer):
         :return:
         """
         status = self.initial_data['status']
+        # generate response process time
+        self.response_process_time = int(time.time() * 1000)
         if status == 0:
             command = self.initial_data['command']
             uuid = str(command.get('uuid'))
@@ -258,7 +261,7 @@ class TerminalResponse(natrix_serializers.NatrixSerializer):
         message['terminal'] = terminal
 
         # timestamp info: from second convert to millisecond
-        message['response_process_time'] = int(time.time() * 1000)
+        message['response_process_time'] = self.response_process_time
         message['terminal_request_receive_time'] = int(stamp.get('terminal_request_receive_time') * 1000)
         message['terminal_request_send_time'] = int(stamp.get('terminal_request_send_time') * 1000)
         if stamp.get('terminal_response_receive_time'):
@@ -270,12 +273,63 @@ class TerminalResponse(natrix_serializers.NatrixSerializer):
         if stamp.get('terminal_response_return_time'):
             response_return_time = int(stamp.get('terminal_response_return_time') * 1000)
         else:
-            response_return_time = None
+            # TODO: eventhub dont support None
+            response_return_time = 0
         message['terminal_response_return_time'] = response_return_time
 
         message.update(data)
 
         return message
 
+    def command_data(self):
+        if not hasattr(self, '_validated_data'):
+            raise natrix_exception.ClassInsideException(
+                message=u'Must call is_valid before using this method')
+
+        command = self._validated_data['command']
+        message = dict()
+        # command info
+        message['command_uuid'] = str(command.get('uuid'))
+        message['command_generate_time'] = int(self._get_command_stamp() * 1000)
+
+        # terminal info
+        terminal = command.get('terminal')
+        message['terminal'] = terminal
+
+        return message
+
+    def stamp_data(self):
+        if not hasattr(self, '_validated_data'):
+            raise natrix_exception.ClassInsideException(
+                message=u'Must call is_valid before using this method')
+
+        stamp = self._validated_data['stamp']
+        message = dict()
+        message['response_process_time'] = self.response_process_time
+        message['terminal_request_receive_time'] = int(stamp.get('terminal_request_receive_time') * 1000)
+        message['terminal_request_send_time'] = int(stamp.get('terminal_request_send_time') * 1000)
+        if stamp.get('terminal_response_receive_time'):
+            response_receive_time = int(stamp.get('terminal_response_receive_time') * 1000)
+        else:
+            response_receive_time = None
+        message['terminal_response_receive_time'] = response_receive_time
+
+        if stamp.get('terminal_response_return_time'):
+            response_return_time = int(stamp.get('terminal_response_return_time') * 1000)
+        else:
+            # TODO: eventhub dont support None
+            response_return_time = int(time.time() * 1000)
+        message['terminal_response_return_time'] = response_return_time
+
+        return message
+
+    def response_data(self):
+        if not hasattr(self, '_validated_data'):
+            raise natrix_exception.ClassInsideException(
+                message=u'Must call is_valid before using this method')
+
+        data = self._validated_data['data']
+
+        return data
 
 

@@ -26,5 +26,5 @@ def send_email(destinations, application, title, body, level='critical', descrip
                                      'supplement': supplement})
         return True
     except Exception as e:
-        print 'send email : {}'.format(e)
+        print('send email : {}'.format(e))
         return False

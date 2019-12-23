@@ -25,7 +25,6 @@ from benchmark.terminalutil import terminal_policy
 from benchmark.tasks import timed_task_process
 
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -33,7 +32,7 @@ TIMESTAMP_UTC = lambda timestamp: datetime.datetime.fromtimestamp(timestamp, tz=
 
 
 class TerminalConditionSerializer(NatrixSerializer):
-
+    group_own = serializers.BooleanField(help_text='Limitation of terminal owner', default=False)
     filter_type = serializers.ChoiceField(choices=(('region', u'区域'), ('organization', u'组织')),
                                           help_text=u'过滤类型')
     filter_condition = serializers.ListField(help_text=u'过滤条件', child=serializers.CharField())
@@ -61,6 +60,21 @@ class TerminalConditionSerializer(NatrixSerializer):
                 return False
 
         return True
+
+    def presentation_dict(self):
+        dict_info = {
+            'group_own': self.validated_data.get('group_own'),
+            'filter_type': self.validated_data.get('filter_type'),
+            'filter_condition': self.validated_data.get('filter_condition'),
+            'terminal_select': self.validated_data.get('terminal_select'),
+        }
+        terminals = self.validated_data.get('terminals')
+        if not isinstance(terminals, list):
+            dict_info['terminals'] = []
+        else:
+            dict_info['terminals'] = list(terminals)
+
+        return dict_info
 
 
 class PingProcotolSerializer(NatrixSerializer):
@@ -140,7 +154,6 @@ class HttpProtocolSerializer(NatrixSerializer):
             raise serializers.ValidationError('The header_info must be a json string.')
         except TypeError:
             raise serializers.ValidationError('The header_info must be a string or buffer')
-
 
     def validate_body_info(self, value):
         try:
@@ -337,7 +350,7 @@ class InstantTaskSerializer(NatrixSerializer):
         http_method = validated_data.get('http_method')
         destination = validated_data.get('destination')
         advanced_switch = validated_data.get('advanced_switch')
-        terminal_configuration = validated_data.get('terminal_configuration')
+        terminal_conf = validated_data.get('terminal_configuration')
         protocol_switch = validated_data.get('protocol_switch')
         protocol_configuration = validated_data.get('protocol_configuration')
 
@@ -345,16 +358,17 @@ class InstantTaskSerializer(NatrixSerializer):
             terminal_configuration = dict()
         else:
             terminal_configuration = {
-                'filter_type': terminal_configuration['filter_type'],
-                'filter_condition': terminal_configuration['filter_condition'],
-                # 'network_type': list(terminal_configuration['network_type']),
-                # 'isp_type': list(terminal_configuration['isp_type']),
-                'terminal_select': terminal_configuration['terminal_select'],
-                'terminals': list(terminal_configuration['terminals'])
+                'group_own': terminal_conf['group_own'],
+                'filter_type': terminal_conf['filter_type'],
+                'filter_condition': terminal_conf['filter_condition'],
+                'terminal_select': terminal_conf['terminal_select'],
+                'terminals': []
             }
 
-        terminals = terminal_policy(advanced_switch, terminal_configuration)
+            if terminal_conf['terminals']:
+                terminal_configuration['terminals'] = list(terminal_conf['terminals'])
 
+        terminals = terminal_policy(advanced_switch, terminal_configuration, self.group)
         if not protocol_switch:
             protocol_configuration = dict()
 
@@ -385,7 +399,8 @@ class InstantTaskSerializer(NatrixSerializer):
                                        protocol_condition=json.dumps(protocol_configuration),
                                        command=command,
                                        terminal_count=len(terminals),
-                                       terminals = json.dumps(terminals))
+                                       terminals = json.dumps(terminals),
+                                       group=self.group)
             # TODO: add access_ip, access_user, access_gorup (for model)
 
             distribute_data = task.task_command_represent()
@@ -412,7 +427,7 @@ class InstantTaskSerializer(NatrixSerializer):
             ret['terminal_configuration'] = json.loads(instance.terminal_condition)
             ret['advanced_switch'] = True if ret['terminal_configuration'] else False
 
-            ret['protocol_configuration'] = json.loads(instance.command.protocol_conf)
+            ret['protocol_configuration'] = json.loads(instance.protocol_condition)
             ret['protocol_switch'] = True if ret['protocol_configuration'] else False
             return ret
         except Exception as e:
@@ -429,14 +444,15 @@ class TimedTaskSerializer(NatrixSerializer):
     """
     id = serializers.UUIDField(read_only=True, help_text=u'任务ID')
     name = serializers.CharField(max_length=64, help_text=u'任务名称')
-    description = serializers.CharField(max_length=255, help_text=u'任务描述')
+    description = serializers.CharField(max_length=255, help_text=u'任务描述', default='',
+                                        allow_blank=True, allow_null=True)
     scope = serializers.ChoiceField(choices=SCOPE_CHOICES, help_text=u'任务范围')
     destination = SchemeURLField(help_text=u'目标地址')
-    frequency = serializers.IntegerField(min_value=1, help_text=u'任务频率（分钟）')
+    frequency = serializers.IntegerField(min_value=1, help_text='任务频率（分钟）')
     terminal_switch = serializers.BooleanField(default=False, help_text=u'终端配置开关')
     terminal_configuration = TerminalConditionSerializer(allow_null=True,
                                                          required=False,
-                                                         help_text=u'终端配置')
+                                                         help_text='终端配置')
 
     protocol_type = serializers.ChoiceField(choices=TIMED_PROTOCOL_CHOICES, help_text=u'协议类型')
     http_method = serializers.ChoiceField(choices=[('get', 'GET'),
@@ -520,10 +536,11 @@ class TimedTaskSerializer(NatrixSerializer):
             terminal_configuration = dict()
         else:
             terminal_configuration = {
+                'group_own': terminal_configuration['group_own'],
                 'filter_type': terminal_configuration['filter_type'],
                 'filter_condition': terminal_configuration['filter_condition'],
                 'terminal_select': terminal_configuration['terminal_select'],
-                'terminals': terminal_configuration.get('terminals', None)
+                'terminals': terminal_configuration.get('terminals', [])
             }
 
         if not protocol_switch:
@@ -542,7 +559,7 @@ class TimedTaskSerializer(NatrixSerializer):
                 expiry_time=TIMESTAMP_UTC(expiry_time / 1000))
 
             celery_api.add_beat_schedule(frequency * 60,
-                                         task='benchmark.tasks.timed_task_process')
+                                         task=timed_task_process.name)
 
             command = Command.command_generator(protocol_type,
                                                 command_protocol,
@@ -589,10 +606,11 @@ class TimedTaskSerializer(NatrixSerializer):
             terminal_configuration = dict()
         else:
             terminal_configuration = {
+                'group_own': terminal_configuration['group_own'],
                 'filter_type': terminal_configuration['filter_type'],
                 'filter_condition': terminal_configuration['filter_condition'],
                 'terminal_select': terminal_configuration['terminal_select'],
-                'terminals': terminal_configuration.get('terminals', None)
+                'terminals': terminal_configuration.get('terminals', [])
             }
 
         if not protocol_switch:
@@ -613,7 +631,7 @@ class TimedTaskSerializer(NatrixSerializer):
             # schedule related
             if frequency and instance.schedule.frequency != frequency * 60:
                 instance.schedule.frequency = frequency * 60
-                celery_api.add_beat_schedule(frequency * 60, task=timed_task_process)
+                celery_api.add_beat_schedule(frequency * 60, task=timed_task_process.name)
 
             instance.schedule.effective_time = TIMESTAMP_UTC(effective_time/1000) if effective_time \
                                                 else instance.schedule.effective_time
@@ -828,8 +846,7 @@ class UnfollowedTaskSerializer(NatrixQuerySerializer):
 
         unfollowed_tasks = public_tasks.difference(followed_tasks)
 
-        return map(lambda t: {'id': t.id, 'name': t.name},
-                   unfollowed_tasks)
+        return list(map(lambda t: {'id': t.id, 'name': t.name}, unfollowed_tasks))
 
 
 TIMED_SELECT_PROTOCOL_CHOICES = (('all', 'ALL'), ('ping', 'PING'), ('http', 'HTTP'), ('dns', 'DNS'))
@@ -844,7 +861,7 @@ class TimedTaskSelectSerializer(NatrixQuerySerializer):
             raise natrix_exception.ClassInsideException(
                 u'The user must join a group when query unfollowed task!')
 
-        protocol_type = validated_data.get('protocol_type')
+        protocol_type = validated_data.get('protocol_type').lower()
 
         if protocol_type == 'all':
             own_tasks = list(Task.objects.filter(Q(group=self.group) &
@@ -859,13 +876,9 @@ class TimedTaskSelectSerializer(NatrixQuerySerializer):
 
         own_tasks.extend(followed_tasks)
 
-        return map(lambda t: {'id': t.id, 'name': t.name},
-                   own_tasks)
-
-
-
-
-
-
-
+        return list(map(lambda t: {'id': t.id,
+                              'name': t.name,
+                              'description': t.description,
+                              'protocol': t.protocol_type},
+                   own_tasks))
 

@@ -30,7 +30,7 @@ class BenchmarkConfig(AppConfig):
             elif len(command_adapter_guardian_list) > 1:
                 logger.error('There are more than one (command adapter guardian), you had better to delete.')
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.error('Benchmark application initialize error: {}'.format(e.get_log()))
 
 

@@ -57,6 +57,7 @@ class LoginPermission(permissions.IsAuthenticated):
         else:
             return False
 
+
 class NonPermission(permissions.IsAuthenticated):
     """
 

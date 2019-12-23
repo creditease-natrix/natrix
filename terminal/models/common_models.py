@@ -2,7 +2,6 @@
 """
 
 """
-from __future__ import unicode_literals
 import simplejson
 import logging
 
@@ -44,8 +43,8 @@ class History(models.Model):
     model_name = models.CharField(max_length=100)
     pk_field = models.CharField(max_length=100)
     serializers_str = models.CharField(max_length=2000)
-    operator = models.ForeignKey(User, null=True)
-    operator_group = models.ForeignKey(Group, null=True)
+    operator = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    operator_group = models.ForeignKey(Group, null=True, on_delete=models.CASCADE)
     operation = models.CharField(choices=OPERATIONS, default='modify', max_length=20)
     operate_date = models.DateTimeField("修改时间", auto_now=True)
 

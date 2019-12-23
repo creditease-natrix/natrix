@@ -3,12 +3,70 @@
 
 """
 from __future__ import unicode_literals
-import time
 
 from benchmark.backends.command_dispatcher.store import origin_search
 
 MAX_TIME_POINTS = 200
 MAX_DIST_POINTS = 50
+
+
+def get_es_exception_query(task_id, start_time, end_time, interval):
+    es_condition = {
+        'query': {
+            'bool': {
+                'must': [
+                    {'term': {'_type': 'error'}},
+                    {'term': {'task_id.keyword': str(task_id)}},
+                    {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
+                ]
+            }
+        },
+        'aggs': {
+            'bucket_aggs': {
+                'terms': {
+                    'field': 'errorcode'
+                },
+                'aggs': {
+                    'histogram_datas': {
+                        'date_histogram': {
+                            'field': 'task_generate_time',
+                            'interval': interval,
+                            'extended_bounds': {
+                                'min': start_time,
+                                'max': end_time
+                            }
+                        }
+                    }
+                }
+            }
+        },
+    }
+    return es_condition
+
+
+def es_exception_extract(es_res):
+    analyse_datas = es_res.get('aggregations', {}).get('bucket_aggs', {}).get('buckets')
+
+    lines = []
+    x_axis = []
+    x_axis_inited = False
+    for records in analyse_datas:
+        name = records.get('key')
+        record_count = records.get('doc_count')
+        record_value = []
+        record_list = records.get('histogram_datas', {}).get('buckets')
+        for record in record_list:
+            if not x_axis_inited:
+                x_axis.append(record.get('key'))
+            record_value.append(record.get('doc_count'))
+        x_axis_inited = True
+        lines.append({
+            'name': name,
+            'values': record_value
+        })
+
+    return x_axis, lines
+
 
 def get_interval(start_time, end_time, interval):
     avg_interval = (end_time - start_time) / MAX_TIME_POINTS
@@ -22,7 +80,7 @@ def ping_loss_region(task_id, start_time, end_time):
             'bool': {
                 'must': [
                     {'term': {'_type': 'ping'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -30,7 +88,7 @@ def ping_loss_region(task_id, start_time, end_time):
         'aggs': {
             'bucket_aggs': {
                 'terms': {
-                    'field': 'province',
+                    'field': 'province.keyword',
                     'size': 1000
                 },
                 'aggs': {
@@ -58,7 +116,7 @@ def ping_loss_region(task_id, start_time, end_time):
         sum_send = record.get('sum_send').get('value')
         analyse_values.append({
             'name': key,
-            'value': sum_loss / sum_send if sum_send else 0
+            'value': (sum_loss / sum_send if sum_send else 0) * 100
         })
 
     return analyse_values
@@ -70,7 +128,7 @@ def ping_delay_region(task_id, start_time, end_time):
             'bool': {
                 'must': [
                     {'term': {'_type': 'ping'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -78,7 +136,7 @@ def ping_delay_region(task_id, start_time, end_time):
         'aggs': {
             'bucket_aggs': {
                 'terms': {
-                    'field': 'province',
+                    'field': 'province.keyword',
                     'size': 1000
                 },
                 'aggs': {
@@ -114,7 +172,7 @@ def ping_loss_time(task_id, start_time, end_time, interval):
             'bool': {
                 'must': [
                     {'term': {'_type': 'ping'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -151,7 +209,7 @@ def ping_loss_time(task_id, start_time, end_time, interval):
         sum_loss = record.get('sum_loss').get('value')
         sum_send = record.get('sum_send').get('value')
         x_axis.append(key)
-        loss_values.append(sum_loss / sum_send if sum_send else 0.0)
+        loss_values.append((sum_loss / sum_send if sum_send else 0.0) * 100)
 
     lines = [
         {
@@ -171,7 +229,7 @@ def ping_delay_time(task_id, start_time, end_time, interval):
             'bool': {
                 'must': [
                     {'term': {'_type': 'ping'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -239,80 +297,21 @@ def ping_delay_time(task_id, start_time, end_time, interval):
 def ping_exception_time(task_id, start_time, end_time, interval):
 
     analyse_interval = get_interval(start_time, end_time, interval)
-
-    es_condition = {
-        'query': {
-            'bool': {
-                'must': [
-                    {'term': {'_type': 'error'}},
-                    {'term': {'task_id': task_id}},
-                    {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
-                ]
-            }
-        },
-        'aggs': {
-            'histogram_datas': {
-                'date_histogram': {
-                    'field': 'task_generate_time',
-                    'interval': analyse_interval,
-                    'extended_bounds': {
-                        'min': start_time,
-                        'max': end_time
-                    }
-                }
-            }
-        },
-    }
+    es_condition = get_es_exception_query(task_id, start_time, end_time, analyse_interval)
     res = origin_search(body=es_condition, size=0)
-
-    analyse_data = res.get('aggregations', {}).get('histogram_datas').get('buckets')
-
-    exception_values = []
-    x_axis = []
-    for record in analyse_data:
-        key = record.get('key')
-        x_axis.append(key)
-        exception_values.append(record.get('doc_count'))
-
-    lines = [
-        {
-            'name': 'exception',
-            'values': exception_values
-        },
-    ]
+    x_axis, lines = es_exception_extract(res)
     return x_axis, lines
 
 
-def ping_delay_dist(task_id, start_time, end_time, interval):
-
-    max_condition = {
-        'query': {
-            'bool': {
-                'must': [
-                    {'term': {'_type': 'ping'}},
-                    {'term': {'task_id': task_id}},
-                    {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
-                ]
-            }
-        },
-        "aggs": {
-            "max_value": {
-                "max": {"field": "max_time"}
-            }
-        }
-    }
-    res = origin_search(body=max_condition, size=0)
-    analyse_interval = res.get('aggregations', {}).get('max_value', {}).get('value', 1000) / MAX_DIST_POINTS
-
-    interval = analyse_interval if analyse_interval > 20 else 20
-
+def ping_delay_dist(task_id, start_time, end_time, interval=20):
     es_condition = {
         'query': {
             'bool': {
                 'must': [
                     {'term': {'_type': 'ping'}},
-                    {'term': {'task_id': task_id}},
-                    {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
+                    {'term': {'task_id.keyword': str(task_id)}},
+                    {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}},
+                    {'range': {'avg_time': {'gte': 0}}}
                 ]
             }
         },
@@ -340,12 +339,14 @@ def ping_delay_dist(task_id, start_time, end_time, interval):
     res = origin_search(body=es_condition, size=0)
 
     analyse_data = {}
+
     avg_data = res.get('aggregations', {}).get('avg_time_range').get('buckets')
     for record in avg_data:
         key = int(record.get('key'))
         analyse_data[key] = {
             'avg_time': record.get('doc_count')
         }
+
     min_data = res.get('aggregations', {}).get('min_time_range').get('buckets')
     for record in min_data:
         key = int(record.get('key'))
@@ -355,6 +356,7 @@ def ping_delay_dist(task_id, start_time, end_time, interval):
             analyse_data[key] = {
                 'min_time': record.get('doc_count')
             }
+
     max_data = res.get('aggregations', {}).get('max_time_range').get('buckets')
     for record in max_data:
         key = int(record.get('key'))
@@ -372,11 +374,25 @@ def ping_delay_dist(task_id, start_time, end_time, interval):
 
     x_list = sorted(analyse_data.keys())
 
+    accumulation_flag = False
     for x_value in x_list:
-        x_axis.append('{}-{}'.format(x_value, x_value+interval))
-        avg_values.append(analyse_data[x_value].get('avg_time', 0))
-        min_values.append(analyse_data[x_value].get('min_time', 0))
-        max_values.append(analyse_data[x_value].get('max_time', 0))
+        if x_value >= interval * 20 and not accumulation_flag:
+            accumulation_flag =True
+            x_axis.append('{}-'.format(x_value))
+            avg_values.append(0)
+            min_values.append(0)
+            max_values.append(0)
+
+        if not accumulation_flag:
+            x_axis.append('{}-{}'.format(x_value, x_value+interval))
+            avg_values.append(analyse_data[x_value].get('avg_time', 0))
+            min_values.append(analyse_data[x_value].get('min_time', 0))
+            max_values.append(analyse_data[x_value].get('max_time', 0))
+        else:
+            avg_values[-1] += analyse_data[x_value].get('avg_time', 0)
+            min_values[-1] += analyse_data[x_value].get('avg_time', 0)
+            max_values[-1] += analyse_data[x_value].get('max_time', 0)
+
 
     lines = [
         {
@@ -402,7 +418,7 @@ def http_request_region(task_id, start_time, end_time):
             'bool': {
                 'must': [
                     {'term': {'_type': 'http'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -410,7 +426,7 @@ def http_request_region(task_id, start_time, end_time):
         'aggs': {
             'bucket_aggs': {
                 'terms': {
-                    'field': 'province',
+                    'field': 'province.keyword',
                     'size': 1000
                 },
                 'aggs': {
@@ -445,7 +461,7 @@ def http_parsetime_region(task_id, start_time, end_time):
             'bool': {
                 'must': [
                     {'term': {'_type': 'http'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -453,7 +469,7 @@ def http_parsetime_region(task_id, start_time, end_time):
         'aggs': {
             'bucket_aggs': {
                 'terms': {
-                    'field': 'province',
+                    'field': 'province.keyword',
                     'size': 1000
                 },
                 'aggs': {
@@ -490,7 +506,7 @@ def http_request_time(task_id, start_time, end_time, interval):
             'bool': {
                 'must': [
                     {'term': {'_type': 'http'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -558,46 +574,10 @@ def http_exception_time(task_id, start_time, end_time, interval):
 
     analyse_interval = get_interval(start_time, end_time, interval)
 
-    es_condition = {
-        'query': {
-            'bool': {
-                'must': [
-                    {'term': {'_type': 'error'}},
-                    {'term': {'task_id': task_id}},
-                    {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
-                ]
-            }
-        },
-        'aggs': {
-            'histogram_datas': {
-                'date_histogram': {
-                    'field': 'task_generate_time',
-                    'interval': analyse_interval,
-                    'extended_bounds': {
-                        'min': start_time,
-                        'max': end_time
-                    }
-                }
-            }
-        },
-    }
+    es_condition = get_es_exception_query(task_id, start_time, end_time, analyse_interval)
     res = origin_search(body=es_condition, size=0)
 
-    analyse_data = res.get('aggregations', {}).get('histogram_datas').get('buckets')
-
-    exception_values = []
-    x_axis = []
-    for record in analyse_data:
-        key = record.get('key')
-        x_axis.append(key)
-        exception_values.append(record.get('doc_count'))
-
-    lines = [
-        {
-            'name': 'exception',
-            'values': exception_values
-        },
-    ]
+    x_axis, lines = es_exception_extract(res)
     return x_axis, lines
 
 
@@ -608,7 +588,7 @@ def http_result_dist(task_id, start_time, end_time):
             'bool': {
                 'must': [
                     {'term': {'_type': 'http'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -630,7 +610,7 @@ def http_result_dist(task_id, start_time, end_time):
             'bool': {
                 'must': [
                     {'term': {'_type': 'error'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -673,7 +653,7 @@ def http_stage_dist(task_id, start_time, end_time):
             'bool': {
                 'must': [
                     {'term': {'_type': 'http'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -723,7 +703,7 @@ def dns_parsetime_region(task_id, start_time, end_time):
             'bool': {
                 'must': [
                     {'term': {'_type': 'dns'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -731,7 +711,7 @@ def dns_parsetime_region(task_id, start_time, end_time):
         'aggs': {
             'bucket_aggs': {
                 'terms': {
-                    'field': 'province',
+                    'field': 'province.keyword',
                     'size': 1000
                 },
                 'aggs': {
@@ -757,6 +737,7 @@ def dns_parsetime_region(task_id, start_time, end_time):
 
     return analyse_values
 
+
 # TODO: redefine dns type in es
 def dns_parseresult_region(task_id, start_time, end_time):
 
@@ -765,7 +746,7 @@ def dns_parseresult_region(task_id, start_time, end_time):
             'bool': {
                 'must': [
                     {'term': {'_type': 'dns'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -797,7 +778,7 @@ def dns_parsetime_time(task_id, start_time, end_time, interval):
             'bool': {
                 'must': [
                     {'term': {'_type': 'dns'}},
-                    {'term': {'task_id': task_id}},
+                    {'term': {'task_id.keyword': str(task_id)}},
                     {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
                 ]
             }
@@ -848,45 +829,7 @@ def dns_exception_time(task_id, start_time, end_time, interval):
 
     analyse_interval = get_interval(start_time, end_time, interval)
 
-    es_condition = {
-        'query': {
-            'bool': {
-                'must': [
-                    {'term': {'_type': 'error'}},
-                    {'term': {'task_id': task_id}},
-                    {'range': {'task_generate_time': {'gte': start_time, 'lte': end_time}}}
-                ]
-            }
-        },
-        'aggs': {
-            'histogram_datas': {
-                'date_histogram': {
-                    'field': 'task_generate_time',
-                    'interval': analyse_interval,
-                    'extended_bounds': {
-                        'min': start_time,
-                        'max': end_time
-                    }
-                }
-            }
-        },
-    }
+    es_condition = get_es_exception_query(task_id, start_time, end_time, analyse_interval)
     res = origin_search(body=es_condition, size=0)
-
-    analyse_data = res.get('aggregations', {}).get('histogram_datas').get('buckets')
-
-    exception_values = []
-    x_axis = []
-    for record in analyse_data:
-        key = record.get('key')
-        x_axis.append(key)
-        exception_values.append(record.get('doc_count'))
-
-    lines = [
-        {
-            'name': 'exception',
-            'values': exception_values
-        },
-    ]
-
+    x_axis, lines = es_exception_extract(res)
     return x_axis, lines

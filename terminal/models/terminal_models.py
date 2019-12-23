@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+"""
 
+"""
 import logging
 
+from auditlog.registry import auditlog
 from django.utils import timezone
 from django.db import models, transaction
+from django.db.models import Q
+from django.contrib.auth.models import Group
 
 from natrix.common.utils import network
 from natrix.common import exception as natrix_exception
@@ -18,15 +22,13 @@ logger = logging.getLogger(__name__)
 
 choice_generator = lambda x : (x['name'], x['verbose_name'])
 
-terminal_type_choice = map(choice_generator, NETWORK_TYPE_INFO.values())
-terminal_status_choice = map(choice_generator, TERMINAL_STATUS.values())
-device_status_choice = map(choice_generator, DEVICE_STATUS.values())
-
+terminal_type_choice = list(map(choice_generator, NETWORK_TYPE_INFO.values()))
+terminal_status_choice = list(map(choice_generator, TERMINAL_STATUS.values()))
+device_status_choice = list(map(choice_generator, DEVICE_STATUS.values()))
 
 status_order = {
     'active': 0,
-    'posting': 10,
-    'maintain': 20
+    'maintain': 10
 }
 
 class PostOperator(HistorySave):
@@ -73,8 +75,8 @@ class TerminalDevice(HistorySave):
 
     # cpu info
     cpu_model = models.CharField(verbose_name=u'CPU型号', max_length=128, null=True)
-    cpu_core = models.IntegerField(verbose_name=u'CPU核数', default=0)
-    cpu_percent = models.FloatField(verbose_name=u'CPU使用率（%）', default=0)
+    cpu_core = models.IntegerField(verbose_name=u'CPU核数', default=0, null=True)
+    cpu_percent = models.FloatField(verbose_name=u'CPU使用率（%）', default=0, null=True)
 
     # memory info
     memory_total = models.BigIntegerField(verbose_name=u'内存大小（Byte）', default=0)
@@ -89,6 +91,8 @@ class TerminalDevice(HistorySave):
     status = models.CharField(verbose_name=u'状态', choices=device_status_choice,
                               max_length=16, default='active')
     is_active = models.BooleanField(verbose_name=u'是否活跃', default=False)
+    is_shared = models.BooleanField(verbose_name=u'是否共享', default=True)
+
     device_alert = models.BooleanField(verbose_name=u'是否对设备告警', default=True)
     terminal_alert = models.BooleanField(verbose_name=u'是否对终端告警', default=False)
 
@@ -119,15 +123,12 @@ class TerminalDevice(HistorySave):
 
     natrixclient_version = models.CharField(verbose_name=u'Natrix客户端版本', max_length=128, null=True)
 
-    organizations = models.ManyToManyField(Organization, verbose_name=u'检测组织',
-                                          related_name="auto_organization", blank=True,
-                                           help_text=u'通过网络信息监测到的职场')
     register = models.ForeignKey(RegisterOrganization,
                                  verbose_name=u'职场注册',
                                  null=True,
                                  on_delete=models.SET_NULL,
                                  help_text=u'职场注册信息')
-
+    group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
     comment = models.TextField("备注", default=u'')
 
     first_online_time = models.DateTimeField("上线时间", auto_now_add=True, editable=True)
@@ -185,8 +186,6 @@ class TerminalDevice(HistorySave):
     def status_change(self, status):
         if status in ('active', 'maintain'):
             terminal_status = status
-        elif status in ('posting'):
-            terminal_status = 'active'
         else:
             logger.error('Configure terminal deivce status with an error status ({})'.format(status))
             raise natrix_exception.ClassInsideException(
@@ -198,6 +197,28 @@ class TerminalDevice(HistorySave):
                 terminal.status = terminal_status
                 terminal.save()
             self.save()
+
+    def scope_change(self, scope):
+        if scope == 'public':
+            self.is_shared = True
+        elif scope == 'private':
+            self.is_shared = False
+
+        self.save()
+
+    def clean_group_related_fields(self):
+        """
+
+        :return:
+        """
+
+        self.register = None
+
+    def get_scope(self):
+        if self.is_shared:
+            return 'shared'
+        else:
+            return 'private'
 
     def dead_change(self):
         with transaction.atomic():
@@ -217,17 +238,39 @@ class TerminalDevice(HistorySave):
     def get_available_terminals(self):
         """Get all available terminals of this device.
 
+        The condition of available:
+        - status is active
+        - is_active is true
+
         :return:
         """
         return Terminal.objects.filter(dev=self, is_active=True, status='active')
 
+    def get_status_intvalue(self):
+        return status_order.get(self.status, 100)
+
     @staticmethod
-    def get_available_devices():
+    def get_available_devices(group):
         """
 
         :return:
         """
-        return TerminalDevice.objects.filter(is_active=True, status='active')
+        available_devices = TerminalDevice.objects.filter(is_active=True, status='active')
+
+        available_devices = available_devices.filter(Q(group=group) | Q(is_shared=True))
+
+        return available_devices
+
+    @staticmethod
+    def get_group_available_devices(group):
+        """
+
+        :param group:
+        :return:
+        """
+        available_devices = TerminalDevice.objects.filter(is_active=True, status='active', group=group)
+
+        return available_devices
 
     @staticmethod
     def status_cmp(pre, next):
@@ -250,6 +293,10 @@ class TerminalDevice(HistorySave):
         terminals = self.terminal_set.all()
         return list(terminals)
 
+    def get_active_terminals(self):
+        terminals = self.terminal_set.filter(status='active')
+        return list(terminals)
+
     def __unicode__(self):
         return u'{}-{}'.format(self.hostname, self.sn)
 
@@ -262,7 +309,7 @@ class Terminal(HistorySave):
 
     """
 
-    mac = models.CharField(verbose_name=u'监测点MAC地址', unique=True, max_length=32)
+    mac = models.CharField(verbose_name=u'监测点MAC地址', max_length=32, null=True)
     dev = models.ForeignKey(TerminalDevice, verbose_name=u'关联设备',
                             on_delete=models.CASCADE, null=True)
 
@@ -290,10 +337,10 @@ class Terminal(HistorySave):
                               max_length=16, null=True)
     is_active = models.BooleanField(verbose_name=u'是否活跃', default=False)
 
-    operator = models.ForeignKey(PostOperator, verbose_name=u'运营商', null=True)
+    operator = models.ForeignKey(PostOperator, verbose_name=u'运营商', null=True, on_delete=models.CASCADE)
 
-    create_time = models.DateTimeField("创建时间", default=timezone.now)
-    update_time = models.DateTimeField("更新时间", auto_now=True)
+    create_time = models.DateTimeField('创建时间', default=timezone.now)
+    update_time = models.DateTimeField('更新时间', auto_now=True)
 
 
     def is_valid(self):
@@ -333,15 +380,8 @@ class Terminal(HistorySave):
 
         return None
 
-    @staticmethod
-    def status_cmp(pre, next):
-        """
-
-        :param pre:
-        :param next:
-        :return:
-        """
-        return status_order.get(pre.status, 100) - status_order.get(next.status, 100)
+    def digital_status(self):
+        return status_order.get(self.status, 100)
 
     @staticmethod
     def update_time_cmp(pre, next):
@@ -349,6 +389,7 @@ class Terminal(HistorySave):
             return 1
         else:
             return -1
+
     @staticmethod
     def active_cmp(pre, next):
 
@@ -361,6 +402,10 @@ class Terminal(HistorySave):
         ordering = ['-create_time']
 
 
+auditlog.register(PostOperator)
+auditlog.register(RegisterOrganization)
+auditlog.register(TerminalDevice)
+auditlog.register(Terminal)
 
 
 

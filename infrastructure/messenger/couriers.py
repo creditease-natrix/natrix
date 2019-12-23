@@ -123,7 +123,7 @@ class SmsNotify(Notify):
 
     def valid_message(self, message):
         content = message.get('body', None)
-        if isinstance(content, basestring) and len(content) < 50:
+        if isinstance(content, str) and len(content) < 50:
             return True
 
         return False

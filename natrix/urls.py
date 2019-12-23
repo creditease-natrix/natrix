@@ -21,12 +21,13 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    url(r'^benchmark/', include('benchmark.urls')),
-    url(r'^rbac/', include('rbac.urls')),
-    url(r'^terminal/', include('terminal.urls')),
+    url(r'^natrix/benchmark/', include('benchmark.urls')),
+    url(r'^natrix/sentinel/', include('sentinel.urls')),
+    url(r'^natrix/rbac/', include('rbac.urls')),
+    url(r'^natrix/terminal/', include('terminal.urls')),
     url(r'^v2/$', TemplateView.as_view(template_name="index.html"), name=u'natrix_vue'),
-    url(r'^accounts/', admin.site.urls),
-    url(r'^admin/', admin.site.urls),
+    url(r'^natrix/accounts/', admin.site.urls),
+    url(r'^natrix/admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name="index.html"), name=u'natrix_index'),
 ]
 

@@ -14,10 +14,12 @@ logger = logging.getLogger(__name__)
 class NotifyAPI(object):
 
     @staticmethod
-    def add_email(destinations, application, title, level, generate_time=timezone.now(),
+    def add_email(destinations, application, title, level, generate_time=None,
                   description='Email notification!', content={}):
 
         # TODO: 参数校验，包括内容
+        if generate_time is None:
+            generate_time = timezone.now()
 
         channel = MQService.get_channel(conf.queue_name, durable=True)
 

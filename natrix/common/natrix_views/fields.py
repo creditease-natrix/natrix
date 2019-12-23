@@ -32,8 +32,21 @@ class SchemeURLField(rest_fields.CharField):
 class NullFloatField(rest_fields.FloatField):
     NULL_VALUES = {'n', 'N', 'null', 'Null', 'NULL', '', None}
 
+    def __init__(self, default=None, **kwargs):
+        super(NullFloatField, self).__init__(**kwargs)
+        self._default = default
+
     def to_internal_value(self, data):
         if data in self.NULL_VALUES:
-            return None
+            return float(self._default)
         else:
             return super(NullFloatField, self).to_internal_value(data)
+
+    def get_value(self, dictionary):
+        value = super(NullFloatField, self).get_value(dictionary)
+
+        if value in self.NULL_VALUES:
+            return self._default
+        return value
+
+

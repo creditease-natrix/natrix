@@ -389,6 +389,7 @@ class CommandAPI(object):
                 command_register_lock.acquire()
                 command_register_record = CacheOpt.get(command_register_key)
 
+                # key is command_generate_time and v is a list of terminals
                 for key, v in command_register_record['batches'].items():
                     if curr_time - key < freshness:
                         remain_command[key] = v
@@ -410,6 +411,11 @@ class CommandAPI(object):
 
                         CacheOpt.delete(command_state_key)
 
+                    logger.info('[Command Clean]: ({command}-{stamp}) is timeout {timeout} ms, '
+                                'which contain {count} terminal!'.format(command=command_uuid,
+                                                                         stamp=key,
+                                                                         timeout=curr_time - key,
+                                                                         count=len(v)))
 
                 command_register_record['batches'] = remain_command
                 CacheOpt.set(command_register_key, command_register_record)
@@ -431,10 +437,3 @@ class CommandAPI(object):
             expired_list.extend(expired_commands)
 
         return expired_list
-
-
-
-
-
-
-

@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+import uuid
 
 from auditlog.registry import auditlog
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import Permission
-
 
 # Create your models here.
 
@@ -33,7 +31,7 @@ class Assign(models.Model):
         return '{}_with_{}_in_{}'.format(self.user,
                                          self.role,
                                          self.group)
-    
+
     class Meta:
         unique_together = ("user", "role", "group")
 
@@ -41,14 +39,13 @@ class Assign(models.Model):
 class UserRBAC(object):
     user = None
     group = None
-    
+
     def __init__(self, user):
         if not isinstance(user, User):
             raise TypeError
         self.user = user
         if hasattr(user, 'userinfo') and user.userinfo and user.userinfo.last_login_group:
             self.group = user.userinfo.last_login_group
-
 
     def groups(self):
         assigns = Assign.objects.filter(user=self.user).all()
@@ -78,13 +75,17 @@ class UserRBAC(object):
 
         return True
 
+    def get_groups(self):
+        assigns = Assign.objects.filter(user=self.user).all().order_by('group')
+        return set([a.group for a in assigns])
+
     def get_roles(self, group=None):
         # current roles
         if group is None:
             if self.group is None:
                 return []
             group = self.group
-            
+
         if not isinstance(group, Group):
             raise TypeError
 
@@ -112,7 +113,6 @@ class UserRBAC(object):
 
         return role.pk in [r.pk for r in roles]
 
-
     def has_roles(self, role_list, group=None):
 
         roles = self.get_roles(group)
@@ -127,8 +127,6 @@ class UserRBAC(object):
                     return True
 
         return False
-
-
 
     def is_admin(self):
         """判断用户是否为组管理员"""
@@ -159,9 +157,9 @@ class UserRBAC(object):
         if group is None:
             return []
         user_ids = Assign.objects.filter(group=group).values('user_id')
-        users = User.objects.filter(id__in=user_ids)
+        users = User.objects.filter(id__in=user_ids).order_by('username')
         return users
-    
+
 
 class GroupRole(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
@@ -175,6 +173,10 @@ class GroupRole(models.Model):
 
 
 class UserInfo(models.Model):
+    uuid = models.UUIDField(verbose_name=u'User ID(outside)',
+                            primary_key=True,
+                            default=uuid.uuid4,
+                            editable=False)
     user = models.OneToOneField(User,
                                 verbose_name=u'关联用户',
                                 on_delete=models.CASCADE)
@@ -186,7 +188,18 @@ class UserInfo(models.Model):
 
     last_login_group = models.ForeignKey(Group,
                                          verbose_name=u'上次登录组',
-                                         null=True)
+                                         null=True,
+                                         on_delete=models.CASCADE)
 
-auditlog.register(Role)
-auditlog.register(Assign)
+
+class GroupInfo(models.Model):
+    group = models.OneToOneField(Group,
+                                 verbose_name='关联组',
+                                 on_delete=models.CASCADE)
+
+    desc = models.TextField(verbose_name='描述', null=True)
+
+
+
+# auditlog.register(Role)
+# auditlog.register(Assign)

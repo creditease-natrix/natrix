@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-
-
 """
 
 from __future__ import unicode_literals
-import logging, time, json
+import logging, time
 
 from natrix.common import exception as natrix_exception
 from natrix.common import mqservice
@@ -16,10 +14,12 @@ from .serializers.response import TerminalResponse
 
 from .states import CommandAPI
 from .channels.rabbitmq import RabbitMQChannel
+from .channels.mqtt import MQTTDispachClient
 from .store import store_message
 from .terminalapi import TerminalAPI
 
 logger = logging.getLogger(__name__)
+
 
 class Processor(object):
     pass
@@ -51,6 +51,12 @@ class DispatchProcessor(Processor):
         return self.fail_records
 
     def command_dispatch(self, terminal, data):
+        """ RabbitMQ Dispatch policy
+
+        :param terminal:
+        :param data:
+        :return:
+        """
         try:
             with mqservice.MQService.get_purge_channel() as channel:
                 terminal_channel = RabbitMQChannel(channel=channel, type='request')
@@ -65,43 +71,48 @@ class DispatchProcessor(Processor):
         command_info = self.serializer.get_terminal_command(self.command_timestamp)
         task_tag = self.serializer.get_task_tag()
         command_uuid = command_info.get('uuid')
-        for terminal in terminals:
-            mac = terminal.get('mac', None)
-            try:
-                available_response = CommandAPI.available_response(command_uuid, mac)
-                if not(available_response is None):
-                    protocol_type = CommandAPI.get_command_protocol(command_uuid)
 
-                    available_response['taks_id'] = task_tag.get('task_id', None)
-                    available_response['task_generate_time'] = int(task_tag.get('task_generate_time') * 1000)
-                    store_message(protocol_type, available_response)
-                    continue
+        with MQTTDispachClient() as client:
+            for terminal in terminals:
+                mac = terminal.get('mac', None)
+                try:
+                    available_response = CommandAPI.available_response(command_uuid, mac)
+                    if not(available_response is None):
+                        protocol_type = CommandAPI.get_command_protocol(command_uuid)
 
-                registry_result = CommandAPI.registry_command(command_uuid=command_uuid,
-                                                              terminal=mac,
-                                                              command_timestamp=self.command_timestamp,
-                                                              command_info=command_info,
-                                                              task_info=task_tag)
-                if registry_result is None:
-                    logger.error('Registry command failed.')
-                    self.__add_fail_record(mac, command_uuid, 'Registry command error!')
-                elif registry_result == 'update':
-                    pass
-                elif registry_result == 'create':
-                    self.command_dispatch(mac, command_info)
-                else:
-                    logger.error('Registry command with an unexpected result: {}'.format(registry_result))
-                    self.__add_fail_record(mac, command_uuid, 'Registry command error!')
+                        available_response['task_id'] = task_tag.get('task_id', None)
+                        available_response['task_generate_time'] = int(task_tag.get('task_generate_time') * 1000)
+                        store_message(protocol_type, available_response)
+                        continue
 
-            except Exception as e:
-                natrix_exception.natrix_traceback()
-                logger.error('Dispatch terminal({mac}) command({command_uuid}) with error'.format(
-                    mac=mac, command_uuid=command_uuid
-                ))
-                self.__add_fail_record(mac, command_uuid, e)
+                    registry_result = CommandAPI.registry_command(command_uuid=command_uuid,
+                                                                  terminal=mac,
+                                                                  command_timestamp=self.command_timestamp,
+                                                                  command_info=command_info,
+                                                                  task_info=task_tag)
+                    if registry_result is None:
+                        logger.error('Registry command failed.')
+                        self.__add_fail_record(mac, command_uuid, 'Registry command error!')
+                    elif registry_result == 'update':
+                        pass
+                    elif registry_result == 'create':
+                        client.command_dispach(mac, command_info)
+                    else:
+                        logger.error('Registry command with an unexpected result: {}'.format(registry_result))
+                        self.__add_fail_record(mac, command_uuid, 'Registry command error!')
+
+                except Exception as e:
+                    natrix_exception.natrix_traceback()
+                    logger.error('Dispatch terminal({mac}) command({command_uuid}) with error'.format(
+                        mac=mac, command_uuid=command_uuid
+                    ))
+                    self.__add_fail_record(mac, command_uuid, e)
 
 
 class CommandExpiredProcessor(Processor):
+    """
+
+    """
 
     def __init__(self, data):
         self.data = data
@@ -134,7 +145,12 @@ class CommandExpiredProcessor(Processor):
             'command_uuid': command_uuid,
             'command_generate_time': int(command_generate_time * 1000),
             'terminal': terminal,
-            'command_response_process_time': int(time.time() * 1000)
+            'response_process_time': int(time.time() * 1000),
+            'terminal_request_receive_time': 0,
+            'terminal_request_send_time': 0,
+            'terminal_response_receive_time': 0,
+            'terminal_response_return_time': 0
+
         }
 
         data_template['province'] = terminal_info.get_register_province()
@@ -162,7 +178,6 @@ class ResponseProcessor(Processor):
 
     def store_response_result(self, protocol_type, task_tags, data_template):
         """
-
         :param task_tags:
         :param data_template:
         :return:
@@ -170,9 +185,19 @@ class ResponseProcessor(Processor):
         for task_info in task_tags:
             data_template['task_id'] = task_info.get('task_id', None)
             data_template['task_generate_time'] = int(task_info.get('task_generate_time', 0) * 1000)
-
             res = store_message(protocol_type, data_template)
             logger.debug('Store response data : {}'.format(res))
+
+    def store_exception_result(self, data_template):
+        """The exception means without task info.
+
+        If the command record is timeout, the clean process will clean task information.
+        So maybe receive
+
+        :return:
+        """
+        res = store_message('responseDiscard', data_template)
+        logger.debug('Store responseDiscard data : {}'.format(res))
 
     def process(self):
         try:
@@ -180,6 +205,7 @@ class ResponseProcessor(Processor):
             command_uuid = data_template.get('command_uuid')
             command_generate_time = data_template.get('command_generate_time') / 1000.0
             terminal = data_template.get('terminal')
+            logger.info('Command receive process {} | {} | {}'.format(terminal, command_uuid, command_generate_time))
 
             terminal_info = TerminalAPI(terminal)
             data_template['province'] = terminal_info.get_register_province()
@@ -192,7 +218,20 @@ class ResponseProcessor(Processor):
                                                  terminal,
                                                  command_generate_time)
             if task_tags is None:
-                logger.error('Process response data without task info!')
+                logger.info('Process response data without task info!')
+
+                stamp_data = self.serializer.stamp_data()
+                command_data = self.serializer.command_data()
+                response_data = self.serializer.response_data()
+                data_template = {}
+
+                data_template.update(stamp_data)
+                data_template.update(command_data)
+                data_template['dial_data'] = response_data
+                data_template['expired_time'] = stamp_data['terminal_response_return_time'] - \
+                                                command_data['command_generate_time']
+
+                self.store_exception_result(data_template)
             else:
                 logger.debug('Process response data')
                 self.store_response_result(self.serializer.get_message_type(),
@@ -205,6 +244,9 @@ class ResponseProcessor(Processor):
 
 
 class ResponseExpiryProcessor(Processor):
+    """
+
+    """
 
     def __init__(self, data):
         self.data = data
@@ -247,7 +289,11 @@ class ResponseExpiryProcessor(Processor):
                 'command_uuid': command_uuid,
                 'command_generate_time': command_generate_time * 1000,
                 'terminal': terminal,
-                'command_response_process_time': int(time.time() * 1000),
+                'response_process_time': int(time.time() * 1000),
+                'terminal_request_receive_time': 0,
+                'terminal_request_send_time': 0,
+                'terminal_response_receive_time': 0,
+                'terminal_response_return_time': 0
             }
 
             data_template['province'] = terminal_info.get_register_province()

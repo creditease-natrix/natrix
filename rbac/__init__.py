@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+default_app_config = 'rbac.apps.RbacConfig'
+
 SESSION_KEY = '_user_rbac_group_id'
 
 

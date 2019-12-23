@@ -135,14 +135,15 @@ class TerminalAPI(object):
             return None
 
     @staticmethod
-    def filter_available_terminals(type, filter_condition):
+    def filter_available_terminals(group_own, type, filter_condition, group=None):
         filter_data = {
+            'group_own': group_own,
             'type': type,
             'is_classify': False,
             'filter_condition': filter_condition
         }
 
-        serializer = common_serializer.TerminalFilterSerializer(data=filter_data)
+        serializer = common_serializer.TerminalFilterSerializer(data=filter_data, group=group)
 
         if serializer.is_valid():
             terminals = serializer.query_result()[0].get('terminals', [])

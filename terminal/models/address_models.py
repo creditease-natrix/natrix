@@ -69,6 +69,9 @@ class Region(HistorySave):
     def __unicode__(self):
         return '{}-{}'.format(self.province, self.city)
 
+    def __str__(self):
+        return '{}({})'.format(self.city, self.province)
+
 
 class Address(HistorySave):
     """Address
@@ -78,5 +81,11 @@ class Address(HistorySave):
     address = models.CharField("地址", max_length=500, null=False)
     postcode = models.CharField("邮政编码", max_length=500, null=True)
 
+    def address_desc(self):
+        return '{}  省(市){}  市(区){}'.format(self.region.province, self.region.city, self.address)
+
     def __unicode__(self):
         return '{}-{}'.format(self.region, self.address)
+
+    def __str__(self):
+        return '{}({})'.format(self.region, self.pk)

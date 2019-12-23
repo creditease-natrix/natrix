@@ -2,7 +2,7 @@
 """
 
 """
-from __future__ import unicode_literals
+
 import logging, json
 
 from rest_framework import serializers
@@ -228,7 +228,7 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
             packet_loss = record.get('packet_loss')
 
             analyse_data[province]['count'] += 1
-            analyse_data[province]['total_packet_loss_rate'] += packet_loss * 1.0 /packet_send if packet_send else 0.0
+            analyse_data[province]['total_packet_loss_rate'] += (packet_loss * 1.0 /packet_send if packet_send else 0.0) * 100
         for info in analyse_data.values():
             packet_loss_data['values'].append(
                 {'name': info['name'], 'value': info['total_packet_loss_rate'] / info['count']})
@@ -351,9 +351,9 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
 
         interval = max_time / slice_count
 
-        distribution_axis = map(lambda x: '{}-{}'.format(round(interval * x, 2),
+        distribution_axis = list(map(lambda x: '{}-{}'.format(round(interval * x, 2),
                                                          round(interval * (x + 1), 2)),
-                                range(slice_count + 1))
+                                     range(slice_count + 1)))
 
         max_list = [0] * (slice_count + 1)
         min_list = [0] * (slice_count + 1)
@@ -399,11 +399,11 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
 
         return {
             'name': 'top analyse',
-            'x-axis': map(lambda x: x[0], org_avg[0: 10]),
+            'x-axis': list(map(lambda x: x[0], org_avg[0: 10])),
             'viewpoints': [
                 {
                     'name': 'avg_value',
-                    'values': map(lambda x: x[1], org_avg[0: 10])
+                    'values': list(map(lambda x: x[1], org_avg[0: 10]))
                 }
             ]
         }
@@ -445,11 +445,11 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
 
             return {
                 'name': 'top analyse',
-                'x-axis': map(lambda x: x[0], org_avg[0: 10]),
+                'x-axis': list(map(lambda x: x[0], org_avg[0: 10])),
                 'viewpoints': [
                     {
                         'name': 'avg_value',
-                        'values': map(lambda x: x[1], org_avg[0: 10])
+                        'values': list(map(lambda x: x[1], org_avg[0: 10]))
                     }
                 ]
             }
@@ -461,8 +461,8 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
 
             interval = max_time / slice_count
 
-            distribution_axis = map(lambda x: '{}-{}'.format(interval*x, interval*(x+1)),
-                                    range(slice_count+1))
+            distribution_axis = list(map(lambda x: '{}-{}'.format(interval*x, interval*(x+1)),
+                                         range(slice_count+1)))
 
             max_list = [0] * (slice_count+1)
             min_list = [0] * (slice_count+1)
@@ -524,7 +524,7 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
 
         # TODO: validate provice and city
         return {
-            'error': map(lambda record: {
+            'error': list(map(lambda record: {
                 'terminal': record.get('terminal', None),
                 'organizations': record.get('organization_name', []),
                 'province': record.get('province', None),
@@ -532,8 +532,8 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
                 'operator': record.get('operator', None),
                 'errorinfo': record.get('errorinfo', None)
 
-            }, error),
-            'success': map(lambda record:{
+            }, error)),
+            'success': list(map(lambda record:{
                 'terminal': record.get('terminal', None),
                 'organizations': record.get('organization_name', []),
                 'province': record.get('province', None),
@@ -549,7 +549,7 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
                 'min_time': record.get('min_time', None),
                 'packet_size': record.get('packet_size', None),
 
-            }, success)
+            }, success))
         }
 
     def http_region_request(self):
@@ -666,9 +666,9 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
 
             interval = max_time / slice_count
 
-            distribution_axis = map(lambda x: '{}-{}'.format(round(interval * x, 2),
+            distribution_axis = list(map(lambda x: '{}-{}'.format(round(interval * x, 2),
                                                              round(interval * (x + 1), 2)),
-                                    range(slice_count + 1))
+                                    range(slice_count + 1)))
 
             # initialize
             total_list = [0] * (slice_count + 1)
@@ -786,13 +786,13 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
         success = self.dial_data.get('success', [])
         error = self.dial_data.get('error', [])
 
-        error_list = map(lambda record: {'terminal': record.get('terminal', None),
+        error_list = list(map(lambda record: {'terminal': record.get('terminal', None),
                                          'organizations': record.get('organization_name', []),
                                          'province': record.get('province', None),
                                          'city': record.get('city', None),
                                          'operator': record.get('operator', None),
                                          'errorinfo': record.get('errorinfo', None)
-                                         }, error)
+                                         }, error))
 
         http_extract = lambda record: {'terminal': record.get('terminal', None),
                                        'organizations': record.get('organization_name', []),
@@ -832,15 +832,15 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
         success = self.dial_data.get('success', [])
 
         return {
-            'error': map(lambda record: {
+            'error': list(map(lambda record: {
                 'terminal': record.get('terminal', None),
                 'organizations': record.get('organization_name', []),
                 'province': record.get('province', None),
                 'city': record.get('city', None),
                 'operator': record.get('operator', None),
                 'errorinfo': record.get('errorinfo', None)
-            }, error),
-            'success': map(lambda record: {
+            }, error)),
+            'success': list(map(lambda record: {
                 'terminal': record.get('terminal', None),
                 'organizations': record.get('organization_name', []),
                 'province': record.get('province', None),
@@ -849,7 +849,7 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
                 'hop': record.get('hop', None),
                 'paths': record.get('paths', {})
 
-            }, success)
+            }, success))
         }
 
     def dns_region_parse_time(self):
@@ -907,14 +907,14 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
         parse_time_data = self.dns_region_parse_time()
 
         top_analyse = parse_time_data.get('values')
-        top_analyse.sort(key=lambda x: x['value'], reverse=True)
+        top_analyse.sort(key=lambda x: x['value'], reverse=False)
         top_data = {
             'name': 'dns parse top region analyse',
-            'x-axis': map(lambda x: x['name'], top_analyse[0: 10]),
+            'x-axis': list(map(lambda x: x['name'], top_analyse[0: 10])),
             'viewpoints': [
                 {
                     'name': 'parse_time',
-                    'values': map(lambda x: x['value'], top_analyse[0: 10])
+                    'values': list(map(lambda x: x['value'], top_analyse[0: 10]))
                 }
             ]
         }
@@ -961,17 +961,17 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
 
         parse_time_analyse = self._dns_orgnization_analyse()
 
-        parse_time_data = map(lambda record: (record['name'],
+        parse_time_data = list(map(lambda record: (record['name'],
                                               record['total_ptime'] / record['count']if record['count'] else 0),
-                              parse_time_analyse.values())
+                              parse_time_analyse.values()))
 
         return {
             'name': 'dns parse_time org analyse',
-            'x-axis': map(lambda x: x[0], parse_time_data),
+            'x-axis': list(map(lambda x: x[0], parse_time_data)),
             'viewpoints': [
                 {
                     'name': 'parse_time',
-                    'values': map(lambda x: x[1], parse_time_data)
+                    'values': list(map(lambda x: x[1], parse_time_data))
                 }
             ]
         }
@@ -979,15 +979,15 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
     def dns_organization_distribution(self):
         success = self.dial_data.get('success', [])
 
-        ptime_list = map(lambda x: x['ptime'], success)
+        ptime_list = list(map(lambda x: x['ptime'], success))
         slice_count = self.SLICE_COUNT
 
         max_time = self.get_max_value(ptime_list)
         interval = max_time / slice_count
 
-        distribution_axis = map(lambda x: '{}-{}'.format(round(interval * x, 2),
+        distribution_axis = list(map(lambda x: '{}-{}'.format(round(interval * x, 2),
                                                          round(interval * (x + 1), 2)),
-                                range(slice_count + 1))
+                                range(slice_count + 1)))
         ptime_dist = [0] * (slice_count + 1)
 
         if interval:
@@ -1010,19 +1010,19 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
     def dns_organization_top(self):
         parse_time_analyse = self._dns_orgnization_analyse()
 
-        parse_time_data = map(lambda record: (record['name'],
+        parse_time_data = list(map(lambda record: (record['name'],
                                               record['total_ptime'] / record['count'] if record['count'] else 0),
-                              parse_time_analyse.values())
+                              parse_time_analyse.values()))
 
         parse_time_data.sort(key=lambda x: x[1], reverse=True)
 
         return {
             'name': 'dns parse_time top org analyse',
-            'x-axis': map(lambda x: x[0], parse_time_data[0: 10]),
+            'x-axis': list(map(lambda x: x[0], parse_time_data[0: 10])),
             'viewpoints': [
                 {
                     'name': 'parse_time',
-                    'values': map(lambda x: x[1], parse_time_data[0: 10])
+                    'values': list(map(lambda x: x[1], parse_time_data[0: 10]))
                 }
             ]
         }
@@ -1043,16 +1043,16 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
         success = self.dial_data.get('success', [])
 
         return {
-            'error': map(lambda record: {
+            'error': list(map(lambda record: {
                 'terminal': record.get('terminal', None),
                 'organizations': record.get('organization_name', []),
                 'province': record.get('province', None),
                 'city': record.get('city', None),
                 'operator': record.get('operator', None),
                 'errorinfo': record.get('errorinfo', None)
-            }, error),
+            }, error)),
 
-            'success': map(lambda record: {
+            'success': list(map(lambda record: {
                 'terminal': record.get('terminal', None),
                 'organizations': record.get('organization_name', []),
                 'province': record.get('province', None),
@@ -1062,7 +1062,7 @@ class InstantTaskAnalyseSerializer(NatrixSerializer):
                 'destination': record.get('destination', None),
                 'ips': record.get('ips', [])
 
-            }, success)
+            }, success))
         }
 
 

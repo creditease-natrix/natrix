@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-
+import ldap
+from django_auth_ldap.config import LDAPSearch
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'benchmark',
     'terminal',
     'infrastructure',
+    'sentinel',
     'nconfig',
 ]
 
@@ -60,9 +62,7 @@ MIDDLEWARE = [
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = (
-    '*'
-)
+
 
 ROOT_URLCONF = 'natrix.urls'
 
@@ -103,26 +103,27 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'natrix.sqlite3'),
-    }
-}
 # DATABASES = {
-#      'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'natrix',
-#         'USER': 'root',
-#         'PASSWORD': 'credit2016',
-#         'HOST': '127.0.0.1',
-#         'PORT': '3306',
-#      }
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'natrix.sqlite3'),
+#     }
 # }
+DATABASES = {
+     'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'natrix',
+        'USER': 'root',
+        'PASSWORD': 'mysql_password',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+     }
+}
 
 
 # AUTH Backends
 AUTHENTICATION_BACKENDS = (
+    'rbac.backends.auths.NatrixLDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -155,15 +156,15 @@ USE_TZ = TrueLOCALE_PATHS = (
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'dashboard/dist')
+STATIC_URL = '/natrix/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'dashboard/dist')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "dashboard/dist/static"),
 ]
 
-LOGIN_URL = '/accounts/login'
+LOGIN_URL = '/natrix/accounts/login'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/login'
+LOGOUT_REDIRECT_URL = '/natrix/accounts/login'
 
 PAGE_NUM = 10
 
@@ -181,140 +182,212 @@ SMS_URL = ''
 SMS_ORGNO = ''
 SMS_TYPENO = ''
 
+# ------------ administration configuration ------------------
+# Administration information
+ADMIN_USERNAME = 'admin'
+ADMIN_PASSWORD = 'admin12345'
+ADMIN_EMAIL = ''
+ADMIN_GROUP = 'admin_group'
+
+# ------------LDAP config
+# AUTH_LDAP_SERVER_URI = ''
+# AUTH_LDAP_BIND_DN = ''
+# AUTH_LDAP_BIND_PASSWORD = ''
+# AUTH_LDAP_USER_SEARCH = LDAPSearch()
+
+
+# -------------- celery setting -----------
 CELERY_RESULT_BACKEND = 'django-db'
 
+
+#
+DEEPMONITOR_URL = 'http://127.0.0.1:8005'
+
+
+# ------------ benchmark setting ---------
+BENCHMARK_STORE_TYPE = 'eventhub'
+BENCHMARK_STORE_URL = 'http://127.0.0.1:8090'
+
+
+# ------------- ElasticSearch setting-----------
+
+
+
+# -------------log setting--------------
 LOG_DIR = '/var/log/natrix'
-LOG_LEVEL = "INFO"
-if DEBUG:
-    LOG_LEVEL = "DEBUG"
+LOG_LEVEL = 'INFO'
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '[%(asctime)s] %(levelname)s %(module)s %(process)d %(thread)d '
-                      '[%(name)s:%(funcName)s:%(lineno)s] %(message)s',
-            'datefmt': "%Y/%b/%d %H:%M:%S"
+if not DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '[%(asctime)s] %(levelname)s %(module)s %(process)d %(thread)d '
+                          '[%(name)s:%(funcName)s:%(lineno)s] %(message)s',
+                'datefmt': "%Y/%b/%d %H:%M:%S"
+            },
+            'simple': {
+                'format': '[%(asctime)s] %(levelname)s [%(name)s:%(funcName)s:%(lineno)s] %(message)s',
+                'datefmt': "%Y/%b/%d %H:%M:%S"
+            },
         },
-        'simple': {
-            'format': '[%(asctime)s] %(levelname)s [%(name)s:%(funcName)s:%(lineno)s] %(message)s',
-            'datefmt': "%Y/%b/%d %H:%M:%S"
-        },
-    },
-    'handlers': {
-        'dfile': {
-            'level': LOG_LEVEL,
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '{}/natrix.log'.format(LOG_DIR),
-            'encoding': 'utf8',
-            'formatter': 'verbose'
-        },
-        'rbacfile': {
-            'level': LOG_LEVEL,
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '{}/natrix_rbac.log'.format(LOG_DIR),
-            'encoding': 'utf8',
-            'formatter': 'verbose'
-        },
-        'crontabfile': {
-            'level': LOG_LEVEL,
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '{}/natrix_crontab.log'.format(LOG_DIR),
-            'encoding': 'utf8',
-            'formatter': 'verbose'
-        },
-        'benchfile': {
-            'level': LOG_LEVEL,
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '{}/natrix_benchmark.log'.format(LOG_DIR),
-            'encoding': 'utf8',
-            'formatter': 'verbose'
-        },
-        'celerydfile': {
-            'level': LOG_LEVEL,
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '{}/natrix_celeryd.log'.format(LOG_DIR),
-            'encoding': 'utf8',
-            'formatter': 'verbose'
-        },
-        'celerybeatfile': {
-            'level': LOG_LEVEL,
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '{}/natrix_celerybeat.log'.format(LOG_DIR),
-            'encoding': 'utf8',
-            'formatter': 'verbose'
-        },
-        'terminalfile': {
-            'level': LOG_LEVEL,
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '{}/natrix_terminal.log'.format(LOG_DIR),
-            'encoding': 'utf8',
-            'formatter': 'verbose'
+        'handlers': {
+            'dfile': {
+                'level': LOG_LEVEL,
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '{}/natrix.log'.format(LOG_DIR),
+                'encoding': 'utf8',
+                'formatter': 'verbose'
+            },
+            'commonfile': {
+                'level': LOG_LEVEL,
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '{}/natrix_common.log'.format(LOG_DIR),
+                'encoding': 'utf8',
+                'formatter': 'verbose'
+            },
+            'rbacfile': {
+                'level': LOG_LEVEL,
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '{}/natrix_rbac.log'.format(LOG_DIR),
+                'encoding': 'utf8',
+                'formatter': 'verbose'
+            },
+            'crontabfile': {
+                'level': LOG_LEVEL,
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '{}/natrix_crontab.log'.format(LOG_DIR),
+                'encoding': 'utf8',
+                'formatter': 'verbose'
+            },
+            'benchfile': {
+                'level': LOG_LEVEL,
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '{}/natrix_benchmark.log'.format(LOG_DIR),
+                'encoding': 'utf8',
+                'formatter': 'verbose'
+            },
+            'celerydfile': {
+                'level': LOG_LEVEL,
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '{}/natrix_celeryd.log'.format(LOG_DIR),
+                'encoding': 'utf8',
+                'formatter': 'verbose'
+            },
+            'celerybeatfile': {
+                'level': LOG_LEVEL,
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '{}/natrix_celerybeat.log'.format(LOG_DIR),
+                'encoding': 'utf8',
+                'formatter': 'verbose'
+            },
+            'terminalfile': {
+                'level': LOG_LEVEL,
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '{}/natrix_terminal.log'.format(LOG_DIR),
+                'encoding': 'utf8',
+                'formatter': 'verbose'
 
+            },
+            'natrixbootfile': {
+                'level': LOG_LEVEL,
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '{}/natrix_natrixboot.log'.format(LOG_DIR),
+                'encoding': 'utf8',
+                'formatter': 'verbose'
+            },
+            'celerytasksfile': {
+                'level': LOG_LEVEL,
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '{}/natrix_celerytasks.log'.format(LOG_DIR),
+                'encoding': 'utf8',
+                'formatter': 'verbose'
+            },
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+            'null': {
+                'class': 'logging.NullHandler',
+                'formatter': 'simple'
+            },
         },
-        'natrixbootfile': {
-            'level': LOG_LEVEL,
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '{}/natrix_natrixboot.log'.format(LOG_DIR),
-            'encoding': 'utf8',
-            'formatter': 'verbose'
+        'loggers': {
+            'natrix.common': {
+                'handlers': ['commonfile'],
+                'level': LOG_LEVEL,
+                'propagate': True,
+            },
+            'rbac': {
+                'handlers': ['rbacfile'],
+                'level': LOG_LEVEL,
+                'propagate': True,
+            },
+            'benchmark': {
+                'handlers': ['benchfile'],
+                'level': LOG_LEVEL,
+                'propagate': False,
+            },
+            'terminal': {
+                'handlers': ['terminalfile'],
+                'level': LOG_LEVEL,
+                'propagate': False
+            },
+            'natrix_boot': {
+                'handlers': ['natrixbootfile'],
+                'level': LOG_LEVEL,
+                'propagate': False
+            },
+            'django': {
+                'handlers': ['dfile'],
+                'level': "ERROR",
+                'propagate': False,
+            },
+            'celery': {
+                'handlers': ['celerytasksfile'],
+                'level': "ERROR",
+                'propagate': False,
+            },
+            'django_celery': {
+                'handlers': ['celerydfile'],
+                'level': "ERROR",
+                'propagate': False,
+            },
+            'django_celery_beat': {
+                'handlers': ['celerybeatfile'],
+                'level': "ERROR",
+                'propagate': False,
+            },
         },
-        'celerytasksfile': {
-            'level': LOG_LEVEL,
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '{}/natrix_celerytasks.log'.format(LOG_DIR),
-            'encoding': 'utf8',
-            'formatter': 'verbose'
+    }
+else:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '[%(asctime)s] %(levelname)s %(module)s %(process)d %(thread)d '
+                          '[%(name)s:%(funcName)s:%(lineno)s] %(message)s',
+                'datefmt': "%Y/%b/%d %H:%M:%S"
+            },
+            'simple': {
+                'format': '[%(asctime)s] %(levelname)s [%(name)s:%(funcName)s:%(lineno)s] %(message)s',
+                'datefmt': "%Y/%b/%d %H:%M:%S"
+            },
         },
-        'console': {
-            'class': 'logging.StreamHandler',
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'simple'
+            }
         },
-        'null': {
-            'class': 'logging.NullHandler',
-            'formatter': 'simple'
-        },
-    },
-    'loggers': {
-        'rbac': {
-            'handlers': ['rbacfile'],
-            'level': LOG_LEVEL,
-            'propagate': True,
-        },
-        'benchmark': {
-            'handlers': ['benchfile'],
-            'level': LOG_LEVEL,
-            'propagate': False,
-        },
-        'terminal': {
-            'handlers': ['terminalfile'],
-            'level': LOG_LEVEL,
-            'propagate': False
-        },
-        'natrix_boot': {
-            'handlers': ['natrixbootfile'],
-            'level': LOG_LEVEL,
-            'propagate': False
-        },
-        'django': {
-            'handlers': ['dfile'],
-            'level': "ERROR",
-            'propagate': False,
-        },
-        'celery': {
-            'handlers': ['celerytasksfile'],
-            'level': "ERROR",
-            'propagate': False,
-        },
-        'django_celery': {
-            'handlers': ['celerydfile'],
-            'level': "ERROR",
-            'propagate': False,
-        },
-        'django_celery_beat': {
-            'handlers': ['celerybeatfile'],
-            'level': "ERROR",
-            'propagate': False,
-        },
-    },
-}
+        'loggers': {
+            '*': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': False
+            }
+
+        }
+
+    }

@@ -6,7 +6,6 @@ from __future__ import unicode_literals
 import logging
 import copy
 import re
-
 from collections import OrderedDict
 
 from rest_framework import serializers
@@ -17,17 +16,19 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from natrix.common import exception as natrix_exception
 from natrix.common.natrix_views.serializers import NatrixSerializer, NatrixQuerySerializer
+from utils.elasticsearch import NatrixESClient
 from terminal.models import Organization, TerminalDevice, Address, Terminal, RegisterOrganization
 from terminal.configurations import terminal_conf
-from terminal.backends import store
 
 logger = logging.getLogger(__name__)
-device_status_choice = map(terminal_conf.choice_generator, terminal_conf.DEVICE_STATUS.values())
+device_status_choice =list(map(terminal_conf.choice_generator, terminal_conf.DEVICE_STATUS.values()))
 
 device_operation_choice = copy.deepcopy(device_status_choice)
 device_operation_choice.append(('delete', u'删除'))
+device_operation_choice.append(('private', u'私有'))
+device_operation_choice.append(('public', u'共享'))
 
-terminal_operation_choice = map(terminal_conf.choice_generator, terminal_conf.TERMINAL_STATUS.values())
+terminal_operation_choice = list(map(terminal_conf.choice_generator, terminal_conf.TERMINAL_STATUS.values()))
 terminal_operation_choice.append(('delete', u'删除'))
 
 
@@ -124,20 +125,17 @@ class DeviceBaiscSerializer(NatrixSerializer):
                                                    instance.os_minor_version)
             ret['client_version'] = instance.natrixclient_version
             ret['status'] = instance.status
+            ret['scope'] = instance.get_scope()
             ret['update_time'] = instance.last_online_time
             ret['comment'] = instance.comment
             ret['device_alert'] = instance.device_alert
             ret['terminal_alert'] = instance.terminal_alert
             register = instance.register
-            ret['reg_orgs'] = map(lambda item: {'id': item.id,
+            ret['reg_orgs'] = list(map(lambda item: {'id': item.id,
                                                 'name': item.name,
                                                 'desc': item.get_full_name()},
-                                  register.organizations.all() if register else [])
-            ret['detect_orgs'] = map(lambda item: {'id': item.id,
-                                                   'name': item.name,
-                                                   'desc': item.get_full_name()},
-                                     instance.organizations.all())
-            segments = map(lambda t: t.get_segment(), instance.terminal_set.all())
+                                  register.organizations.all() if register else []))
+            segments = list(map(lambda t: t.get_segment(), instance.terminal_set.all()))
             ret['segments'] = [s for s in segments if s]
 
             ret['terminal_total'] = total
@@ -188,7 +186,7 @@ class DeviceOperationSerializer(NatrixSerializer):
             return flag
         sn = self.initial_data.get('sn')
         try:
-            terminal_device = TerminalDevice.objects.get(sn=sn)
+            terminal_device = TerminalDevice.objects.get(sn=sn, group=self.group)
             self.instance = terminal_device
         except TerminalDevice.DoesNotExist as e:
             self._errors['sn'] = ['Can not search the device with {}'.format(sn)]
@@ -201,10 +199,12 @@ class DeviceOperationSerializer(NatrixSerializer):
         if operation == 'delete':
             self.instance.delete()
             return None
-        else:
+        elif operation in ('active', 'maintain'):
             self.instance.status_change(operation)
+        elif operation in ('public', 'private'):
+            self.instance.scope_change(operation)
 
-            return self.instance
+        return self.instance
 
 
 class TerminalOperationSerializer(NatrixSerializer):
@@ -220,7 +220,7 @@ class TerminalOperationSerializer(NatrixSerializer):
             return flag
         mac = self.initial_data.get('mac')
         try:
-            terminal = Terminal.objects.get(mac=mac)
+            terminal = Terminal.objects.get(mac=mac, dev__group=self.group)
             self.instance = terminal
         except Terminal.DoesNotExist as e:
             self._errors['mac'] = ['Can not search the terminal with {}'.format(mac)]
@@ -239,7 +239,7 @@ class TerminalOperationSerializer(NatrixSerializer):
             return self.instance
 
 
-def calculate_region_dist():
+def get_region_dist(group=None):
     """Calculate terminal (not device) distribution in region.
 
     The terminal device filter condition:
@@ -248,36 +248,48 @@ def calculate_region_dist():
 
     :return:
     """
+    if group:
+        cache_key = 'terminal_device_region_distribution_{}'.format(group.name)
+    else:
+        cache_key = 'terminal_device_region_distribution_{}'.format('all')
+
+    dist_data = cache.get(cache_key)
+
+    if dist_data:
+        return dist_data
 
     dist_data = {}
-    terminals = Terminal.objects.all()
+    if group:
+        devices = TerminalDevice.objects.filter(group=group)
+    else:
+        devices = TerminalDevice.objects.all()
+
     total = 0
     alive = 0
     unalive = 0
     unregister = 0
-    terminal_set = set()
+    devices_set = set()
 
-    for t in terminals:
-        if not t.is_valid():
-            continue
+    for d_i in devices:
+        devices_set.add(d_i.sn)
         total += 1
 
-        if not t.dev.is_register():
+        if not d_i.is_register():
             unregister += 1
-        terminal_set.add(t.mac)
 
-        province, city = t.dev.get_region()
+        province, city = d_i.get_region()
         if province is None:
             province = u'unkown'
         if city is None:
             city = u'unkown'
+
         if dist_data.get(province, None) is None:
             dist_data[province] = {
                 'name': province,
                 'total': 0,
                 'alive': 0,
                 'unalive': 0,
-                'terminals': set(),
+                'devices': set(),
                 'desc': province,
                 'identification': {
                     'type': 'region',
@@ -285,16 +297,8 @@ def calculate_region_dist():
                 },
                 'children': {}
             }
-
         dist_data[province]['total'] += 1
-        dist_data[province]['terminals'].add(t.mac)
-
-        if t.is_alive():
-            dist_data[province]['alive'] += 1
-            alive += 1
-        else:
-            dist_data[province]['unalive'] += 1
-            unalive += 1
+        dist_data[province]['devices'].add(d_i.sn)
 
         if dist_data[province]['children'].get(city, None) is None:
             dist_data[province]['children'][city] = {
@@ -302,7 +306,7 @@ def calculate_region_dist():
                 'total': 0,
                 'alive': 0,
                 'unalive': 0,
-                'terminals': set(),
+                'devices': set(),
                 'desc': city,
                 'identification': {
                     'type': 'region',
@@ -311,36 +315,64 @@ def calculate_region_dist():
             }
 
         dist_data[province]['children'][city]['total'] += 1
-        dist_data[province]['children'][city]['terminals'].add(t.mac)
-        if t.is_alive():
+        dist_data[province]['children'][city]['devices'].add(d_i.sn)
+
+        if d_i.is_available():
+            dist_data[province]['alive'] += 1
             dist_data[province]['children'][city]['alive'] += 1
+            alive += 1
+
         else:
+            dist_data[province]['unalive'] += 1
             dist_data[province]['children'][city]['unalive'] += 1
+            unalive += 1
 
     rest_data = {
         'name': 'all',
         'total': total,
         'alive': alive,
         'unalive': unalive,
-        'terminals': terminal_set,
+        'devices': devices_set,
         'identification': {
             'type': 'region',
             'value': '[all]-[all]'
         },
         'children': dist_data
     }
+
+
+    cache.set(cache_key, rest_data, 300)
+
     return rest_data
 
 
-def calculate_organization_dist():
+def get_organization_dist(group=None):
     """Calculate terminal distribution in organization
 
     :return:
     """
+    if group:
+        cache_key = 'terminal_device_org_distribution_{}'.format(group.name)
+    else:
+        cache_key = 'terminal_device_org_distribution_{}'.format('all')
+
+    dist_data = cache.get(cache_key)
+    if dist_data:
+        return dist_data
+
     dist_data = {}
-    terminals = Terminal.objects.all()
+
+    if group:
+        devices = TerminalDevice.objects.filter(group=group)
+    else:
+        devices = TerminalDevice.objects.all()
+
     # Initialize organization dict
-    orgs = Organization.objects.all().order_by('level')
+    if group:
+        orgs = Organization.objects.filter(Q(pk=1) | Q(group=group)).order_by('level')
+    else:
+        orgs = Organization.objects.all().order_by('level')
+
     for org in orgs:
         dist_data[org.id] = {
             'name': org.name,
@@ -349,7 +381,7 @@ def calculate_organization_dist():
             'total': 0,
             'alive': 0,
             'unalive': 0,
-            'terminals': set(),
+            'devices': set(),
             'identification': {
                 'type': 'organization',
                 'value': org.id
@@ -364,41 +396,41 @@ def calculate_organization_dist():
                 dist_data[org.parent.id]['children'].append(org.id)
                 dist_data[org.id]['parent'] = org.parent.id
 
-    for t in terminals:
-        if not t.is_valid():
-            continue
-
-        dev_orgs = t.dev.register.organizations.all() if t.dev.register else []
-        # TODO: consider unregiste temrinal
+    for d_i in devices:
+        dev_orgs = d_i.register.organizations.all() if d_i.register else []
 
         for org in dev_orgs:
-            temp = org.id
-            is_alive = t.is_alive()
+            temp_id = org.id
+            is_alive = d_i.is_available()
 
-            while temp is not None:
+            while temp_id is not None:
 
-                if temp in dist_data:
-                    if t.mac in dist_data[temp]['terminals']:
+                if temp_id in dist_data:
+                    if d_i.sn in dist_data[temp_id]['devices']:
                         break
                     else:
-                        dist_data[temp]['total'] += 1
+                        dist_data[temp_id]['total'] += 1
                         if is_alive:
-                            dist_data[temp]['alive'] += 1
+                            dist_data[temp_id]['alive'] += 1
                         else:
-                            dist_data[temp]['unalive'] += 1
-                        dist_data[temp]['terminals'].add(t.mac)
+                            dist_data[temp_id]['unalive'] += 1
+                        dist_data[temp_id]['devices'].add(d_i.sn)
 
-                    parent_id = dist_data[temp].get('parent', None)
+                    parent_id = dist_data[temp_id].get('parent', None)
                     if parent_id:
-                        if dist_data[parent_id]['level'] >= dist_data[temp]['level']:
-                            logger.error('There is loop in organization: {}->{}'.format(parent_id, temp))
+                        if dist_data[parent_id]['level'] >= dist_data[temp_id]['level']:
+                            logger.error('There is loop in organization: {}->{}'.format(parent_id, temp_id))
                             break
                     else:
                         break
-                    temp = parent_id
+                    temp_id = parent_id
+
                 else:
-                    logger.error('There is an register organiztion is not exist: {}-{}'.format(t.mac, org.id))
+                    logger.error('There is an register organiztion is '
+                                 'not exist: {}-{}'.format(d_i.sn, org.id))
                     break
+
+    cache.set(cache_key, dist_data, 300)
 
     return dist_data
 
@@ -455,7 +487,7 @@ class OverviewQuerySerializer(NatrixQuerySerializer):
         """
         if root is None:
             return
-        root.pop('terminals')
+        root.pop('devices')
         if root.get('children', None) is None:
             return
 
@@ -479,11 +511,8 @@ class OverviewQuerySerializer(NatrixQuerySerializer):
         :param show_level:
         :return:
         """
-        region_distribution = cache.get('terminal_device_region_distribution')
 
-        if region_distribution is None:
-            region_distribution = calculate_region_dist()
-            cache.set('terminal_device_region_distribution', region_distribution, 60)
+        region_distribution = get_region_dist(self.group)
 
         filter_len = len(filter_value)
         if filter_len == 0:
@@ -523,7 +552,7 @@ class OverviewQuerySerializer(NatrixQuerySerializer):
             return None
 
         node = copy.copy(data[root])
-        node.pop('terminals')
+        node.pop('devices')
         children = node.get('children', None)
         node['children'] = []
         if children:
@@ -540,11 +569,8 @@ class OverviewQuerySerializer(NatrixQuerySerializer):
         :param show_level:
         :return:
         """
-        org_distribution = cache.get('terminal_device_org_distribution')
 
-        if org_distribution is None:
-            org_distribution = calculate_organization_dist()
-            cache.set('terminal_device_org_distribution', org_distribution, 60)
+        org_distribution = get_organization_dist(self.group)
 
         filter_len = len(filter_value)
         if filter_len == 0:
@@ -597,40 +623,31 @@ class IdentificationSerializer(NatrixQuerySerializer):
             province = validated_data.get('province')
             city = validated_data.get('city')
 
-            region_distribution = cache.get('terminal_device_region_distribution')
-
-            if region_distribution is None:
-                region_distribution = calculate_region_dist()
-                cache.set('terminal_device_region_distribution', region_distribution, 300)
+            region_distribution = get_region_dist(self.group)
 
             if province in ['all']:
-                terminals = region_distribution.get('terminals', {})
+                devices_list = region_distribution.get('devices', [])
             elif province in region_distribution['children']:
                 if city in ['all', None]:
-                    terminals = region_distribution['children'][province].get('terminals', [])
+                    devices_list = region_distribution['children'][province].get('devices', [])
                 elif city in region_distribution['children'][province]['children']:
-                    terminals = region_distribution['children'][province]['children'].get(city, {}).get('terminals', [])
+                    devices_list = region_distribution['children'][province]['children'].get(city, {}).get('devices', [])
                 else:
-                    terminals = []
+                    devices_list = []
             else:
-                terminals = []
+                devices_list = []
 
         else:
             organization_id = validated_data.get('organization_id')
 
-            org_distribution = cache.get('terminal_device_org_distribution')
-
-            if org_distribution is None:
-                org_distribution = calculate_organization_dist()
-                cache.set('terminal_device_org_distribution', org_distribution, 300)
+            org_distribution = get_organization_dist(self.group)
 
             if organization_id in org_distribution:
-                terminals = org_distribution[organization_id]['terminals']
+                devices_list = org_distribution[organization_id]['devices']
             else:
-                terminals = []
+                devices_list = []
 
-        terminal_list = Terminal.objects.filter(mac__in=list(terminals))
-        terminal_devices = list(set(map(lambda x: x.dev, terminal_list)))
+        terminal_devices = TerminalDevice.objects.filter(sn__in=list(devices_list))
 
         return terminal_devices
 
@@ -654,7 +671,8 @@ class DeviceListQuerySerializer(NatrixQuerySerializer):
         status = self.initial_data.get('status', 'all')
 
         if identification is not None:
-            identification_serializer = IdentificationSerializer(data=identification)
+            identification_serializer = IdentificationSerializer(data=identification,
+                                                                 group=self.group)
             if identification_serializer.is_valid():
                 terminal_devices = identification_serializer.query_result()
             else:
@@ -662,13 +680,15 @@ class DeviceListQuerySerializer(NatrixQuerySerializer):
                 self._errors['identification'] = identification_serializer.errors
                 return flag
         elif search:
-            terminals = Terminal.objects.filter(Q(mac__contains=search) | Q(localip__contains=search))
-            terminal_devices = set(list(TerminalDevice.objects.filter(natrixclient_version=search)))
+            terminals = Terminal.objects.filter(Q(mac__contains=search) |
+                                                Q(localip__contains=search)).filter(dev__group=self.group)
+            terminal_devices = set(list(TerminalDevice.objects.filter(natrixclient_version=search,
+                                                                      group=self.group)))
             for t in terminals:
                 td = t.dev
                 terminal_devices.add(td)
         else:
-            terminal_devices = TerminalDevice.objects.all()
+            terminal_devices = TerminalDevice.objects.filter(group=self.group)
 
         if status != 'all':
             terminal_devices = filter(lambda dev: dev.status == status, terminal_devices)
@@ -679,91 +699,12 @@ class DeviceListQuerySerializer(NatrixQuerySerializer):
 
     def query(self, validated_data):
 
-        def dev_cmp(pre, next):
-            # sort devices: status, online_time
-
-            flag = TerminalDevice.status_cmp(pre, next)
-            if flag != 0:
-                return flag
-
-            return TerminalDevice.online_time_cmp(pre, next)
+        device_cmp_key = lambda x: (x.get_status_intvalue(), x.first_online_time)
 
         terminal_devices = self.validated_data.get('terminal_devices')
-        res_list = sorted(terminal_devices, cmp=dev_cmp)
+        res_list = sorted(terminal_devices, key=device_cmp_key)
 
         return res_list
-
-
-class DeviceExceptionListQuerySerializer(NatrixQuerySerializer):
-    """
-
-    """
-    inactive = serializers.NullBooleanField(required=False)
-    unregister = serializers.NullBooleanField(required=False)
-    unmatch = serializers.NullBooleanField(required=False)
-    search = serializers.CharField(max_length=64, allow_blank=True, required=False)
-    is_paginate = serializers.NullBooleanField(required=True)
-    pagenum = serializers.IntegerField(min_value=1, required=False)
-
-    def is_valid(self, raise_exception=False):
-        flag = super(DeviceExceptionListQuerySerializer, self).is_valid()
-
-        logger.debug('initial data : {}'.format(self.initial_data))
-
-        return flag
-
-    def query(self, validated_data):
-        """
-        Exceptional devices includes:
-         - maintain, posting or inactive devices
-         - without register or without registry organizations
-         -
-        :param validated_data:
-        :return:
-        """
-        inactive = validated_data.get('inactive', False)
-        unregister = validated_data.get('unregister', False)
-        unmatch = validated_data.get('unmatch', False)
-        search = validated_data.get('search', '')
-
-        # device status is not active
-        inactive_devices = set(TerminalDevice.objects.filter(is_active=False))
-
-        # unregister device
-        unregister_devices = TerminalDevice.objects.filter(Q(register=None) | Q(register__organizations=None))
-        logger.info(unregister_devices)
-
-        # organization unmatch device
-        unmatch_devices = set()
-        register_devices = TerminalDevice.objects.exclude(Q(register=None))
-        for dev in register_devices:
-            reg_orgs = set(dev.register.organizations.all())
-            detect_orgs = set(dev.organizations.all())
-            if reg_orgs.isdisjoint(detect_orgs):
-                unmatch_devices.add(dev)
-        set_list = []
-
-        if inactive:
-            set_list.append(inactive_devices)
-        if unregister:
-            set_list.append(unregister_devices)
-        if unmatch:
-            set_list.append(unmatch_devices)
-
-        # union set
-        filter_devices = reduce(lambda x, y: set(x).union(set(y)), set_list) if set_list else set()
-
-        if search:
-            search_set = set()
-            version_search = set(TerminalDevice.objects.filter(Q(natrixclient_version__contains=search)))
-            search_set.update(version_search)
-            terminals = Terminal.objects.filter(Q(mac__contains=search) | Q(localip__contains=search))
-            network_search = map(lambda t: t.dev, terminals)
-            search_set.update(network_search)
-
-            filter_devices = filter_devices.intersection(search_set)
-
-        return sorted(filter_devices, key=lambda x: x.sn)
 
 
 class TerminalPostSerializer(NatrixQuerySerializer):
@@ -778,7 +719,7 @@ class TerminalPostSerializer(NatrixQuerySerializer):
         :return:
         """
         try:
-            device = TerminalDevice.objects.get(sn=value)
+            TerminalDevice.objects.get(sn=value)
         except TerminalDevice.DoesNotExist:
             raise serializers.ValidationError('The device is not exist for sn({})'.format(value))
         return value
@@ -791,11 +732,11 @@ class TerminalPostSerializer(NatrixQuerySerializer):
 
         def format_data(data_list):
             # TODO: process es data
-            return map(lambda d: {
+            return list(map(lambda d: {
                 'send_time': d.get('_source', {}).get('heartbeat'),
                 'receive_time': d.get('_source', {}).get('receive_time', 0),
                 'type': 'basic' if d.get('_type') == 'terminal_basic' else 'advance'
-            }, data_list)
+            }, data_list))
 
         condition = {
             'query': {
@@ -814,15 +755,17 @@ class TerminalPostSerializer(NatrixQuerySerializer):
                     ]
                 }
             },
+            # TODO: maybe move to user configuration
             'size': 100,
             'sort': {
-                'heartbeat': {
+                'receive_time': {
                     'order': 'desc'
                 }
             }
         }
 
-        post_list = store.pull(terminal_conf.TERMINAL_INDEX, condition)
+        natrix_es_client = NatrixESClient(app='terminal')
+        post_list = natrix_es_client.pull(condition)
 
         data = {}
         if is_paginate:
@@ -844,7 +787,7 @@ class TerminalPostSerializer(NatrixQuerySerializer):
         return data
 
 
-terminal_list_status_choice = map(terminal_conf.choice_generator, terminal_conf.TERMINAL_STATUS.values())
+terminal_list_status_choice = list(map(terminal_conf.choice_generator, terminal_conf.TERMINAL_STATUS.values()))
 terminal_list_status_choice.append(('all', 'all'))
 terminal_is_active_choice = (('all', 'all'), ('yes', u'是'), ('no', u'否'))
 class TerminalListQuerySerializer(NatrixQuerySerializer):
@@ -876,28 +819,12 @@ class TerminalListQuerySerializer(NatrixQuerySerializer):
         if sn:
             filter_condition.append((Q(dev__sn=sn)))
 
-        def terminal_cmp(pre, next):
-            flag = Terminal.status_cmp(pre, next)
-            if flag != 0:
-                return flag
-
-            # is_active==True first
-            flag = Terminal.active_cmp(pre, next)
-            if flag != 0:
-                return flag
-
-            flag = Terminal.update_time_cmp(pre, next)
-
-            return flag
-
+        def sorted_metrics(item):
+            return not item.is_active, item.digital_status(), item.update_time
 
         terminals = Terminal.objects.filter(*filter_condition).order_by('dev__sn')
-        res_list = sorted(terminals, cmp=terminal_cmp)
+        res_list = sorted(terminals, key=sorted_metrics)
 
         return res_list
-
-
-
-
 
 

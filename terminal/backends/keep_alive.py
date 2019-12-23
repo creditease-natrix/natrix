@@ -26,7 +26,9 @@ from django.core.cache import cache
 
 from natrix.common import exception as natrix_exception
 
+
 logger = logging.getLogger(__name__)
+
 
 INIT_STATE = {
     'last_alert_state': True,
@@ -36,6 +38,7 @@ INIT_STATE = {
     'alert_times': 0,
     'timestamp': time.time()
 }
+
 
 class AliveStateObject(object):
     cache_prefix = 'terminal_alive_{}'
@@ -220,16 +223,4 @@ class AliveStateAPI(object):
         state_instance.keep_alive(timeout)
 
         return state_instance
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+"""
+
+"""
 import logging
 import types
 
@@ -9,6 +11,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import JsonResponse
 
 from rest_framework.views import APIView
+
+from natrix.common.exception import natrix_traceback
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +90,7 @@ class BaseRBACView(LoginRequiredMixin, BaseTemplateView):
         """获取该用户所有的组列表"""
         user_rbac = self.request.user_rbac
         groups = user_rbac.groups() if user_rbac else []
-        return map(lambda x: x[0], groups)
+        return list(map(lambda x: x[0], groups))
 
     def get_group(self):
         """获取用户当前组"""
@@ -124,6 +128,8 @@ def natrix_exception_handler(exc, context):
     :return:
     """
     logger.info('Exception Happened: {}'.format(exc))
+    natrix_traceback()
+
     return JsonResponse(data={
         'permission': False
     })

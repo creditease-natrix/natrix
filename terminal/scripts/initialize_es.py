@@ -44,7 +44,8 @@ terminal_basic_mapping = {
                 'type': 'double'
             },
             'receive_time': {
-                'type': 'double'
+                'type': 'date',
+                'format': 'epoch_millis'
             }
         }
     }
@@ -157,7 +158,8 @@ terminal_advance_mapping = {
                 'type': 'double'
             },
             'receive_time': {
-                'type': 'double'
+                'type': 'date',
+                'format': 'epoch_millis'
             }
         }
     }

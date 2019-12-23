@@ -21,8 +21,8 @@ class TerminalCommand(natrix_serializers.NatrixSerializer):
     """
 
     uuid = rest_serializers.UUIDField()
-    protocol = rest_serializers.ChoiceField(choices=map(choice_filter,
-                                                        task_conf.PROTOCOL_INFO.values()))
+    protocol = rest_serializers.ChoiceField(choices=list(map(choice_filter,
+                                                             task_conf.PROTOCOL_INFO.values())))
     destination = natrix_serializers.SchemeURLField()
     parameters = rest_serializers.DictField()
 

@@ -55,21 +55,6 @@ IDENTITY_TYPE_INFO = {
     }
 }
 
-# Broadband info
-BROADBAND_INFO = {
-    'dynamic':{
-        'name': 'dynamic',
-        'verbose_name': u'动态'
-    },
-    'static':{
-        'name': 'static',
-        'verbose_name': u'静态'
-    },
-    'unknown':{
-        'name': 'unknown',
-        'verbose_name': u'未知'
-    }
-}
 
 # Operator info
 OPERATOR_DICT = {
@@ -88,25 +73,5 @@ OPERATOR_DICT = {
     'other': {
         'name': 'other',
         'verbose_name': u'其他'
-    }
-}
-
-# The line types of connection between organization and IDC
-EXPORT_TYPE_INFO = {
-    'pn': {
-        'name': 'pn',
-        'verbose_name': u'专线'
-    },
-    'vpn': {
-        'name': 'vpn',
-        'verbose_name': u'VPN'
-    }
-}
-
-# The export device types
-EXPORT_DEVICE_TYPE_INFO = {
-    'checkpoint': {
-        'name': 'checkpoint',
-        'verbose_name': u'CheckPoint'
     }
 }

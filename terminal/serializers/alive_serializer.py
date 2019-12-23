@@ -13,7 +13,7 @@ from rest_framework import serializers
 from natrix.common import exception as natrix_exception
 
 from terminal.models import TerminalDevice, Terminal
-from terminal.models import Network, Organization
+from terminal.models import Organization
 from terminal.models import terminal_type_choice
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class BasicHardwareSerializer(serializers.Serializer):
     """
     sn = serializers.CharField(max_length=64)
     hostname = serializers.CharField(max_length=64, allow_blank=True, allow_null=True)
-    cpu_percent = serializers.FloatField(min_value=0)
+    cpu_percent = serializers.FloatField(min_value=0, allow_null=True)
     memory_percent = serializers.FloatField(min_value=0)
     disk_percent = serializers.FloatField(min_value=0)
 
@@ -174,9 +174,9 @@ class CpuInfoSerializer(serializers.Serializer):
     """CPU Info
 
     """
-    cpu_model = serializers.CharField()
-    cpu_core = serializers.IntegerField()
-    cpu_percent = serializers.FloatField()
+    cpu_model = serializers.CharField(allow_null=True, required=False)
+    cpu_core = serializers.IntegerField(allow_null=True, required=False)
+    cpu_percent = serializers.FloatField(allow_null=True, required=False)
 
 
 class MemoryInfoSerializer(serializers.Serializer):
@@ -203,7 +203,7 @@ class AdavnceHardwareSerializer(serializers.Serializer):
     """
     sn = serializers.CharField()
     hostname = serializers.CharField()
-    product = serializers.CharField()
+    product = serializers.CharField(allow_null=True)
     boot_time = serializers.IntegerField(min_value=0, help_text=u'启动时间（s)')
     cpu_info = CpuInfoSerializer()
     memory_info = MemoryInfoSerializer()
@@ -273,8 +273,8 @@ class BasicInfoSerializer(serializers.Serializer):
                 try:
                     terminal_device = TerminalDevice.objects.get(sn=sn)
                 except TerminalDevice.DoesNotExist:
-                    logger.info('Add a new terminal device (SN): {}'.format(sn))
-                    terminal_device = TerminalDevice.objects.create(sn=sn, status='active')
+                    logger.info('The terminal device (SN): {} isnt exist'.format(sn))
+                    raise natrix_exception.NatrixBaseException(err='The device is not exist')
 
                 terminal_device.natrixclient_version = natrixclient.get('natrixclient_version')
                 terminal_device.natrixclient_crontab_version = natrixclient.get('natrixclient_crontab_version')
@@ -286,8 +286,6 @@ class BasicInfoSerializer(serializers.Serializer):
                 terminal_device.disk_percent = hardware.get('disk_percent')
 
                 terminal_device.is_active = True
-                if terminal_device.status == 'posting':
-                    terminal_device.status = 'active'
                 terminal_device.save()
 
                 update_networks(terminal_device, networks)
@@ -329,8 +327,8 @@ class AdvanceInfoSerializer(serializers.Serializer):
                 try:
                     terminal_device = TerminalDevice.objects.get(sn=sn)
                 except TerminalDevice.DoesNotExist:
-                    logger.info('Add a new terminal device (SN): {}'.format(sn))
-                    terminal_device = TerminalDevice.objects.create(sn=sn, status='active')
+                    logger.info('The terminal device ({}) isnt exist'.format(sn))
+                    raise natrix_exception.NatrixBaseException(err='The device is not exist')
 
                 terminal_device.os_type = operating.get('type')
                 terminal_device.os_series = operating.get('series')
@@ -365,9 +363,6 @@ class AdvanceInfoSerializer(serializers.Serializer):
                 terminal_device.memory_frequency = hardware.get('memory_info').get('memory_frequency')
                 terminal_device.disk_percent = hardware.get('disk_info').get('disk_percent')
 
-                if terminal_device.status == 'posting':
-                    terminal_device.status = 'active'
-
                 terminal_device.save()
 
                 update_networks(terminal_device, networks)
@@ -381,20 +376,6 @@ class AdvanceInfoSerializer(serializers.Serializer):
             raise natrix_exception.DatabaseTransactionException(model='Terminal related',
                                                                 business='Advance Keep Alive')
 
-
-def get_net_org_mapping():
-    net_org_cache = cache.get('terminal_net_org_mapping')
-    if net_org_cache is None:
-        net_org_cache = {}
-        networks = Network.objects.all()
-        for record in networks:
-            net_org_cache[record.segment] = {
-                'segment': record.segment,
-                'gateway': record.gateway,
-                'org_ids': set(map(lambda x: x.pk, record.organization_set.all()))
-            }
-        cache.set('terminal_net_org_mapping', net_org_cache, 60)
-    return net_org_cache
 
 def update_networks(device, networks):
     """Update Terminal Device networks info.
@@ -410,7 +391,6 @@ def update_networks(device, networks):
     if not isinstance(networks, list):
         raise natrix_exception.ParameterException(parameter='networks')
 
-    segments = []
     for interface in networks:
         mac = interface.get('macaddress')
 
@@ -431,7 +411,6 @@ def update_networks(device, networks):
         terminal.access_corporate = interface.get('access_corporate')
         terminal.access_internet = interface.get('access_internet')
 
-        segments.append((terminal.localip, terminal.netmask, terminal.gateway))
 
         if interface.get('access_intranet') or interface.get('access_corporate') or interface.get('access_internet'):
             terminal.is_active = True
@@ -440,38 +419,5 @@ def update_networks(device, networks):
 
         terminal.save()
 
-    # update detective organizations
-    net_org_cache = get_net_org_mapping()
-    org_set = set()
-    for localip, netmask, gateway in segments:
-        try:
-            net_int = IPy.IP(netmask).int()
-            net_fetch_mask = 2 ** 32 -1
-
-            while net_int:
-                segment = IPy.IP(localip).make_net(IPy.IP(net_int)).strNormal()
-                if segment in net_org_cache:
-                    # TODO: checkout gateway
-                    org_set.update(net_org_cache.get(segment).get('org_ids'), [])
-
-                net_int = (net_int << 1) & net_fetch_mask
-        except ValueError as e:
-            logger.error('process network value error({localip}, {netmask}, {gateway}): {message}'.format(
-                localip=localip, netmask=netmask, gateway=gateway, message=e
-            ))
-        except TypeError as e:
-            logger.error('process network type error({localip}, {netmask}, {gateway}): {message}'.format(
-                localip=localip, netmask=netmask, gateway=gateway, message=e
-            ))
-        except Exception as e:
-            logger.error(('process network unkown error({localip}, {netmask}, {gateway}): {message}'.format(
-                localip=localip, netmask=netmask, gateway=gateway, message=e
-            )))
-
-
-    detece_orgs = Organization.objects.filter(pk__in=org_set)
-    device.organizations.clear()
-    for org in detece_orgs:
-        device.organizations.add(org)
 
 

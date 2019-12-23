@@ -3,8 +3,6 @@
 
 """
 
-from __future__ import unicode_literals, absolute_import
-
 import logging
 
 
@@ -21,7 +19,7 @@ def get_command_data(command_uuid):
                 'must': [
                     {
                         'term': {
-                            'command_uuid': command_uuid
+                            'command_uuid.keyword': str(command_uuid)
                         }
                     }
                 ]
@@ -54,7 +52,7 @@ def get_task_data(task_uuid):
                 'must': [
                     {
                         'term': {
-                            'task_id': task_uuid
+                            'task_id.keyword': str(task_uuid)
                         }
                     }
                 ]

@@ -2,9 +2,6 @@
 """
 
 """
-
-from __future__ import unicode_literals
-
 import logging, json
 import uuid
 
@@ -54,6 +51,7 @@ class InstantTask(NatrixAPIView):
             try:
                 uuid.UUID(hex=task_id)
                 task = Task.objects.get(id=task_id, time_type='instant')
+
                 serializer = task_serializer.InstantTaskSerializer(instance=task)
                 feedback['data'] = {
                         'code': 200,
@@ -67,14 +65,14 @@ class InstantTask(NatrixAPIView):
                 feedback['data'] = ErrorCode.parameter_invalid(
                     'task_id', reason=u'Can not retrieve Instant Task: {}'.format(task_id))
                 raise natrix_exception.ParameterInvalidException(parameter='task_id')
-            except natrix_exception.BaseException as e:
+            except natrix_exception.NatrixBaseException as e:
                 logger.error(e.get_log())
                 feedback['data'] = ErrorCode.sp_code_bug('Serializer error: {}'.format(e.get_log()))
             except Exception as e:
                 logger.error(e)
                 feedback['data'] = ErrorCode.sp_code_bug('Unknow error: {}'.format(e))
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
 
         return JsonResponse(data=feedback)
@@ -91,7 +89,7 @@ class InstantTask(NatrixAPIView):
         }
         try:
             post_data = request.data
-            serializer = task_serializer.InstantTaskSerializer(data=post_data)
+            serializer = task_serializer.InstantTaskSerializer(data=post_data, group=self.get_group())
             if serializer.is_valid():
                 task = serializer.save()
                 feedback['data'] = {
@@ -105,7 +103,7 @@ class InstantTask(NatrixAPIView):
                 logger.info('Instant task parameters is not available: {}'.format(serializer.format_errors()))
                 feedback['data'] = ErrorCode.parameter_invalid('instant_task_creation',
                                                                reason=serializer.format_errors())
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             feedback['data'] = ErrorCode.sp_code_bug('Create instant has a bug: {}'.format(e.get_log()))
             logger.error(e.get_log())
         except Exception as e:
@@ -175,7 +173,7 @@ class InstantStatus(NatrixAPIView):
                     'task_id', reason=u'Can not retrieve Instant Task: {}'.format(task_id))
                 raise natrix_exception.ParameterInvalidException(parameter='task_id')
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.error(e.get_log())
 
         return JsonResponse(data=feedback)
@@ -239,7 +237,7 @@ class InstantStatus(NatrixAPIView):
                     'task_id', reason=u'Can not retrieve Instant Task: {}'.format(task_id))
                 raise natrix_exception.ParameterInvalidException(parameter='task_id')
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.error(e.get_log())
 
         return JsonResponse(data=feedback)
@@ -275,7 +273,7 @@ class InstantAnalyse(NatrixAPIView):
                                                                serializer.format_errors())
                 raise natrix_exception.ParameterInvalidException(parameter='task_analyse')
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.error(e.get_log())
         except Exception as e:
             natrix_exception.natrix_traceback()

@@ -18,17 +18,19 @@ class TerminalFilterSerializer(NatrixQuerySerializer):
     """Get alive terminal list.
 
     """
+    group_own = serializers.BooleanField(help_text='Limitation of terminal owner', default=False)
     type = serializers.ChoiceField(choices=(('region', u'区域'), ('organization', u'组织')))
     is_classify = serializers.BooleanField(required=False, default=False)
     filter_condition = serializers.ListField(child=serializers.CharField())
 
     def query(self, validated_data, **kwargs):
+        group_own = validated_data.get('group_own')
         type_value = validated_data.get('type')
         is_classify = validated_data.get('is_classify')
         filter_condition = validated_data.get('filter_condition')
 
         if type_value == 'region':
-            query_rest = self.region_query(filter_condition)
+            query_rest = self.region_query(filter_condition, group_own)
         elif type_value == 'organization':
             query_rest = self.organization_query(filter_condition)
         else:
@@ -38,7 +40,7 @@ class TerminalFilterSerializer(NatrixQuerySerializer):
             res = [
                 {
                     'name': 'default',
-                    'terminals': map(lambda t: {'name': t.mac, 'value': t.mac}, query_rest)
+                    'terminals': list(map(lambda t: {'name': t.mac, 'value': t.mac}, query_rest))
                 }
             ]
         else:
@@ -49,7 +51,7 @@ class TerminalFilterSerializer(NatrixQuerySerializer):
 
         return res
 
-    def region_query(self, filter_condition):
+    def region_query(self, filter_condition, group_own=False):
         filter_len = len(filter_condition)
         if filter_len > 0:
             provinces = [filter_condition[0]]
@@ -62,9 +64,12 @@ class TerminalFilterSerializer(NatrixQuerySerializer):
             cities = ['all']
 
         regions = Region.query_region(provinces, cities)
+        if group_own:
+            terminal_devices = TerminalDevice.get_group_available_devices(group=self.group)
+        else:
+            terminal_devices = TerminalDevice.get_available_devices(group=self.group)
 
-        terminal_devices = TerminalDevice.get_available_devices().filter(
-            Q(register__address__region__in=regions))
+        terminal_devices = terminal_devices.filter(Q(register__address__region__in=regions))
 
         terminals = []
         for td in terminal_devices:
@@ -171,8 +176,8 @@ class TerminalFilterSerializer(NatrixQuerySerializer):
                         })
                         classify_dict[row_org.pk]['terminals_set'].add(t.mac)
 
-            classify_list = map(lambda x: {'name': x['name'], 'terminals': x['terminals']},
-                                classify_dict.values())
+            classify_list = list(map(lambda x: {'name': x['name'], 'terminals': x['terminals']},
+                                classify_dict.values()))
 
             return classify_list
 
@@ -210,21 +215,17 @@ class TerminalFilterSerializer(NatrixQuerySerializer):
             return []
 
     def query_terminals(self):
-
+        group_own = self.validated_data.get('group_own')
         type_value = self.validated_data.get('type')
         filter_condition = self.validated_data.get('filter_condition')
 
         if type_value == 'region':
-            query_rest = self.region_query(filter_condition)
+            query_rest = self.region_query(filter_condition, group_own)
         elif type_value == 'organization':
             query_rest = self.organization_query(filter_condition)
         else:
             query_rest = []
 
         return query_rest
-
-
-
-
 
 

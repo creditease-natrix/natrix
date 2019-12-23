@@ -36,7 +36,7 @@ def messenger_guard(self, queue_name=conf.queue_name):
 
 @task
 def messenger_processor(body):
-
+    logger.info('send a message: {}'.format(body))
     message = json.loads(body)
 
     type = message.get('type', None)
@@ -44,7 +44,7 @@ def messenger_processor(body):
 
     application = message.get('application', '')
     description = message.get('description', '')
-    destinations = message.get('destinations', None)
+    destinations = message.get('destinations', [])
     title = message.get('title', '')
     generate_time = message.get('time', None)
     content = message.get('content', {})
@@ -56,19 +56,18 @@ def messenger_processor(body):
         'supplement': content.get('supplement', '')
     }
     try:
-        # notify = couriers.get_notify_instance(type, destinations)
-        notify = couriers.get_notify_instance(type, ['l15143093623@163.com'])
+        notify = couriers.get_notify_instance(type, destinations)
         notify.notify(message=email_message)
 
         NotifyRecord.objects.create(notify_type=type,
                                     level=level,
                                     description=description,
                                     application=application,
-                                    destinations=json.dumps(destinations).append('l15143093623@163.com'),
+                                    destinations=json.dumps(destinations),
                                     title=title,
                                     content=json.dumps(content),
                                     generate_time=generate_time)
-    except natrix_exceptions.BaseException as e:
+    except natrix_exceptions.NatrixBaseException as e:
         logger.error('There is an exception happend: {}'.format(e.get_log()))
     except Exception as e:
         logger.error('Natrix messenger-engine: uncatched {}'.format(e))

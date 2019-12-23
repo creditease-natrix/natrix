@@ -2,9 +2,24 @@
 """
 
 """
-
-from __future__ import unicode_literals, absolute_import
 import time
+
+
+def time_timestamp(time_object):
+    """millisecond
+
+    :param time_object:
+    :return:
+    """
+
+    timestamp = (time.mktime(time_object.timetuple()) - time.timezone) * 1000
+
+    return timestamp
+
+
+def timestamp_utc(timestamp):
+    pass
+
 
 class TimeProcessor(object):
 
@@ -20,7 +35,7 @@ class TimeProcessor(object):
         for c, unit, in carry_list:
             if second != 0:
                 value = second % c
-                second /= c
+                second = int(second / c)
                 time_info.append('{} {}'.format(value, unit))
 
         time_info.reverse()
@@ -29,5 +44,5 @@ class TimeProcessor(object):
 
     @staticmethod
     def timestamp_presentation(timestamp):
-        return time.strftime('%Y%m%d%H%M%S', time.localtime(timestamp))
+        return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp))
 

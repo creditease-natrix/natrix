@@ -4,60 +4,35 @@
 """
 from __future__ import unicode_literals
 import json
-import logging
 
-from django.contrib.auth.models import Group
 from django.http import JsonResponse
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db import transaction
 
-from rest_framework import permissions
 from rest_framework.decorators import permission_classes as natrix_permission_classes
 
 from natrix.common.errorcode import ErrorCode
-from natrix.common.natrix_views.views import NatrixAPIView, natrix_api_view
+from natrix.common.natrix_views.views import NatrixAPIView, LoginAPIView, natrix_api_view, RoleBasedAPIView
+from natrix.common.natrix_views.permissions import LoginPermission
 from natrix.common.natrix_views.serializers import IDSerializer
 from natrix.common import exception as natrix_exception
+from natrix.common.natrixlog import NatrixLogging
 
-from terminal.models import Operator, Address
-from terminal.models import Organization, Broadband, Contact, Network
-from terminal.models import OrganizationContact, OrganizationAddress
-from terminal.models import OrganizationNetwork, OrganizationBroadBand
+from terminal.models import Address
+from terminal.models import Organization, Contact
 from terminal.configurations import organization_conf as orgconf
-# todo: 迁移
 from terminal.serializers import organization_serializer
 
-logger = logging.getLogger(__name__)
-
-class OrganizationPermission(permissions.IsAuthenticated):
-    """组织管理权限控制
-
-    """
-    def has_permission(self, request, view):
-        if hasattr(request, 'user_rbac'):
-            user_rbac = request.user_rbac
-            if user_rbac is None:
-                return False
-
-            group = user_rbac.get_group()
-            if group is None or not isinstance(group, Group):
-                return False
-
-            if group.name == 'admin_group':
-                return True
-        else:
-            return False
+logger = NatrixLogging(__name__)
 
 
-class OrganizationAPI(NatrixAPIView):
+class OrganizationAPI(RoleBasedAPIView):
     """组织部门管理API
 
     所有关于组织管理相关接口，如标准接口（增删改查）和额外接口（）
 
     """
-    permission_classes = (OrganizationPermission, )
-    authentication_classes = []
+    natrix_roles = ['admin_role']
 
     def get_object(self):
         pass
@@ -70,12 +45,15 @@ class OrganizationAPI(NatrixAPIView):
             serializer = IDSerializer(data=request.GET)
             if serializer.is_valid(Organization):
                 organization = serializer.get_db()
+                if self.get_group() != organization.group:
+                    feedback['data'] = ErrorCode.parameter_invalid(
+                        'id', reason='There is not organization({}) in your group!'.format(organization.pk))
+                    raise natrix_exception.ParameterInvalidException(parameter='id')
             else:
                 feedback['data'] = ErrorCode.parameter_invalid(
                     'id', reason=json.dumps(serializer.errors, ensure_ascii=False))
                 raise natrix_exception.ParameterInvalidException(parameter='id')
 
-            # TODO: 用 REST-framework的方式取代
             org_info = {
                 "id": organization.id,
                 "name": organization.name,
@@ -109,56 +87,6 @@ class OrganizationAPI(NatrixAPIView):
 
                 }
                 contacts_info.append(contact_info)
-
-            networks_info = []
-            networks = organization.get_networks()
-            for item in networks:
-                network_info = {
-                    'segment': item.segment,
-                    'gateway': item.gateway,
-                    'segment_type': item.segment_type,
-                    'segment_type_verbosename': orgconf.SEGMENT_TYPES_INFO.get(
-                        item.segment_type, {}).get('verbose_name', ''),
-                    'comment': item.comment
-                }
-                networks_info.append(network_info)
-
-            broadbands_info = []
-            broadbands = organization.get_broadbands()
-            for item in broadbands:
-                broadband_info = {
-                    'id': item.id,
-                    'name': item.name,
-                    'operator': item.operator.name,
-                    'operator_verbosename': orgconf.OPERATOR_DICT.get(item.operator.name, {}).get('verbose_name', ''),
-                    'access_type': item.access_type,
-                    'access_type_verbosename': orgconf.BROADBAND_INFO.get(
-                        item.access_type, {}).get('verbose_name', ''),
-                    'speed': item.speed,
-                    'end_time': item.end_time,
-                    'staff_contact': item.staff_contact,
-                    'staff_contact_email': item.staff_contact_email,
-                    'staff_contact_telephone': item.staff_contact_telephone,
-                    'isp_contact': item.isp_contact,
-                    'isp_contact_email': item.isp_contact_email,
-                    'isp_contact_telephone': item.isp_contact_telephone,
-                    'comment': item.comment
-                }
-                broadbands_info.append(broadband_info)
-
-            exports_info = []
-            exports = organization.get_exports()
-            for item in exports:
-                export_info = {
-                    'device': item.device,
-                    'device_verbosename': orgconf.EXPORT_DEVICE_TYPE_INFO.get(item.device).get('verbose_name', ''),
-                    'type': item.type,
-                    'type_verbosename': orgconf.EXPORT_TYPE_INFO.get(
-                        item.type, {}).get('verbose_name',''),
-                    'ip': item.ip,
-                    'comment': item.comment
-                }
-                exports_info.append(export_info)
 
             devices_info = []
             register_list = organization.registerorganization_set.all()
@@ -197,20 +125,17 @@ class OrganizationAPI(NatrixAPIView):
 
             feedback['data'] = {
                 "code": 200,
-                "message": u"组织详情查询详细信息!",
+                "message": u"Organization detailed information!",
                 "info": {
                     "organization": org_info,
                     "addresses": addresses_info,
                     "contacts": contacts_info,
-                    "broadbands": broadbands_info,
-                    "networks": networks_info,
-                    "exports": exports_info,
                     "devices": devices_info,
                     "children": children_info
                 }
             }
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
 
         return JsonResponse(data=feedback)
@@ -219,11 +144,17 @@ class OrganizationAPI(NatrixAPIView):
         feedback = {
             'permission': True
         }
+
+        if not self.has_permission(self.natrix_roles):
+            feedback['data'] = ErrorCode.permission_deny('You dont have permission')
+            return JsonResponse(data=feedback)
+
         user = request.user_rbac.user
-        group = request.user_rbac.group
+        group = self.get_group()
         try:
             post_data = request.data
-            serializer = organization_serializer.OrganizationSerializer(user=user, group=group, data=post_data)
+            serializer = organization_serializer.OrganizationSerializer(
+                user=user, group=group, data=post_data)
             if serializer.is_valid():
                 serializer.save()
             else:
@@ -234,9 +165,9 @@ class OrganizationAPI(NatrixAPIView):
 
             feedback['data'] = {
                         'code': 200,
-                        'message': u'职场添加成功！'
+                        'message': u'Add a new organization successfully！'
                     }
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
         except Exception as e:
             natrix_exception.natrix_traceback()
@@ -249,13 +180,18 @@ class OrganizationAPI(NatrixAPIView):
         feedback = {
             'permission': True
         }
+
+        if not self.has_permission(self.natrix_roles):
+            feedback['data'] = ErrorCode.permission_deny('You dont have permission')
+            return JsonResponse(data=feedback)
+
         try:
             user = request.user_rbac.user
-            group = request.user_rbac.group
+            group = self.get_group()
 
-            post_data = request.data
+            request_data = request.data
             serializer = organization_serializer.OrganizationSerializer(
-                user=user, group=group, data=post_data)
+                user=user, group=group, data=request_data)
 
             if serializer.is_valid():
                 instance = serializer.save()
@@ -268,7 +204,7 @@ class OrganizationAPI(NatrixAPIView):
                 feedback['data'] = ErrorCode.parameter_invalid(
                     'organization change', serializer.format_errors())
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
 
         return JsonResponse(data=feedback)
@@ -277,25 +213,36 @@ class OrganizationAPI(NatrixAPIView):
         feedback = {
             'permission': True
         }
+
+        if not self.has_permission(self.natrix_roles):
+            feedback['data'] = ErrorCode.permission_deny('You dont have permission')
+            return JsonResponse(data=feedback)
+
         try:
-            user = request.user_rbac.user
-            group = request.user_rbac.group
+            group = self.get_group()
+            user = self.get_user()
 
             post_data = request.GET
             serializer = IDSerializer(data=post_data)
             if serializer.is_valid(Organization):
                 organization = serializer.get_db()
                 if organization.id == 1:
-                    feedback['data'] = ErrorCode.parameter_invalid('id', reason=u'删除组织结构不存在')
+                    feedback['data'] = ErrorCode.parameter_invalid('id', reason='The organization is not exist!')
                     raise natrix_exception.ParameterInvalidException(parameter='id')
                 elif organization.get_children().count() > 0:
-                    feedback['data'] = ErrorCode.parameter_invalid('id', reason=u'该组织存在子组织，不能删除')
+                    feedback['data'] = ErrorCode.parameter_invalid(
+                                        'id', reason='There are sub-organizations in this organization')
+                    raise natrix_exception.ParameterInvalidException(parameter='id')
+                elif organization.group != self.get_group():
+                    feedback['data'] = ErrorCode.parameter_invalid(
+                        'id', reason='There is not organization({}) in your group!'.format(organization.pk)
+                    )
                     raise natrix_exception.ParameterInvalidException(parameter='id')
                 else:
                     organization.delete(user, group)
                     feedback['data'] = {
                         'code': 200,
-                        'message': u'组织删除成功!'
+                        'message': 'Delete organization successfully!'
                     }
             else:
                 feedback['data'] = ErrorCode.parameter_invalid(
@@ -304,14 +251,14 @@ class OrganizationAPI(NatrixAPIView):
         except natrix_exception.ClassInsideException as e:
             logger.info(e.get_log())
             feedback['data'] = ErrorCode.sp_code_bug('IDSerializer error')
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
 
         return JsonResponse(data=feedback)
 
     @staticmethod
     @natrix_api_view(['GET'])
-    @natrix_permission_classes((OrganizationPermission, ))
+    @natrix_permission_classes((LoginPermission, ))
     def get_full_path(request):
         """获取组织链信息
 
@@ -322,12 +269,24 @@ class OrganizationAPI(NatrixAPIView):
             'permission': True
         }
         try:
+            user_group = request.user_rbac.get_group() if request.user_rbac else None
+
+            if user_group is None:
+                feedback['data'] = ErrorCode.permission_deny('You must add a group!')
+                raise natrix_exception.PermissionException(reason='User without a group')
+
             serializer = IDSerializer(data=request.GET)
             if serializer.is_valid(Organization):
                 organization = serializer.get_db()
             else:
                 feedback['data'] = ErrorCode.parameter_invalid(
                     'id', reason=json.dumps(serializer.errors, ensure_ascii=False))
+                raise natrix_exception.ParameterInvalidException(parameter='id')
+
+            if not (organization.group == user_group):
+                feedback['data'] = ErrorCode.parameter_invalid(
+                    'id', reason='There is not organization({}) in your group!'.format(request.GET.get('id'))
+                )
                 raise natrix_exception.ParameterInvalidException(parameter='id')
 
             full_path_info = []
@@ -348,7 +307,7 @@ class OrganizationAPI(NatrixAPIView):
                 "info": full_path_info
             }
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
 
         return JsonResponse(data=feedback)
@@ -361,6 +320,13 @@ class OrganizationAPI(NatrixAPIView):
             'permission': True
         }
         try:
+            user_group = request.user_rbac.get_group() if request.user_rbac else None
+
+            if user_group is None:
+                feedback['data'] = ErrorCode.permission_deny('You must add a group!')
+                raise natrix_exception.PermissionException(reason='User without a group')
+
+
             data = {'id': request.GET.get('parent', None)}
             serializer = IDSerializer(data=data)
             if serializer.is_valid(Organization):
@@ -372,6 +338,9 @@ class OrganizationAPI(NatrixAPIView):
 
             children_info = []
             for item in organization.get_children():
+                if item.group != user_group:
+                    continue
+
                 child_info = dict()
                 child_info['id'] = item.id
                 child_info['name'] = item.name
@@ -385,15 +354,13 @@ class OrganizationAPI(NatrixAPIView):
                 'info': children_info
             }
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
 
         return JsonResponse(data=feedback)
 
 
-class OrganizationSummaryAPI(NatrixAPIView):
-    permission_classes = (OrganizationPermission,)
-    authentication_classes = []
+class OrganizationSummaryAPI(LoginAPIView):
 
     def get(self, request, format=None):
         feedback = {
@@ -402,7 +369,7 @@ class OrganizationSummaryAPI(NatrixAPIView):
         try:
             id = request.GET.get('id')
             try:
-                org_instance = Organization.objects.get(id=id)
+                org_instance = Organization.objects.get(id=id, group=self.get_group())
                 serializer = organization_serializer.OrganizationSerializer(instance=org_instance)
                 feedback['data'] = {
                     'code': 200,
@@ -412,22 +379,19 @@ class OrganizationSummaryAPI(NatrixAPIView):
             except Organization.DoesNotExist:
                 feedback['data'] = ErrorCode.parameter_invalid('id', reason=u'Organization record is not exist！')
                 raise natrix_exception.ParameterInvalidException(parameter='id')
-            except natrix_exception.BaseException as e:
+            except natrix_exception.NatrixBaseException as e:
                 feedback['data'] = ErrorCode.sp_code_bug(e.get_log())
                 raise natrix_exception.ClassInsideException(message=e.get_log())
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
 
         return JsonResponse(data=feedback)
 
 
-
-class OrganizationList(NatrixAPIView):
+class OrganizationList(LoginAPIView):
     """组织部门列表API
 
     """
-    permission_classes = (OrganizationPermission,)
-    authentication_classes = []
 
     def post(self, request):
         feedback = {
@@ -451,16 +415,20 @@ class OrganizationList(NatrixAPIView):
                 raise natrix_exception.ParameterMissingException(parameter='is_paginate')
 
             try:
-                org_parent = Organization.objects.get(id=parent)
+                if parent == 1:
+                    org_parent = Organization.objects.get(id=parent)
+                else:
+                    org_parent = Organization.objects.get(id=parent, group=self.get_group())
             except Organization.DoesNotExist:
                 feedback['data'] = ErrorCode.parameter_invalid('parent',
-                                                               reason=u'数据不存在！')
+                                                               reason='The organization is not exist！')
                 raise natrix_exception.ParameterInvalidException(parameter='parent')
 
             origin_orgs = []
             parents = [org_parent]
+            user_group = self.get_group()
             while len(parents) > 0:
-                children = list(Organization.objects.filter(parent__in=parents))
+                children = list(Organization.objects.filter(parent__in=parents, group=user_group))
                 origin_orgs.extend(children)
                 parents = children
 
@@ -470,17 +438,13 @@ class OrganizationList(NatrixAPIView):
                     if search in orgitem.name:
                         organizations.append(orgitem)
                         continue
-                    networks = orgitem.networks.all()
-                    for net in networks:
-                        if search in net.segment:
-                            organizations.append(orgitem)
-                            break
             else:
                 organizations = origin_orgs
 
             data = {
                 'code': 200,
-                'message': u'职场信息列表'
+                'message': u'职场信息列表',
+                'item_count': len(organizations)
             }
             if is_paginate:
                 per_page = self.get_per_page()
@@ -509,65 +473,15 @@ class OrganizationList(NatrixAPIView):
             data['info'] = organizations_info
             feedback['data'] = data
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
 
         return JsonResponse(data=feedback)
 
 
-class OperatorList(NatrixAPIView):
+class AddressAPI(LoginAPIView):
     """
-
     """
-    permission_classes = (OrganizationPermission,)
-    authentication_classes = []
-
-    def get(self, request):
-        feedback = {
-            'permission': True
-        }
-
-        operators = Operator.objects.all()
-        feedback['data'] = {
-            'code': 200,
-            'message': u'所有运营商列表信息',
-            'info': map(lambda x: {'id': x.id,
-                                   'name': x.name,
-                                   'verbose_name': x.verbose_name()},
-                        operators)
-        }
-
-        return JsonResponse(data=feedback)
-
-
-class ExportDeviceTypeList(NatrixAPIView):
-    """职场出口设备类型列表信息
-
-    """
-    permission_classes = (OrganizationPermission,)
-    authentication_classes = []
-
-    def get(self, request):
-        feedback = {
-            'permission': True
-        }
-
-        # TODO: hardcode
-        feedback['data'] = {
-            'code': 200,
-            'message': u'所有出口设备类型列表信息',
-            'info': orgconf.EXPORT_DEVICE_TYPE_INFO.values()
-        }
-
-        return JsonResponse(data=feedback)
-
-
-class AddressAPI(NatrixAPIView):
-    """宽带信息接口
-
-        """
-    permission_classes = (OrganizationPermission,)
-    authentication_classes = []
 
     def get(self, request):
         feedback = {
@@ -589,6 +503,7 @@ class AddressAPI(NatrixAPIView):
                     'comment': None
                 }
             }
+
             try:
                 address_obj = Address.objects.get(
                     Q(region__province=province) &
@@ -600,55 +515,16 @@ class AddressAPI(NatrixAPIView):
 
             except Address.DoesNotExist:
                 pass
-
-        except natrix_exception.BaseException as e:
-            logger.info(e.get_log())
-
-        return JsonResponse(data=feedback)
-
-
-class NetworkAPI(NatrixAPIView):
-    permission_classes = (OrganizationPermission,)
-    authentication_classes = []
-
-    def get(self, request):
-        feedback = {
-            'permission': True
-        }
-        try:
-
-            segment = request.GET.get('segment')
-            feedback['data'] = {
-                "code": 200,
-                "message": u"宽带详情查询成功!",
-                "info": {
-                    'segment': segment,
-                    'segment_type': 'mix',
-                    'gateway': None,
-                    'comment': None
-                }
-            }
-            try:
-                network_obj = Network.objects.get(segment=segment)
-                feedback['data']['info'] = {
-                    'segment': network_obj.segment,
-                    'segment_type': network_obj.segment_type,
-                    'gateway': network_obj.gateway,
-                    'comment': network_obj.comment
-                }
-            except Network.DoesNotExist:
+            except Address.MultipleObjectsReturned:
                 pass
 
-
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
 
         return JsonResponse(data=feedback)
 
 
-class ContactAPI(NatrixAPIView):
-    permission_classes = (OrganizationPermission,)
-    authentication_classes = []
+class ContactAPI(LoginAPIView):
 
     def get(self, request):
         feedback = {
@@ -683,70 +559,8 @@ class ContactAPI(NatrixAPIView):
             except Contact.DoesNotExist:
                 pass
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
 
         return JsonResponse(data=feedback)
-
-
-class BroadbandAPI(NatrixAPIView):
-    """宽带信息接口
-
-    """
-    permission_classes = (OrganizationPermission,)
-    authentication_classes = []
-
-    def get(self, request):
-        feedback = {
-            'permission': True
-        }
-
-        try:
-            broadband_id = request.GET.get('id', None)
-
-            try:
-                serializer = IDSerializer(data=request.GET)
-                if serializer.is_valid(Broadband):
-                    broadband = serializer.get_db()
-                else:
-                    feedback['data'] = ErrorCode.parameter_invalid(
-                        'id', reason=json.dumps(serializer.errors, ensure_ascii=False))
-                    raise natrix_exception.ParameterInvalidException(parameter='id')
-
-                broadband_info = dict()
-                broadband_info["name"] = broadband.name
-                broadband_info["operator"] = broadband.operator.name
-                broadband_info["operator_verbosename"] = orgconf.OPERATOR_DICT.get(
-                    broadband.operator.name, {}).get('verbose_name', '')
-                broadband_info["access_type"] = broadband.access_type
-                broadband_info["access_type_verbosename"] = orgconf.BROADBAND_INFO.get(
-                    broadband.access_type, {}).get('verbose_name', '')
-                broadband_info["speed"] = broadband.speed
-                broadband_info["start_time"] = broadband.start_time
-                broadband_info["end_time"] = broadband.end_time
-                broadband_info["staff_contact"] = broadband.staff_contact
-                broadband_info["staff_contact_telephone"] = broadband.staff_contact_telephone
-                broadband_info["staff_contact_email"] = broadband.staff_contact_email
-                broadband_info["isp_contact"] = broadband.isp_contact
-                broadband_info["isp_contact_telephone"] = broadband.isp_contact_telephone
-                broadband_info["isp_contact_email"] = broadband.isp_contact_email
-                broadband_info["comment"] = broadband.comment
-
-                feedback['data'] = {
-                    "code": 200,
-                    "message": u"宽带详情查询成功!",
-                    "info": broadband_info
-
-                }
-
-            except Broadband.DoesNotExist:
-                feedback['data'] = ErrorCode.parameter_invalid('id',
-                                                               reason=u'数据库中不存在相应数据')
-                raise natrix_exception.ParameterInvalidException(parameter='id')
-
-        except natrix_exception.BaseException as e:
-            logger.info(e.get_log())
-
-        return JsonResponse(data=feedback)
-
 

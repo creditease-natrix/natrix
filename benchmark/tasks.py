@@ -2,24 +2,22 @@
 """
 
 """
-
-from __future__ import unicode_literals, absolute_import
-import json
-
-from celery import shared_task, task
+from celery import shared_task
 from celery.utils import log
 
-from natrix.common import natrix_celery, exception as natrix_exception, mqservice
+from natrix.common import natrix_celery, exception as natrix_exception
 
-from benchmark.backends.command_dispatcher import (
-    processor, get_process_client, response_expired_process)
 from benchmark.models import Task
 from benchmark.backends.command_dispatcher import dispatch_command
+
+from benchmark.services import *
+
 
 logger = log.get_task_logger(__name__)
 
 DEAD_PROCESSOR_COUNT = 1
 RESPONSE_PROCESSOR_COUNT = 1
+
 
 @shared_task(bind=True)
 def command_adapter_guardian(self):
@@ -71,103 +69,8 @@ def command_adapter_guardian(self):
 
         elif len(alive_cleaner) > 1:
             logger.error('There are more than one [command cleaner processor] ')
-    except natrix_exception.BaseException as e:
+    except natrix_exception.NatrixBaseException as e:
         logger.error('{}'.format(e.get_log()))
-
-
-@task(bind=True)
-def command_dead_task(self, data):
-    try:
-        command_processor = processor.CommandExpiredProcessor(data)
-        command_processor.process()
-    except natrix_exception.BaseException as e:
-        logger.error('Process dead message ERROR: {}'.format(e.get_log()))
-    except Exception as e:
-        logger.error('Get an expected Exception: {}'.format(e))
-
-
-
-
-@task(bind=True)
-def command_dead_processor(self):
-    """Porcess Dead Command
-
-
-    :return:
-    """
-    def dead_data_process(ch, method, properties, body):
-        command_data = json.loads(body)
-        try:
-            command_dead_task.delay(command_data)
-            # ack receive message
-            ch.basic_ack(delivery_tag=method.delivery_tag)
-
-        except natrix_exception.BaseException as e:
-            logger.error('Process dead message ERROR: {}'.format(e.get_log()))
-
-
-    with mqservice.MQService.get_purge_channel() as channel:
-        try:
-            process_client = get_process_client(channel, 'dead')
-            process_client.consume(dead_data_process)
-
-        except Exception as e:
-            logger.error(u'{}'.format(e))
-        finally:
-            logger.info('Task End! - {}'.format(self.name))
-
-@task(bind=True)
-def command_response_task(self, data):
-    try:
-        command_processor = processor.ResponseProcessor(data)
-        command_processor.process()
-    except natrix_exception.BaseException as e:
-        natrix_exception.natrix_traceback()
-        logger.error('Consume reponse data error: {}'.format(e.get_log()))
-    except Exception as e:
-        logger.error('Get an expected Exception: {}'.format(e))
-
-
-@task(bind=True)
-def command_response_processor(self):
-    """Process Terminal Response
-
-    :return:
-    """
-    def response_data_process(ch, method, properties, body):
-        try:
-            command_data = json.loads(body)
-            command_response_task.delay(command_data)
-            # ack receive message
-            ch.basic_ack(delivery_tag=method.delivery_tag)
-        except natrix_exception.BaseException:
-            natrix_exception.natrix_traceback()
-            logger.error('Consume reponse data error: {}'.format(command_data))
-
-    with mqservice.MQService.get_purge_channel() as channel:
-        try:
-            process_client = get_process_client(channel, 'response')
-            process_client.consume(response_data_process)
-
-        except Exception as e:
-            natrix_exception.natrix_traceback()
-            logger.error(u'{}'.format(e))
-        finally:
-            logger.info('Task End! - {}'.format(self.name))
-
-
-@shared_task(bind=True)
-def command_clean_processor(self):
-    """
-
-    :return:
-    """
-    logger.info('Start to clean unresponse command')
-    try:
-        response_expired_process()
-    except Exception as e:
-        # TODO:
-        logger.error(u'{}'.format(e))
 
 
 @shared_task(bind=True)

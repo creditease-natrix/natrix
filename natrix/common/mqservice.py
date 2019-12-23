@@ -103,28 +103,3 @@ class MQService(object):
         channel.close()
         connection.close()
 
-
-if __name__ == '__main__':
-    def consume_queue(ch, method, properties, body):
-        print 'context : {}'.format(body)
-
-    credential = pika.PlainCredentials('natrix', 'natrix')
-    parameters = pika.ConnectionParameters(
-        host='127.0.0.1',
-        virtual_host='natrix',
-        credentials=credential)
-
-    connection = pika.BlockingConnection(parameters)
-    channel = connection.channel()
-    queue_name = 'keep_alive_basic'
-    channel.queue_declare(queue=queue_name)
-
-    channel.basic_consume(basic_consume=consume_queue,
-                          queue=queue_name)
-
-    channel.start_consuming()
-
-
-
-
-

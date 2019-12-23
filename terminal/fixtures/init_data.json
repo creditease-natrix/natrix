@@ -1,2602 +1,371 @@
-[{
-	"model": "terminal.region",
-	"pk": "010",
-	"fields": {
-		"province": "\u5317\u4eac\u5e02",
-		"city": "\u5317\u4eac\u57ce\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "020",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u5e7f\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "021",
-	"fields": {
-		"province": "\u4e0a\u6d77\u5e02",
-		"city": "\u4e0a\u6d77\u57ce\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "022",
-	"fields": {
-		"province": "\u5929\u6d25\u5e02",
-		"city": "\u5929\u6d25\u57ce\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "023",
-	"fields": {
-		"province": "\u91cd\u5e86\u5e02",
-		"city": "\u91cd\u5e86\u57ce\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "024",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u6c88\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "025",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u5357\u4eac\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "027",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u6b66\u6c49\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "028",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u6210\u90fd\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "029",
-	"fields": {
-		"province": "\u9655\u897f\u7701",
-		"city": "\u897f\u5b89\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0310",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u90af\u90f8\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0311",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u77f3\u5bb6\u5e84\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0312",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u4fdd\u5b9a\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0313",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u5f20\u5bb6\u53e3\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0314",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u627f\u5fb7\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0315",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u5510\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0316",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u5eca\u574a\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0317",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u6ca7\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0318",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u8861\u6c34\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0319",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u90a2\u53f0\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0335",
-	"fields": {
-		"province": "\u6cb3\u5317\u7701",
-		"city": "\u79e6\u7687\u5c9b\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0349",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u6714\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0350",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u5ffb\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0351",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u592a\u539f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0352",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u5927\u540c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0353",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u9633\u6cc9\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0354",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u664b\u4e2d\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0355",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u957f\u6cbb\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0356",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u664b\u57ce\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0357",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u4e34\u6c7e\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0358",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u5415\u6881\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0359",
-	"fields": {
-		"province": "\u5c71\u897f\u7701",
-		"city": "\u8fd0\u57ce\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0370",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u5546\u4e18\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0371",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u90d1\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0372",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u5b89\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0373",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u65b0\u4e61\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0374",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u8bb8\u660c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0375",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u5e73\u9876\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0376",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u4fe1\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0377",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u5357\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0378",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u5f00\u5c01\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0379",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u6d1b\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0391",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u7126\u4f5c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0392",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u9e64\u58c1\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0393",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u6fee\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0394",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u5468\u53e3\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0395",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u6f2f\u6cb3\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0396",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u9a7b\u9a6c\u5e97\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0398",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u4e09\u95e8\u5ce1\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0410",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u94c1\u5cad\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0411",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u5927\u8fde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0412",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u978d\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0413",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u629a\u987a\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0414",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u672c\u6eaa\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0415",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u4e39\u4e1c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0416",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u9526\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0417",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u8425\u53e3\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0418",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u961c\u65b0\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0419",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u8fbd\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0421",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u671d\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0427",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u76d8\u9526\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0429",
-	"fields": {
-		"province": "\u8fbd\u5b81\u7701",
-		"city": "\u846b\u82a6\u5c9b\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0431",
-	"fields": {
-		"province": "\u5409\u6797\u7701",
-		"city": "\u957f\u6625\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0432",
-	"fields": {
-		"province": "\u5409\u6797\u7701",
-		"city": "\u5409\u6797\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0434",
-	"fields": {
-		"province": "\u5409\u6797\u7701",
-		"city": "\u56db\u5e73\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0435",
-	"fields": {
-		"province": "\u5409\u6797\u7701",
-		"city": "\u901a\u5316\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0436",
-	"fields": {
-		"province": "\u5409\u6797\u7701",
-		"city": "\u767d\u57ce\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0437",
-	"fields": {
-		"province": "\u5409\u6797\u7701",
-		"city": "\u8fbd\u6e90\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0438",
-	"fields": {
-		"province": "\u5409\u6797\u7701",
-		"city": "\u677e\u539f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0439",
-	"fields": {
-		"province": "\u5409\u6797\u7701",
-		"city": "\u767d\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0451",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u54c8\u5c14\u6ee8\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0452",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u9f50\u9f50\u54c8\u5c14\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0453",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u7261\u4e39\u6c5f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0454",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u4f73\u6728\u65af\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0455",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u7ee5\u5316\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0456",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u9ed1\u6cb3\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0457",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u5927\u5174\u5b89\u5cad\u5730\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0458",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u4f0a\u6625\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0459",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u5927\u5e86\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0464",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u4e03\u53f0\u6cb3\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0467",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u9e21\u897f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0468",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u9e64\u5c97\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0469",
-	"fields": {
-		"province": "\u9ed1\u9f99\u6c5f\u7701",
-		"city": "\u53cc\u9e2d\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0470",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u547c\u4f26\u8d1d\u5c14\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0471",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u547c\u548c\u6d69\u7279\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0472",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u5305\u5934\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0473",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u4e4c\u6d77\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0474",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u4e4c\u5170\u5bdf\u5e03\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0475",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u901a\u8fbd\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0476",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u8d64\u5cf0\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0477",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u9102\u5c14\u591a\u65af\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0478",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u5df4\u5f66\u6dd6\u5c14\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0479",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u9521\u6797\u90ed\u52d2\u76df"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0482",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u5174\u5b89\u76df"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0483",
-	"fields": {
-		"province": "\u5185\u8499\u53e4\u81ea\u6cbb\u533a",
-		"city": "\u963f\u62c9\u5584\u76df"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0510",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u65e0\u9521\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0511",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u9547\u6c5f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0512",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u82cf\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0513",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u5357\u901a\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0514",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u626c\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0515",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u76d0\u57ce\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0516",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u5f90\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0517",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u6dee\u5b89\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0518",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u8fde\u4e91\u6e2f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0519",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u5e38\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0523",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u6cf0\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0527",
-	"fields": {
-		"province": "\u6c5f\u82cf\u7701",
-		"city": "\u5bbf\u8fc1\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0530",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u83cf\u6cfd\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0531",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u6d4e\u5357\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0532",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u9752\u5c9b\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0533",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u6dc4\u535a\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0534",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u5fb7\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0535",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u70df\u53f0\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0536",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u6f4d\u574a\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0537",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u6d4e\u5b81\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0538",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u6cf0\u5b89\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0539",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u4e34\u6c82\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0543",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u6ee8\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0546",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u4e1c\u8425\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0550",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u6ec1\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0551",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u5408\u80a5\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0552",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u868c\u57e0\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0553",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u829c\u6e56\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0554",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u6dee\u5357\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0555",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u9a6c\u978d\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0556",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u5b89\u5e86\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0557",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u5bbf\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0558",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u4eb3\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0559",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u9ec4\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0561",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u6dee\u5317\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0562",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u94dc\u9675\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0563",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u5ba3\u57ce\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0564",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u516d\u5b89\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0566",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u6c60\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0570",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u8862\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0571",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u676d\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0572",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u6e56\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0573",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u5609\u5174\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0574",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u5b81\u6ce2\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0575",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u7ecd\u5174\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0576",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u53f0\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0577",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u6e29\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0578",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u4e3d\u6c34\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0579",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u91d1\u534e\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0580",
-	"fields": {
-		"province": "\u6d59\u6c5f\u7701",
-		"city": "\u821f\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0591",
-	"fields": {
-		"province": "\u798f\u5efa\u7701",
-		"city": "\u798f\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0592",
-	"fields": {
-		"province": "\u798f\u5efa\u7701",
-		"city": "\u53a6\u95e8\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0593",
-	"fields": {
-		"province": "\u798f\u5efa\u7701",
-		"city": "\u5b81\u5fb7\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0594",
-	"fields": {
-		"province": "\u798f\u5efa\u7701",
-		"city": "\u8386\u7530\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0595",
-	"fields": {
-		"province": "\u798f\u5efa\u7701",
-		"city": "\u6cc9\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0596",
-	"fields": {
-		"province": "\u798f\u5efa\u7701",
-		"city": "\u6f33\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0597",
-	"fields": {
-		"province": "\u798f\u5efa\u7701",
-		"city": "\u9f99\u5ca9\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0598",
-	"fields": {
-		"province": "\u798f\u5efa\u7701",
-		"city": "\u4e09\u660e\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0599",
-	"fields": {
-		"province": "\u798f\u5efa\u7701",
-		"city": "\u5357\u5e73\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0631",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u5a01\u6d77\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0632",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u67a3\u5e84\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0633",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u65e5\u7167\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0634",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u83b1\u829c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0635",
-	"fields": {
-		"province": "\u5c71\u4e1c\u7701",
-		"city": "\u804a\u57ce\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0660",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u6c55\u5c3e\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0662",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u9633\u6c5f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0663",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u63ed\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0668",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u8302\u540d\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0691",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u897f\u53cc\u7248\u7eb3\u50a3\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0692",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u5fb7\u5b8f\u50a3\u65cf\u666f\u9887\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0701",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u9e70\u6f6d\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0710",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u8944\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0711",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u9102\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0712",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u5b5d\u611f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0713",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u9ec4\u5188\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0714",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u9ec4\u77f3\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0715",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u54b8\u5b81\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0716",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u8346\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0717",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u5b9c\u660c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0718",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u6069\u65bd\u571f\u5bb6\u65cf\u82d7\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0719",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u5341\u5830\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0722",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u968f\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0724",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u8346\u95e8\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0728",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u4ed9\u6843\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0730",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u5cb3\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0731",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u957f\u6c99\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0732",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u6e58\u6f6d\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0733",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u682a\u6d32\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0734",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u8861\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0735",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u90f4\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0736",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u5e38\u5fb7\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0737",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u76ca\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0738",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u5a04\u5e95\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0739",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u90b5\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0743",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u6e58\u897f\u571f\u5bb6\u65cf\u82d7\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0744",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u5f20\u5bb6\u754c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0745",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u6000\u5316\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0746",
-	"fields": {
-		"province": "\u6e56\u5357\u7701",
-		"city": "\u6c38\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0750",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u6c5f\u95e8\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0751",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u97f6\u5173\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0752",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u60e0\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0753",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u6885\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0754",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u6c55\u5934\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0755",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u6df1\u5733\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0756",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u73e0\u6d77\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0757",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u4f5b\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0758",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u8087\u5e86\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0759",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u6e5b\u6c5f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0760",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u4e2d\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0762",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u6cb3\u6e90\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0763",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u6e05\u8fdc\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0766",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u4e91\u6d6e\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0767",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u4e1c\u6c99\u7fa4\u5c9b"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0768",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u6f6e\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0769",
-	"fields": {
-		"province": "\u5e7f\u4e1c\u7701",
-		"city": "\u4e1c\u839e\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0770",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u9632\u57ce\u6e2f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0771",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u5357\u5b81\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0772",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u67f3\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0773",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u6842\u6797\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0774",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u68a7\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0775",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u7389\u6797\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0776",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u767e\u8272\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0777",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u94a6\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0778",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u6cb3\u6c60\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0779",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u5317\u6d77\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0790",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u65b0\u4f59\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0791",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u5357\u660c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0792",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u4e5d\u6c5f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0793",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u4e0a\u9976\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0794",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u629a\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0795",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u5b9c\u6625\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0796",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u5409\u5b89\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0797",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u8d63\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0798",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u666f\u5fb7\u9547\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0799",
-	"fields": {
-		"province": "\u6c5f\u897f\u7701",
-		"city": "\u840d\u4e61\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0801",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u4fdd\u4ead\u9ece\u65cf\u82d7\u65cf\u81ea\u6cbb\u53bf"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0802",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u767d\u6c99\u9ece\u65cf\u81ea\u6cbb\u53bf"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0803",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u660c\u6c5f\u9ece\u65cf\u81ea\u6cbb\u53bf"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0804",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u6f84\u8fc8\u53bf"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0805",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u510b\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0806",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u5b9a\u5b89\u53bf"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0807",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u4e1c\u65b9\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0809",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u9675\u6c34\u9ece\u65cf\u81ea\u6cbb\u53bf"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0812",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u6500\u679d\u82b1\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0813",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u81ea\u8d21\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0816",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u7ef5\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0817",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u5357\u5145\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0818",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u8fbe\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0825",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u9042\u5b81\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0826",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u5e7f\u5b89\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0827",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u5df4\u4e2d\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0830",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u6cf8\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0831",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u5b9c\u5bbe\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0832",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u8d44\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0833",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u4e50\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0834",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u51c9\u5c71\u5f5d\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0835",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u96c5\u5b89\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0836",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u7518\u5b5c\u85cf\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0837",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u963f\u575d\u85cf\u65cf\u7f8c\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0838",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u5fb7\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0839",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u5e7f\u5143\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0851",
-	"fields": {
-		"province": "\u8d35\u5dde\u7701",
-		"city": "\u8d35\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0852",
-	"fields": {
-		"province": "\u8d35\u5dde\u7701",
-		"city": "\u9075\u4e49\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0853",
-	"fields": {
-		"province": "\u8d35\u5dde\u7701",
-		"city": "\u5b89\u987a\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0854",
-	"fields": {
-		"province": "\u8d35\u5dde\u7701",
-		"city": "\u9ed4\u5357\u5e03\u4f9d\u65cf\u82d7\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0855",
-	"fields": {
-		"province": "\u8d35\u5dde\u7701",
-		"city": "\u9ed4\u4e1c\u5357\u82d7\u65cf\u4f97\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0856",
-	"fields": {
-		"province": "\u8d35\u5dde\u7701",
-		"city": "\u94dc\u4ec1\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0857",
-	"fields": {
-		"province": "\u8d35\u5dde\u7701",
-		"city": "\u6bd5\u8282\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0858",
-	"fields": {
-		"province": "\u8d35\u5dde\u7701",
-		"city": "\u516d\u76d8\u6c34\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0859",
-	"fields": {
-		"province": "\u8d35\u5dde\u7701",
-		"city": "\u9ed4\u897f\u5357\u5e03\u4f9d\u65cf\u82d7\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0870",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u662d\u901a\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0871",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u6606\u660e\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0872",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u5927\u7406\u767d\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0873",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u7ea2\u6cb3\u54c8\u5c3c\u65cf\u5f5d\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0874",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u66f2\u9756\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0875",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u4fdd\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0876",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u6587\u5c71\u58ee\u65cf\u82d7\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0877",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u7389\u6eaa\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0878",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u695a\u96c4\u5f5d\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0879",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u666e\u6d31\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0883",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u4e34\u6ca7\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0886",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u6012\u6c5f\u5088\u50f3\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0887",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u8fea\u5e86\u85cf\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0888",
-	"fields": {
-		"province": "\u4e91\u5357\u7701",
-		"city": "\u4e3d\u6c5f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0891",
-	"fields": {
-		"province": "\u897f\u85cf\u81ea\u6cbb\u533a",
-		"city": "\u62c9\u8428\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0892",
-	"fields": {
-		"province": "\u897f\u85cf\u81ea\u6cbb\u533a",
-		"city": "\u65e5\u5580\u5219\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0893",
-	"fields": {
-		"province": "\u897f\u85cf\u81ea\u6cbb\u533a",
-		"city": "\u5c71\u5357\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0894",
-	"fields": {
-		"province": "\u897f\u85cf\u81ea\u6cbb\u533a",
-		"city": "\u6797\u829d\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0895",
-	"fields": {
-		"province": "\u897f\u85cf\u81ea\u6cbb\u533a",
-		"city": "\u660c\u90fd\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0896",
-	"fields": {
-		"province": "\u897f\u85cf\u81ea\u6cbb\u533a",
-		"city": "\u90a3\u66f2\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0897",
-	"fields": {
-		"province": "\u897f\u85cf\u81ea\u6cbb\u533a",
-		"city": "\u963f\u91cc\u5730\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0898",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u6d77\u53e3\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0899",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u4e09\u4e9a\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0901",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u5854\u57ce\u5730\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0902",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u54c8\u5bc6\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0903",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u548c\u7530\u5730\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0906",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u963f\u52d2\u6cf0\u5730\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0908",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u514b\u5b5c\u52d2\u82cf\u67ef\u5c14\u514b\u5b5c\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0909",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u535a\u5c14\u5854\u62c9\u8499\u53e4\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0910",
-	"fields": {
-		"province": "\u9655\u897f\u7701",
-		"city": "\u54b8\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0911",
-	"fields": {
-		"province": "\u9655\u897f\u7701",
-		"city": "\u5ef6\u5b89\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0912",
-	"fields": {
-		"province": "\u9655\u897f\u7701",
-		"city": "\u6986\u6797\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0913",
-	"fields": {
-		"province": "\u9655\u897f\u7701",
-		"city": "\u6e2d\u5357\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0914",
-	"fields": {
-		"province": "\u9655\u897f\u7701",
-		"city": "\u5546\u6d1b\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0915",
-	"fields": {
-		"province": "\u9655\u897f\u7701",
-		"city": "\u5b89\u5eb7\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0916",
-	"fields": {
-		"province": "\u9655\u897f\u7701",
-		"city": "\u6c49\u4e2d\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0917",
-	"fields": {
-		"province": "\u9655\u897f\u7701",
-		"city": "\u5b9d\u9e21\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0919",
-	"fields": {
-		"province": "\u9655\u897f\u7701",
-		"city": "\u94dc\u5ddd\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0930",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u4e34\u590f\u56de\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0931",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u5170\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0932",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u5b9a\u897f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0933",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u5e73\u51c9\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0934",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u5e86\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0935",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u91d1\u660c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0936",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u5f20\u6396\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0937",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u9152\u6cc9\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0938",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u5929\u6c34\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0941",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u7518\u5357\u85cf\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0943",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u767d\u94f6\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0951",
-	"fields": {
-		"province": "\u5b81\u590f\u56de\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u94f6\u5ddd\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0952",
-	"fields": {
-		"province": "\u5b81\u590f\u56de\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u77f3\u5634\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0953",
-	"fields": {
-		"province": "\u5b81\u590f\u56de\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u5434\u5fe0\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0954",
-	"fields": {
-		"province": "\u5b81\u590f\u56de\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u56fa\u539f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0970",
-	"fields": {
-		"province": "\u9752\u6d77\u7701",
-		"city": "\u6d77\u5317\u85cf\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0971",
-	"fields": {
-		"province": "\u9752\u6d77\u7701",
-		"city": "\u897f\u5b81\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0972",
-	"fields": {
-		"province": "\u9752\u6d77\u7701",
-		"city": "\u6d77\u4e1c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0973",
-	"fields": {
-		"province": "\u9752\u6d77\u7701",
-		"city": "\u9ec4\u5357\u85cf\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0974",
-	"fields": {
-		"province": "\u9752\u6d77\u7701",
-		"city": "\u6d77\u5357\u85cf\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0975",
-	"fields": {
-		"province": "\u9752\u6d77\u7701",
-		"city": "\u679c\u6d1b\u85cf\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0976",
-	"fields": {
-		"province": "\u9752\u6d77\u7701",
-		"city": "\u7389\u6811\u85cf\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0977",
-	"fields": {
-		"province": "\u9752\u6d77\u7701",
-		"city": "\u6d77\u897f\u8499\u53e4\u65cf\u85cf\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0990",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u514b\u62c9\u739b\u4f9d\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0991",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u4e4c\u9c81\u6728\u9f50\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0993",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u77f3\u6cb3\u5b50\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0994",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u660c\u5409\u56de\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0995",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u5410\u9c81\u756a\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0996",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u5df4\u97f3\u90ed\u695e\u8499\u53e4\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0997",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u963f\u514b\u82cf\u5730\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0998",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u5580\u4ec0\u5730\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "0999",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u4f0a\u7281\u54c8\u8428\u514b\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1391",
-	"fields": {
-		"province": "\u6cb3\u5357\u7701",
-		"city": "\u6d4e\u6e90\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1433",
-	"fields": {
-		"province": "\u5409\u6797\u7701",
-		"city": "\u5ef6\u8fb9\u671d\u9c9c\u65cf\u81ea\u6cbb\u5dde"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1558",
-	"fields": {
-		"province": "\u5b89\u5fbd\u7701",
-		"city": "\u961c\u9633\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1719",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u795e\u519c\u67b6\u6797\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1728",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u5929\u95e8\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1755",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u8d35\u6e2f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1771",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u5d07\u5de6\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1772",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u6765\u5bbe\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1774",
-	"fields": {
-		"province": "\u5e7f\u897f\u58ee\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u8d3a\u5dde\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1832",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u5185\u6c5f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1833",
-	"fields": {
-		"province": "\u56db\u5ddd\u7701",
-		"city": "\u7709\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1852",
-	"fields": {
-		"province": "\u9999\u6e2f\u7279\u522b\u884c\u653f\u533a",
-		"city": "\u8475\u9752\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1853",
-	"fields": {
-		"province": "\u6fb3\u95e8\u7279\u522b\u884c\u653f\u533a",
-		"city": "\u5927\u5802\u533a"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1892",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u5c6f\u660c\u53bf"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1893",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u6587\u660c\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1894",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u743c\u6d77\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1896",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u4e34\u9ad8\u53bf"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1897",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u4e94\u6307\u5c71\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1898",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u4e07\u5b81\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1899",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u743c\u4e2d\u9ece\u65cf\u82d7\u65cf\u81ea\u6cbb\u53bf"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1903",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u6606\u7389\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1906",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u5317\u5c6f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1909",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u53cc\u6cb3\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1935",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u6b66\u5a01\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1937",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u5609\u5cea\u5173\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1953",
-	"fields": {
-		"province": "\u5b81\u590f\u56de\u65cf\u81ea\u6cbb\u533a",
-		"city": "\u4e2d\u536b\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1994",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u4e94\u5bb6\u6e20\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1996",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u94c1\u95e8\u5173\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1997",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u963f\u62c9\u5c14\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1998",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u56fe\u6728\u8212\u514b\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "1999",
-	"fields": {
-		"province": "\u65b0\u7586\u7ef4\u543e\u5c14\u81ea\u6cbb\u533a",
-		"city": "\u53ef\u514b\u8fbe\u62c9\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "2728",
-	"fields": {
-		"province": "\u6e56\u5317\u7701",
-		"city": "\u6f5c\u6c5f\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "2802",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u4e50\u4e1c\u9ece\u65cf\u81ea\u6cbb\u53bf"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "2898",
-	"fields": {
-		"province": "\u6d77\u5357\u7701",
-		"city": "\u4e09\u6c99\u5e02"
-	}
-}, {
-	"model": "terminal.region",
-	"pk": "2935",
-	"fields": {
-		"province": "\u7518\u8083\u7701",
-		"city": "\u9647\u5357\u5e02"
-	}
-}, {
-	"model": "terminal.organization",
-	"pk": 1,
-	"fields": {
-		"name": "Natrix",
-		"level": 0,
-		"parent": null,
-		"region": null,
-		"comment": null,
-		"exports": []
-	}
-}]
+[
+{"model": "terminal.region", "pk": "010", "fields": {"province": "北京市", "city": "北京城区"}} ,
+{"model": "terminal.region", "pk": "020", "fields": {"province": "广东省", "city": "广州市"}} ,
+{"model": "terminal.region", "pk": "021", "fields": {"province": "上海市", "city": "上海城区"}} ,
+{"model": "terminal.region", "pk": "022", "fields": {"province": "天津市", "city": "天津城区"}} ,
+{"model": "terminal.region", "pk": "023", "fields": {"province": "重庆市", "city": "重庆郊县"}} ,
+{"model": "terminal.region", "pk": "024", "fields": {"province": "辽宁省", "city": "沈阳市"}} ,
+{"model": "terminal.region", "pk": "025", "fields": {"province": "江苏省", "city": "南京市"}} ,
+{"model": "terminal.region", "pk": "027", "fields": {"province": "湖北省", "city": "武汉市"}} ,
+{"model": "terminal.region", "pk": "028", "fields": {"province": "四川省", "city": "成都市"}} ,
+{"model": "terminal.region", "pk": "029", "fields": {"province": "陕西省", "city": "西安市"}} ,
+{"model": "terminal.region", "pk": "0310", "fields": {"province": "河北省", "city": "邯郸市"}} ,
+{"model": "terminal.region", "pk": "0311", "fields": {"province": "河北省", "city": "石家庄市"}} ,
+{"model": "terminal.region", "pk": "0312", "fields": {"province": "河北省", "city": "保定市"}} ,
+{"model": "terminal.region", "pk": "0313", "fields": {"province": "河北省", "city": "张家口市"}} ,
+{"model": "terminal.region", "pk": "0314", "fields": {"province": "河北省", "city": "承德市"}} ,
+{"model": "terminal.region", "pk": "0315", "fields": {"province": "河北省", "city": "唐山市"}} ,
+{"model": "terminal.region", "pk": "0316", "fields": {"province": "河北省", "city": "廊坊市"}} ,
+{"model": "terminal.region", "pk": "0317", "fields": {"province": "河北省", "city": "沧州市"}} ,
+{"model": "terminal.region", "pk": "0318", "fields": {"province": "河北省", "city": "衡水市"}} ,
+{"model": "terminal.region", "pk": "0319", "fields": {"province": "河北省", "city": "邢台市"}} ,
+{"model": "terminal.region", "pk": "0335", "fields": {"province": "河北省", "city": "秦皇岛市"}} ,
+{"model": "terminal.region", "pk": "0349", "fields": {"province": "山西省", "city": "朔州市"}} ,
+{"model": "terminal.region", "pk": "0350", "fields": {"province": "山西省", "city": "忻州市"}} ,
+{"model": "terminal.region", "pk": "0351", "fields": {"province": "山西省", "city": "太原市"}} ,
+{"model": "terminal.region", "pk": "0352", "fields": {"province": "山西省", "city": "大同市"}} ,
+{"model": "terminal.region", "pk": "0353", "fields": {"province": "山西省", "city": "阳泉市"}} ,
+{"model": "terminal.region", "pk": "0354", "fields": {"province": "山西省", "city": "晋中市"}} ,
+{"model": "terminal.region", "pk": "0355", "fields": {"province": "山西省", "city": "长治市"}} ,
+{"model": "terminal.region", "pk": "0356", "fields": {"province": "山西省", "city": "晋城市"}} ,
+{"model": "terminal.region", "pk": "0357", "fields": {"province": "山西省", "city": "临汾市"}} ,
+{"model": "terminal.region", "pk": "0358", "fields": {"province": "山西省", "city": "吕梁市"}} ,
+{"model": "terminal.region", "pk": "0359", "fields": {"province": "山西省", "city": "运城市"}} ,
+{"model": "terminal.region", "pk": "0370", "fields": {"province": "河南省", "city": "商丘市"}} ,
+{"model": "terminal.region", "pk": "0371", "fields": {"province": "河南省", "city": "郑州市"}} ,
+{"model": "terminal.region", "pk": "0372", "fields": {"province": "河南省", "city": "安阳市"}} ,
+{"model": "terminal.region", "pk": "0373", "fields": {"province": "河南省", "city": "新乡市"}} ,
+{"model": "terminal.region", "pk": "0374", "fields": {"province": "河南省", "city": "许昌市"}} ,
+{"model": "terminal.region", "pk": "0375", "fields": {"province": "河南省", "city": "平顶山市"}} ,
+{"model": "terminal.region", "pk": "0376", "fields": {"province": "河南省", "city": "信阳市"}} ,
+{"model": "terminal.region", "pk": "0377", "fields": {"province": "河南省", "city": "南阳市"}} ,
+{"model": "terminal.region", "pk": "0378", "fields": {"province": "河南省", "city": "开封市"}} ,
+{"model": "terminal.region", "pk": "0379", "fields": {"province": "河南省", "city": "洛阳市"}} ,
+{"model": "terminal.region", "pk": "0391", "fields": {"province": "河南省", "city": "焦作市"}} ,
+{"model": "terminal.region", "pk": "0392", "fields": {"province": "河南省", "city": "鹤壁市"}} ,
+{"model": "terminal.region", "pk": "0393", "fields": {"province": "河南省", "city": "濮阳市"}} ,
+{"model": "terminal.region", "pk": "0394", "fields": {"province": "河南省", "city": "周口市"}} ,
+{"model": "terminal.region", "pk": "0395", "fields": {"province": "河南省", "city": "漯河市"}} ,
+{"model": "terminal.region", "pk": "0396", "fields": {"province": "河南省", "city": "驻马店市"}} ,
+{"model": "terminal.region", "pk": "0398", "fields": {"province": "河南省", "city": "三门峡市"}} ,
+{"model": "terminal.region", "pk": "0410", "fields": {"province": "辽宁省", "city": "铁岭市"}} ,
+{"model": "terminal.region", "pk": "0411", "fields": {"province": "辽宁省", "city": "大连市"}} ,
+{"model": "terminal.region", "pk": "0412", "fields": {"province": "辽宁省", "city": "鞍山市"}} ,
+{"model": "terminal.region", "pk": "0413", "fields": {"province": "辽宁省", "city": "抚顺市"}} ,
+{"model": "terminal.region", "pk": "0414", "fields": {"province": "辽宁省", "city": "本溪市"}} ,
+{"model": "terminal.region", "pk": "0415", "fields": {"province": "辽宁省", "city": "丹东市"}} ,
+{"model": "terminal.region", "pk": "0416", "fields": {"province": "辽宁省", "city": "锦州市"}} ,
+{"model": "terminal.region", "pk": "0417", "fields": {"province": "辽宁省", "city": "营口市"}} ,
+{"model": "terminal.region", "pk": "0418", "fields": {"province": "辽宁省", "city": "阜新市"}} ,
+{"model": "terminal.region", "pk": "0419", "fields": {"province": "辽宁省", "city": "辽阳市"}} ,
+{"model": "terminal.region", "pk": "0421", "fields": {"province": "辽宁省", "city": "朝阳市"}} ,
+{"model": "terminal.region", "pk": "0427", "fields": {"province": "辽宁省", "city": "盘锦市"}} ,
+{"model": "terminal.region", "pk": "0429", "fields": {"province": "辽宁省", "city": "葫芦岛市"}} ,
+{"model": "terminal.region", "pk": "0431", "fields": {"province": "吉林省", "city": "长春市"}} ,
+{"model": "terminal.region", "pk": "0432", "fields": {"province": "吉林省", "city": "吉林市"}} ,
+{"model": "terminal.region", "pk": "0434", "fields": {"province": "吉林省", "city": "四平市"}} ,
+{"model": "terminal.region", "pk": "0435", "fields": {"province": "吉林省", "city": "通化市"}} ,
+{"model": "terminal.region", "pk": "0436", "fields": {"province": "吉林省", "city": "白城市"}} ,
+{"model": "terminal.region", "pk": "0437", "fields": {"province": "吉林省", "city": "辽源市"}} ,
+{"model": "terminal.region", "pk": "0438", "fields": {"province": "吉林省", "city": "松原市"}} ,
+{"model": "terminal.region", "pk": "0439", "fields": {"province": "吉林省", "city": "白山市"}} ,
+{"model": "terminal.region", "pk": "0451", "fields": {"province": "黑龙江省", "city": "哈尔滨市"}} ,
+{"model": "terminal.region", "pk": "0452", "fields": {"province": "黑龙江省", "city": "齐齐哈尔市"}} ,
+{"model": "terminal.region", "pk": "0453", "fields": {"province": "黑龙江省", "city": "牡丹江市"}} ,
+{"model": "terminal.region", "pk": "0454", "fields": {"province": "黑龙江省", "city": "佳木斯市"}} ,
+{"model": "terminal.region", "pk": "0455", "fields": {"province": "黑龙江省", "city": "绥化市"}} ,
+{"model": "terminal.region", "pk": "0456", "fields": {"province": "黑龙江省", "city": "黑河市"}} ,
+{"model": "terminal.region", "pk": "0457", "fields": {"province": "黑龙江省", "city": "大兴安岭地区"}} ,
+{"model": "terminal.region", "pk": "0458", "fields": {"province": "黑龙江省", "city": "伊春市"}} ,
+{"model": "terminal.region", "pk": "0459", "fields": {"province": "黑龙江省", "city": "大庆市"}} ,
+{"model": "terminal.region", "pk": "0464", "fields": {"province": "黑龙江省", "city": "七台河市"}} ,
+{"model": "terminal.region", "pk": "0467", "fields": {"province": "黑龙江省", "city": "鸡西市"}} ,
+{"model": "terminal.region", "pk": "0468", "fields": {"province": "黑龙江省", "city": "鹤岗市"}} ,
+{"model": "terminal.region", "pk": "0469", "fields": {"province": "黑龙江省", "city": "双鸭山市"}} ,
+{"model": "terminal.region", "pk": "0470", "fields": {"province": "内蒙古自治区", "city": "呼伦贝尔市"}} ,
+{"model": "terminal.region", "pk": "0471", "fields": {"province": "内蒙古自治区", "city": "呼和浩特市"}} ,
+{"model": "terminal.region", "pk": "0472", "fields": {"province": "内蒙古自治区", "city": "包头市"}} ,
+{"model": "terminal.region", "pk": "0473", "fields": {"province": "内蒙古自治区", "city": "乌海市"}} ,
+{"model": "terminal.region", "pk": "0474", "fields": {"province": "内蒙古自治区", "city": "乌兰察布市"}} ,
+{"model": "terminal.region", "pk": "0475", "fields": {"province": "内蒙古自治区", "city": "通辽市"}} ,
+{"model": "terminal.region", "pk": "0476", "fields": {"province": "内蒙古自治区", "city": "赤峰市"}} ,
+{"model": "terminal.region", "pk": "0477", "fields": {"province": "内蒙古自治区", "city": "鄂尔多斯市"}} ,
+{"model": "terminal.region", "pk": "0478", "fields": {"province": "内蒙古自治区", "city": "巴彦淖尔市"}} ,
+{"model": "terminal.region", "pk": "0479", "fields": {"province": "内蒙古自治区", "city": "锡林郭勒盟"}} ,
+{"model": "terminal.region", "pk": "0482", "fields": {"province": "内蒙古自治区", "city": "兴安盟"}} ,
+{"model": "terminal.region", "pk": "0483", "fields": {"province": "内蒙古自治区", "city": "阿拉善盟"}} ,
+{"model": "terminal.region", "pk": "0510", "fields": {"province": "江苏省", "city": "无锡市"}} ,
+{"model": "terminal.region", "pk": "0511", "fields": {"province": "江苏省", "city": "镇江市"}} ,
+{"model": "terminal.region", "pk": "0512", "fields": {"province": "江苏省", "city": "苏州市"}} ,
+{"model": "terminal.region", "pk": "0513", "fields": {"province": "江苏省", "city": "南通市"}} ,
+{"model": "terminal.region", "pk": "0514", "fields": {"province": "江苏省", "city": "扬州市"}} ,
+{"model": "terminal.region", "pk": "0515", "fields": {"province": "江苏省", "city": "盐城市"}} ,
+{"model": "terminal.region", "pk": "0516", "fields": {"province": "江苏省", "city": "徐州市"}} ,
+{"model": "terminal.region", "pk": "0517", "fields": {"province": "江苏省", "city": "淮安市"}} ,
+{"model": "terminal.region", "pk": "0518", "fields": {"province": "江苏省", "city": "连云港市"}} ,
+{"model": "terminal.region", "pk": "0519", "fields": {"province": "江苏省", "city": "常州市"}} ,
+{"model": "terminal.region", "pk": "0523", "fields": {"province": "江苏省", "city": "泰州市"}} ,
+{"model": "terminal.region", "pk": "0527", "fields": {"province": "江苏省", "city": "宿迁市"}} ,
+{"model": "terminal.region", "pk": "0530", "fields": {"province": "山东省", "city": "菏泽市"}} ,
+{"model": "terminal.region", "pk": "0531", "fields": {"province": "山东省", "city": "济南市"}} ,
+{"model": "terminal.region", "pk": "0532", "fields": {"province": "山东省", "city": "青岛市"}} ,
+{"model": "terminal.region", "pk": "0533", "fields": {"province": "山东省", "city": "淄博市"}} ,
+{"model": "terminal.region", "pk": "0534", "fields": {"province": "山东省", "city": "德州市"}} ,
+{"model": "terminal.region", "pk": "0535", "fields": {"province": "山东省", "city": "烟台市"}} ,
+{"model": "terminal.region", "pk": "0536", "fields": {"province": "山东省", "city": "潍坊市"}} ,
+{"model": "terminal.region", "pk": "0537", "fields": {"province": "山东省", "city": "济宁市"}} ,
+{"model": "terminal.region", "pk": "0538", "fields": {"province": "山东省", "city": "泰安市"}} ,
+{"model": "terminal.region", "pk": "0539", "fields": {"province": "山东省", "city": "临沂市"}} ,
+{"model": "terminal.region", "pk": "0543", "fields": {"province": "山东省", "city": "滨州市"}} ,
+{"model": "terminal.region", "pk": "0546", "fields": {"province": "山东省", "city": "东营市"}} ,
+{"model": "terminal.region", "pk": "0550", "fields": {"province": "安徽省", "city": "滁州市"}} ,
+{"model": "terminal.region", "pk": "0551", "fields": {"province": "安徽省", "city": "合肥市"}} ,
+{"model": "terminal.region", "pk": "0552", "fields": {"province": "安徽省", "city": "蚌埠市"}} ,
+{"model": "terminal.region", "pk": "0553", "fields": {"province": "安徽省", "city": "芜湖市"}} ,
+{"model": "terminal.region", "pk": "0554", "fields": {"province": "安徽省", "city": "淮南市"}} ,
+{"model": "terminal.region", "pk": "0555", "fields": {"province": "安徽省", "city": "马鞍山市"}} ,
+{"model": "terminal.region", "pk": "0556", "fields": {"province": "安徽省", "city": "安庆市"}} ,
+{"model": "terminal.region", "pk": "0557", "fields": {"province": "安徽省", "city": "宿州市"}} ,
+{"model": "terminal.region", "pk": "0558", "fields": {"province": "安徽省", "city": "亳州市"}} ,
+{"model": "terminal.region", "pk": "0559", "fields": {"province": "安徽省", "city": "黄山市"}} ,
+{"model": "terminal.region", "pk": "0561", "fields": {"province": "安徽省", "city": "淮北市"}} ,
+{"model": "terminal.region", "pk": "0562", "fields": {"province": "安徽省", "city": "铜陵市"}} ,
+{"model": "terminal.region", "pk": "0563", "fields": {"province": "安徽省", "city": "宣城市"}} ,
+{"model": "terminal.region", "pk": "0564", "fields": {"province": "安徽省", "city": "六安市"}} ,
+{"model": "terminal.region", "pk": "0566", "fields": {"province": "安徽省", "city": "池州市"}} ,
+{"model": "terminal.region", "pk": "0570", "fields": {"province": "浙江省", "city": "衢州市"}} ,
+{"model": "terminal.region", "pk": "0571", "fields": {"province": "浙江省", "city": "杭州市"}} ,
+{"model": "terminal.region", "pk": "0572", "fields": {"province": "浙江省", "city": "湖州市"}} ,
+{"model": "terminal.region", "pk": "0573", "fields": {"province": "浙江省", "city": "嘉兴市"}} ,
+{"model": "terminal.region", "pk": "0574", "fields": {"province": "浙江省", "city": "宁波市"}} ,
+{"model": "terminal.region", "pk": "0575", "fields": {"province": "浙江省", "city": "绍兴市"}} ,
+{"model": "terminal.region", "pk": "0576", "fields": {"province": "浙江省", "city": "台州市"}} ,
+{"model": "terminal.region", "pk": "0577", "fields": {"province": "浙江省", "city": "温州市"}} ,
+{"model": "terminal.region", "pk": "0578", "fields": {"province": "浙江省", "city": "丽水市"}} ,
+{"model": "terminal.region", "pk": "0579", "fields": {"province": "浙江省", "city": "金华市"}} ,
+{"model": "terminal.region", "pk": "0580", "fields": {"province": "浙江省", "city": "舟山市"}} ,
+{"model": "terminal.region", "pk": "0591", "fields": {"province": "福建省", "city": "福州市"}} ,
+{"model": "terminal.region", "pk": "0592", "fields": {"province": "福建省", "city": "厦门市"}} ,
+{"model": "terminal.region", "pk": "0593", "fields": {"province": "福建省", "city": "宁德市"}} ,
+{"model": "terminal.region", "pk": "0594", "fields": {"province": "福建省", "city": "莆田市"}} ,
+{"model": "terminal.region", "pk": "0595", "fields": {"province": "福建省", "city": "泉州市"}} ,
+{"model": "terminal.region", "pk": "0596", "fields": {"province": "福建省", "city": "漳州市"}} ,
+{"model": "terminal.region", "pk": "0597", "fields": {"province": "福建省", "city": "龙岩市"}} ,
+{"model": "terminal.region", "pk": "0598", "fields": {"province": "福建省", "city": "三明市"}} ,
+{"model": "terminal.region", "pk": "0599", "fields": {"province": "福建省", "city": "南平市"}} ,
+{"model": "terminal.region", "pk": "0631", "fields": {"province": "山东省", "city": "威海市"}} ,
+{"model": "terminal.region", "pk": "0632", "fields": {"province": "山东省", "city": "枣庄市"}} ,
+{"model": "terminal.region", "pk": "0633", "fields": {"province": "山东省", "city": "日照市"}} ,
+{"model": "terminal.region", "pk": "0635", "fields": {"province": "山东省", "city": "聊城市"}} ,
+{"model": "terminal.region", "pk": "0660", "fields": {"province": "广东省", "city": "汕尾市"}} ,
+{"model": "terminal.region", "pk": "0662", "fields": {"province": "广东省", "city": "阳江市"}} ,
+{"model": "terminal.region", "pk": "0663", "fields": {"province": "广东省", "city": "揭阳市"}} ,
+{"model": "terminal.region", "pk": "0668", "fields": {"province": "广东省", "city": "茂名市"}} ,
+{"model": "terminal.region", "pk": "0691", "fields": {"province": "云南省", "city": "西双版纳傣族自治州"}} ,
+{"model": "terminal.region", "pk": "0692", "fields": {"province": "云南省", "city": "德宏傣族景颇族自治州"}} ,
+{"model": "terminal.region", "pk": "0701", "fields": {"province": "江西省", "city": "鹰潭市"}} ,
+{"model": "terminal.region", "pk": "0710", "fields": {"province": "湖北省", "city": "襄阳市"}} ,
+{"model": "terminal.region", "pk": "0711", "fields": {"province": "湖北省", "city": "鄂州市"}} ,
+{"model": "terminal.region", "pk": "0712", "fields": {"province": "湖北省", "city": "孝感市"}} ,
+{"model": "terminal.region", "pk": "0713", "fields": {"province": "湖北省", "city": "黄冈市"}} ,
+{"model": "terminal.region", "pk": "0714", "fields": {"province": "湖北省", "city": "黄石市"}} ,
+{"model": "terminal.region", "pk": "0715", "fields": {"province": "湖北省", "city": "咸宁市"}} ,
+{"model": "terminal.region", "pk": "0716", "fields": {"province": "湖北省", "city": "荆州市"}} ,
+{"model": "terminal.region", "pk": "0717", "fields": {"province": "湖北省", "city": "宜昌市"}} ,
+{"model": "terminal.region", "pk": "0718", "fields": {"province": "湖北省", "city": "恩施土家族苗族自治州"}} ,
+{"model": "terminal.region", "pk": "0719", "fields": {"province": "湖北省", "city": "十堰市"}} ,
+{"model": "terminal.region", "pk": "0722", "fields": {"province": "湖北省", "city": "随州市"}} ,
+{"model": "terminal.region", "pk": "0724", "fields": {"province": "湖北省", "city": "荆门市"}} ,
+{"model": "terminal.region", "pk": "0728", "fields": {"province": "湖北省", "city": "仙桃市"}} ,
+{"model": "terminal.region", "pk": "0730", "fields": {"province": "湖南省", "city": "岳阳市"}} ,
+{"model": "terminal.region", "pk": "0731", "fields": {"province": "湖南省", "city": "长沙市"}} ,
+{"model": "terminal.region", "pk": "0732", "fields": {"province": "湖南省", "city": "湘潭市"}} ,
+{"model": "terminal.region", "pk": "0733", "fields": {"province": "湖南省", "city": "株洲市"}} ,
+{"model": "terminal.region", "pk": "0734", "fields": {"province": "湖南省", "city": "衡阳市"}} ,
+{"model": "terminal.region", "pk": "0735", "fields": {"province": "湖南省", "city": "郴州市"}} ,
+{"model": "terminal.region", "pk": "0736", "fields": {"province": "湖南省", "city": "常德市"}} ,
+{"model": "terminal.region", "pk": "0737", "fields": {"province": "湖南省", "city": "益阳市"}} ,
+{"model": "terminal.region", "pk": "0738", "fields": {"province": "湖南省", "city": "娄底市"}} ,
+{"model": "terminal.region", "pk": "0739", "fields": {"province": "湖南省", "city": "邵阳市"}} ,
+{"model": "terminal.region", "pk": "0743", "fields": {"province": "湖南省", "city": "湘西土家族苗族自治州"}} ,
+{"model": "terminal.region", "pk": "0744", "fields": {"province": "湖南省", "city": "张家界市"}} ,
+{"model": "terminal.region", "pk": "0745", "fields": {"province": "湖南省", "city": "怀化市"}} ,
+{"model": "terminal.region", "pk": "0746", "fields": {"province": "湖南省", "city": "永州市"}} ,
+{"model": "terminal.region", "pk": "0750", "fields": {"province": "广东省", "city": "江门市"}} ,
+{"model": "terminal.region", "pk": "0751", "fields": {"province": "广东省", "city": "韶关市"}} ,
+{"model": "terminal.region", "pk": "0752", "fields": {"province": "广东省", "city": "惠州市"}} ,
+{"model": "terminal.region", "pk": "0753", "fields": {"province": "广东省", "city": "梅州市"}} ,
+{"model": "terminal.region", "pk": "0754", "fields": {"province": "广东省", "city": "汕头市"}} ,
+{"model": "terminal.region", "pk": "0755", "fields": {"province": "广东省", "city": "深圳市"}} ,
+{"model": "terminal.region", "pk": "0756", "fields": {"province": "广东省", "city": "珠海市"}} ,
+{"model": "terminal.region", "pk": "0757", "fields": {"province": "广东省", "city": "佛山市"}} ,
+{"model": "terminal.region", "pk": "0758", "fields": {"province": "广东省", "city": "肇庆市"}} ,
+{"model": "terminal.region", "pk": "0759", "fields": {"province": "广东省", "city": "湛江市"}} ,
+{"model": "terminal.region", "pk": "0760", "fields": {"province": "广东省", "city": "中山市"}} ,
+{"model": "terminal.region", "pk": "0762", "fields": {"province": "广东省", "city": "河源市"}} ,
+{"model": "terminal.region", "pk": "0763", "fields": {"province": "广东省", "city": "清远市"}} ,
+{"model": "terminal.region", "pk": "0766", "fields": {"province": "广东省", "city": "云浮市"}} ,
+{"model": "terminal.region", "pk": "0767", "fields": {"province": "广东省", "city": "东沙群岛"}} ,
+{"model": "terminal.region", "pk": "0768", "fields": {"province": "广东省", "city": "潮州市"}} ,
+{"model": "terminal.region", "pk": "0769", "fields": {"province": "广东省", "city": "东莞市"}} ,
+{"model": "terminal.region", "pk": "0770", "fields": {"province": "广西壮族自治区", "city": "防城港市"}} ,
+{"model": "terminal.region", "pk": "0771", "fields": {"province": "广西壮族自治区", "city": "南宁市"}} ,
+{"model": "terminal.region", "pk": "0772", "fields": {"province": "广西壮族自治区", "city": "柳州市"}} ,
+{"model": "terminal.region", "pk": "0773", "fields": {"province": "广西壮族自治区", "city": "桂林市"}} ,
+{"model": "terminal.region", "pk": "0774", "fields": {"province": "广西壮族自治区", "city": "梧州市"}} ,
+{"model": "terminal.region", "pk": "0775", "fields": {"province": "广西壮族自治区", "city": "玉林市"}} ,
+{"model": "terminal.region", "pk": "0776", "fields": {"province": "广西壮族自治区", "city": "百色市"}} ,
+{"model": "terminal.region", "pk": "0777", "fields": {"province": "广西壮族自治区", "city": "钦州市"}} ,
+{"model": "terminal.region", "pk": "0778", "fields": {"province": "广西壮族自治区", "city": "河池市"}} ,
+{"model": "terminal.region", "pk": "0779", "fields": {"province": "广西壮族自治区", "city": "北海市"}} ,
+{"model": "terminal.region", "pk": "0790", "fields": {"province": "江西省", "city": "新余市"}} ,
+{"model": "terminal.region", "pk": "0791", "fields": {"province": "江西省", "city": "南昌市"}} ,
+{"model": "terminal.region", "pk": "0792", "fields": {"province": "江西省", "city": "九江市"}} ,
+{"model": "terminal.region", "pk": "0793", "fields": {"province": "江西省", "city": "上饶市"}} ,
+{"model": "terminal.region", "pk": "0794", "fields": {"province": "江西省", "city": "抚州市"}} ,
+{"model": "terminal.region", "pk": "0795", "fields": {"province": "江西省", "city": "宜春市"}} ,
+{"model": "terminal.region", "pk": "0796", "fields": {"province": "江西省", "city": "吉安市"}} ,
+{"model": "terminal.region", "pk": "0797", "fields": {"province": "江西省", "city": "赣州市"}} ,
+{"model": "terminal.region", "pk": "0798", "fields": {"province": "江西省", "city": "景德镇市"}} ,
+{"model": "terminal.region", "pk": "0799", "fields": {"province": "江西省", "city": "萍乡市"}} ,
+{"model": "terminal.region", "pk": "0801", "fields": {"province": "海南省", "city": "保亭黎族苗族自治县"}} ,
+{"model": "terminal.region", "pk": "0802", "fields": {"province": "海南省", "city": "白沙黎族自治县"}} ,
+{"model": "terminal.region", "pk": "0803", "fields": {"province": "海南省", "city": "昌江黎族自治县"}} ,
+{"model": "terminal.region", "pk": "0804", "fields": {"province": "海南省", "city": "澄迈县"}} ,
+{"model": "terminal.region", "pk": "0805", "fields": {"province": "海南省", "city": "儋州市"}} ,
+{"model": "terminal.region", "pk": "0806", "fields": {"province": "海南省", "city": "定安县"}} ,
+{"model": "terminal.region", "pk": "0807", "fields": {"province": "海南省", "city": "东方市"}} ,
+{"model": "terminal.region", "pk": "0809", "fields": {"province": "海南省", "city": "陵水黎族自治县"}} ,
+{"model": "terminal.region", "pk": "0812", "fields": {"province": "四川省", "city": "攀枝花市"}} ,
+{"model": "terminal.region", "pk": "0813", "fields": {"province": "四川省", "city": "自贡市"}} ,
+{"model": "terminal.region", "pk": "0816", "fields": {"province": "四川省", "city": "绵阳市"}} ,
+{"model": "terminal.region", "pk": "0817", "fields": {"province": "四川省", "city": "南充市"}} ,
+{"model": "terminal.region", "pk": "0818", "fields": {"province": "四川省", "city": "达州市"}} ,
+{"model": "terminal.region", "pk": "0825", "fields": {"province": "四川省", "city": "遂宁市"}} ,
+{"model": "terminal.region", "pk": "0826", "fields": {"province": "四川省", "city": "广安市"}} ,
+{"model": "terminal.region", "pk": "0827", "fields": {"province": "四川省", "city": "巴中市"}} ,
+{"model": "terminal.region", "pk": "0830", "fields": {"province": "四川省", "city": "泸州市"}} ,
+{"model": "terminal.region", "pk": "0831", "fields": {"province": "四川省", "city": "宜宾市"}} ,
+{"model": "terminal.region", "pk": "0832", "fields": {"province": "四川省", "city": "资阳市"}} ,
+{"model": "terminal.region", "pk": "0833", "fields": {"province": "四川省", "city": "乐山市"}} ,
+{"model": "terminal.region", "pk": "0834", "fields": {"province": "四川省", "city": "凉山彝族自治州"}} ,
+{"model": "terminal.region", "pk": "0835", "fields": {"province": "四川省", "city": "雅安市"}} ,
+{"model": "terminal.region", "pk": "0836", "fields": {"province": "四川省", "city": "甘孜藏族自治州"}} ,
+{"model": "terminal.region", "pk": "0837", "fields": {"province": "四川省", "city": "阿坝藏族羌族自治州"}} ,
+{"model": "terminal.region", "pk": "0838", "fields": {"province": "四川省", "city": "德阳市"}} ,
+{"model": "terminal.region", "pk": "0839", "fields": {"province": "四川省", "city": "广元市"}} ,
+{"model": "terminal.region", "pk": "0851", "fields": {"province": "贵州省", "city": "贵阳市"}} ,
+{"model": "terminal.region", "pk": "0852", "fields": {"province": "贵州省", "city": "遵义市"}} ,
+{"model": "terminal.region", "pk": "0853", "fields": {"province": "贵州省", "city": "安顺市"}} ,
+{"model": "terminal.region", "pk": "0854", "fields": {"province": "贵州省", "city": "黔南布依族苗族自治州"}} ,
+{"model": "terminal.region", "pk": "0855", "fields": {"province": "贵州省", "city": "黔东南苗族侗族自治州"}} ,
+{"model": "terminal.region", "pk": "0856", "fields": {"province": "贵州省", "city": "铜仁市"}} ,
+{"model": "terminal.region", "pk": "0857", "fields": {"province": "贵州省", "city": "毕节市"}} ,
+{"model": "terminal.region", "pk": "0858", "fields": {"province": "贵州省", "city": "六盘水市"}} ,
+{"model": "terminal.region", "pk": "0859", "fields": {"province": "贵州省", "city": "黔西南布依族苗族自治州"}} ,
+{"model": "terminal.region", "pk": "0870", "fields": {"province": "云南省", "city": "昭通市"}} ,
+{"model": "terminal.region", "pk": "0871", "fields": {"province": "云南省", "city": "昆明市"}} ,
+{"model": "terminal.region", "pk": "0872", "fields": {"province": "云南省", "city": "大理白族自治州"}} ,
+{"model": "terminal.region", "pk": "0873", "fields": {"province": "云南省", "city": "红河哈尼族彝族自治州"}} ,
+{"model": "terminal.region", "pk": "0874", "fields": {"province": "云南省", "city": "曲靖市"}} ,
+{"model": "terminal.region", "pk": "0875", "fields": {"province": "云南省", "city": "保山市"}} ,
+{"model": "terminal.region", "pk": "0876", "fields": {"province": "云南省", "city": "文山壮族苗族自治州"}} ,
+{"model": "terminal.region", "pk": "0877", "fields": {"province": "云南省", "city": "玉溪市"}} ,
+{"model": "terminal.region", "pk": "0878", "fields": {"province": "云南省", "city": "楚雄彝族自治州"}} ,
+{"model": "terminal.region", "pk": "0879", "fields": {"province": "云南省", "city": "普洱市"}} ,
+{"model": "terminal.region", "pk": "0883", "fields": {"province": "云南省", "city": "临沧市"}} ,
+{"model": "terminal.region", "pk": "0886", "fields": {"province": "云南省", "city": "怒江傈僳族自治州"}} ,
+{"model": "terminal.region", "pk": "0887", "fields": {"province": "云南省", "city": "迪庆藏族自治州"}} ,
+{"model": "terminal.region", "pk": "0888", "fields": {"province": "云南省", "city": "丽江市"}} ,
+{"model": "terminal.region", "pk": "0891", "fields": {"province": "西藏自治区", "city": "拉萨市"}} ,
+{"model": "terminal.region", "pk": "0892", "fields": {"province": "西藏自治区", "city": "日喀则市"}} ,
+{"model": "terminal.region", "pk": "0893", "fields": {"province": "西藏自治区", "city": "山南市"}} ,
+{"model": "terminal.region", "pk": "0894", "fields": {"province": "西藏自治区", "city": "林芝市"}} ,
+{"model": "terminal.region", "pk": "0895", "fields": {"province": "西藏自治区", "city": "昌都市"}} ,
+{"model": "terminal.region", "pk": "0896", "fields": {"province": "西藏自治区", "city": "那曲市"}} ,
+{"model": "terminal.region", "pk": "0897", "fields": {"province": "西藏自治区", "city": "阿里地区"}} ,
+{"model": "terminal.region", "pk": "0898", "fields": {"province": "海南省", "city": "海口市"}} ,
+{"model": "terminal.region", "pk": "0899", "fields": {"province": "海南省", "city": "三亚市"}} ,
+{"model": "terminal.region", "pk": "0901", "fields": {"province": "新疆维吾尔自治区", "city": "塔城地区"}} ,
+{"model": "terminal.region", "pk": "0902", "fields": {"province": "新疆维吾尔自治区", "city": "哈密市"}} ,
+{"model": "terminal.region", "pk": "0903", "fields": {"province": "新疆维吾尔自治区", "city": "和田地区"}} ,
+{"model": "terminal.region", "pk": "0906", "fields": {"province": "新疆维吾尔自治区", "city": "阿勒泰地区"}} ,
+{"model": "terminal.region", "pk": "0908", "fields": {"province": "新疆维吾尔自治区", "city": "克孜勒苏柯尔克孜自治州"}} ,
+{"model": "terminal.region", "pk": "0909", "fields": {"province": "新疆维吾尔自治区", "city": "博尔塔拉蒙古自治州"}} ,
+{"model": "terminal.region", "pk": "0910", "fields": {"province": "陕西省", "city": "咸阳市"}} ,
+{"model": "terminal.region", "pk": "0911", "fields": {"province": "陕西省", "city": "延安市"}} ,
+{"model": "terminal.region", "pk": "0912", "fields": {"province": "陕西省", "city": "榆林市"}} ,
+{"model": "terminal.region", "pk": "0913", "fields": {"province": "陕西省", "city": "渭南市"}} ,
+{"model": "terminal.region", "pk": "0914", "fields": {"province": "陕西省", "city": "商洛市"}} ,
+{"model": "terminal.region", "pk": "0915", "fields": {"province": "陕西省", "city": "安康市"}} ,
+{"model": "terminal.region", "pk": "0916", "fields": {"province": "陕西省", "city": "汉中市"}} ,
+{"model": "terminal.region", "pk": "0917", "fields": {"province": "陕西省", "city": "宝鸡市"}} ,
+{"model": "terminal.region", "pk": "0919", "fields": {"province": "陕西省", "city": "铜川市"}} ,
+{"model": "terminal.region", "pk": "0930", "fields": {"province": "甘肃省", "city": "临夏回族自治州"}} ,
+{"model": "terminal.region", "pk": "0931", "fields": {"province": "甘肃省", "city": "兰州市"}} ,
+{"model": "terminal.region", "pk": "0932", "fields": {"province": "甘肃省", "city": "定西市"}} ,
+{"model": "terminal.region", "pk": "0933", "fields": {"province": "甘肃省", "city": "平凉市"}} ,
+{"model": "terminal.region", "pk": "0934", "fields": {"province": "甘肃省", "city": "庆阳市"}} ,
+{"model": "terminal.region", "pk": "0935", "fields": {"province": "甘肃省", "city": "金昌市"}} ,
+{"model": "terminal.region", "pk": "0936", "fields": {"province": "甘肃省", "city": "张掖市"}} ,
+{"model": "terminal.region", "pk": "0937", "fields": {"province": "甘肃省", "city": "酒泉市"}} ,
+{"model": "terminal.region", "pk": "0938", "fields": {"province": "甘肃省", "city": "天水市"}} ,
+{"model": "terminal.region", "pk": "0941", "fields": {"province": "甘肃省", "city": "甘南藏族自治州"}} ,
+{"model": "terminal.region", "pk": "0943", "fields": {"province": "甘肃省", "city": "白银市"}} ,
+{"model": "terminal.region", "pk": "0951", "fields": {"province": "宁夏回族自治区", "city": "银川市"}} ,
+{"model": "terminal.region", "pk": "0952", "fields": {"province": "宁夏回族自治区", "city": "石嘴山市"}} ,
+{"model": "terminal.region", "pk": "0953", "fields": {"province": "宁夏回族自治区", "city": "吴忠市"}} ,
+{"model": "terminal.region", "pk": "0954", "fields": {"province": "宁夏回族自治区", "city": "固原市"}} ,
+{"model": "terminal.region", "pk": "0970", "fields": {"province": "青海省", "city": "海北藏族自治州"}} ,
+{"model": "terminal.region", "pk": "0971", "fields": {"province": "青海省", "city": "西宁市"}} ,
+{"model": "terminal.region", "pk": "0972", "fields": {"province": "青海省", "city": "海东市"}} ,
+{"model": "terminal.region", "pk": "0973", "fields": {"province": "青海省", "city": "黄南藏族自治州"}} ,
+{"model": "terminal.region", "pk": "0974", "fields": {"province": "青海省", "city": "海南藏族自治州"}} ,
+{"model": "terminal.region", "pk": "0975", "fields": {"province": "青海省", "city": "果洛藏族自治州"}} ,
+{"model": "terminal.region", "pk": "0976", "fields": {"province": "青海省", "city": "玉树藏族自治州"}} ,
+{"model": "terminal.region", "pk": "0977", "fields": {"province": "青海省", "city": "海西蒙古族藏族自治州"}} ,
+{"model": "terminal.region", "pk": "0990", "fields": {"province": "新疆维吾尔自治区", "city": "克拉玛依市"}} ,
+{"model": "terminal.region", "pk": "0991", "fields": {"province": "新疆维吾尔自治区", "city": "乌鲁木齐市"}} ,
+{"model": "terminal.region", "pk": "0993", "fields": {"province": "新疆维吾尔自治区", "city": "石河子市"}} ,
+{"model": "terminal.region", "pk": "0994", "fields": {"province": "新疆维吾尔自治区", "city": "昌吉回族自治州"}} ,
+{"model": "terminal.region", "pk": "0995", "fields": {"province": "新疆维吾尔自治区", "city": "吐鲁番市"}} ,
+{"model": "terminal.region", "pk": "0996", "fields": {"province": "新疆维吾尔自治区", "city": "巴音郭楞蒙古自治州"}} ,
+{"model": "terminal.region", "pk": "0997", "fields": {"province": "新疆维吾尔自治区", "city": "阿克苏地区"}} ,
+{"model": "terminal.region", "pk": "0998", "fields": {"province": "新疆维吾尔自治区", "city": "喀什地区"}} ,
+{"model": "terminal.region", "pk": "0999", "fields": {"province": "新疆维吾尔自治区", "city": "伊犁哈萨克自治州"}} ,
+{"model": "terminal.region", "pk": "1391", "fields": {"province": "河南省", "city": "济源市"}} ,
+{"model": "terminal.region", "pk": "1433", "fields": {"province": "吉林省", "city": "延边朝鲜族自治州"}} ,
+{"model": "terminal.region", "pk": "1558", "fields": {"province": "安徽省", "city": "阜阳市"}} ,
+{"model": "terminal.region", "pk": "1719", "fields": {"province": "湖北省", "city": "神农架林区"}} ,
+{"model": "terminal.region", "pk": "1728", "fields": {"province": "湖北省", "city": "天门市"}} ,
+{"model": "terminal.region", "pk": "1755", "fields": {"province": "广西壮族自治区", "city": "贵港市"}} ,
+{"model": "terminal.region", "pk": "1771", "fields": {"province": "广西壮族自治区", "city": "崇左市"}} ,
+{"model": "terminal.region", "pk": "1772", "fields": {"province": "广西壮族自治区", "city": "来宾市"}} ,
+{"model": "terminal.region", "pk": "1774", "fields": {"province": "广西壮族自治区", "city": "贺州市"}} ,
+{"model": "terminal.region", "pk": "1832", "fields": {"province": "四川省", "city": "内江市"}} ,
+{"model": "terminal.region", "pk": "1833", "fields": {"province": "四川省", "city": "眉山市"}} ,
+{"model": "terminal.region", "pk": "1852", "fields": {"province": "香港特别行政区", "city": "荃湾区"}} ,
+{"model": "terminal.region", "pk": "1853", "fields": {"province": "澳门特别行政区", "city": "风顺堂区"}} ,
+{"model": "terminal.region", "pk": "1892", "fields": {"province": "海南省", "city": "屯昌县"}} ,
+{"model": "terminal.region", "pk": "1893", "fields": {"province": "海南省", "city": "文昌市"}} ,
+{"model": "terminal.region", "pk": "1894", "fields": {"province": "海南省", "city": "琼海市"}} ,
+{"model": "terminal.region", "pk": "1896", "fields": {"province": "海南省", "city": "临高县"}} ,
+{"model": "terminal.region", "pk": "1897", "fields": {"province": "海南省", "city": "五指山市"}} ,
+{"model": "terminal.region", "pk": "1898", "fields": {"province": "海南省", "city": "万宁市"}} ,
+{"model": "terminal.region", "pk": "1899", "fields": {"province": "海南省", "city": "琼中黎族苗族自治县"}} ,
+{"model": "terminal.region", "pk": "1903", "fields": {"province": "新疆维吾尔自治区", "city": "昆玉市"}} ,
+{"model": "terminal.region", "pk": "1906", "fields": {"province": "新疆维吾尔自治区", "city": "北屯市"}} ,
+{"model": "terminal.region", "pk": "1909", "fields": {"province": "新疆维吾尔自治区", "city": "双河市"}} ,
+{"model": "terminal.region", "pk": "1935", "fields": {"province": "甘肃省", "city": "武威市"}} ,
+{"model": "terminal.region", "pk": "1937", "fields": {"province": "甘肃省", "city": "嘉峪关市"}} ,
+{"model": "terminal.region", "pk": "1953", "fields": {"province": "宁夏回族自治区", "city": "中卫市"}} ,
+{"model": "terminal.region", "pk": "1994", "fields": {"province": "新疆维吾尔自治区", "city": "五家渠市"}} ,
+{"model": "terminal.region", "pk": "1996", "fields": {"province": "新疆维吾尔自治区", "city": "铁门关市"}} ,
+{"model": "terminal.region", "pk": "1997", "fields": {"province": "新疆维吾尔自治区", "city": "阿拉尔市"}} ,
+{"model": "terminal.region", "pk": "1998", "fields": {"province": "新疆维吾尔自治区", "city": "图木舒克市"}} ,
+{"model": "terminal.region", "pk": "1999", "fields": {"province": "新疆维吾尔自治区", "city": "可克达拉市"}} ,
+{"model": "terminal.region", "pk": "2728", "fields": {"province": "湖北省", "city": "潜江市"}} ,
+{"model": "terminal.region", "pk": "2802", "fields": {"province": "海南省", "city": "乐东黎族自治县"}} ,
+{"model": "terminal.region", "pk": "2898", "fields": {"province": "海南省", "city": "三沙市"}} ,
+{"model": "terminal.region", "pk": "2935", "fields": {"province": "甘肃省", "city": "陇南市"}}
+]

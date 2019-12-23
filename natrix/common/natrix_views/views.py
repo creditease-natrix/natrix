@@ -99,6 +99,16 @@ class NatrixAPIView(APIView):
         group = user_rbac.get_group() if user_rbac else None
         return group
 
+    def get_rbac_user(self):
+        request = self.request
+        if not hasattr(request, 'user_rbac'):
+            return None
+        else:
+            return request.user_rbac
+
+    def has_permission(self):
+        return True
+
 
 class NonAuthenticatedAPIView(NatrixAPIView):
     """The view that doesn't need authentication.
@@ -113,6 +123,21 @@ class LoginAPIView(NatrixAPIView):
     """
     authentication_classes = (NonAuthentication, )
     permission_classes = (LoginPermission, )
+
+
+class RoleBasedAPIView(LoginAPIView):
+
+    def has_permission(self, natrix_roles):
+        rbac_user = self.get_rbac_user()
+        if not natrix_roles:
+            return True
+
+        for role in natrix_roles:
+            if rbac_user.has_role(role):
+                return True
+
+        return False
+
 
 # copy django.decortors.api_view
 def natrix_api_view(http_method_names=None, exclude_from_schema=False):

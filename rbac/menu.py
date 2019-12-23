@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
 
-from __future__ import unicode_literals
+"""
 import copy
 import logging
 
@@ -10,14 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 BENCHMARK_MENU = {
-    'name': u'云拨测',
+    'name': '云拨测',
     'tag': [None, ],
 
     'menu': [
         {
-            'name': u'即时测',
+            'name': '即时测',
             'type': 'link',
-            'desc': u'即时测页面——PING选项',
+            'desc': '即时测页面——PING选项',
             'reverse_name': 'natrix_vue',
             'path': 'pingAnalysis',
             'reverse_args': [],
@@ -25,103 +26,121 @@ BENCHMARK_MENU = {
 
         },
         {
-            'name': u'定时测',
+            'name': '定时测',
             'type': 'category',
-            'desc': u'定时测',
+            'desc': '定时测',
             'tag': ['login'],
             'children': [
                 {
-                    'name': u'定时测',
+                    'name': '定时测',
                     'type': 'link',
-                    'desc': u'定时测',
+                    'desc': '定时测',
                     'reverse_name': 'natrix_vue',
                     'path': 'timedTaskList',
                     'reverse_args': []
                 },
                 {
-                    'name': u'任务分析',
+                    'name': '任务分析',
                     'type': 'link',
-                    'desc': u'任务分析',
+                    'desc': '任务分析',
                     'reverse_name': 'natrix_vue',
                     'path': 'timedAnalysis',
                     'reverse_args': []
                 }
             ]
+        },
+        {
+            'name': '告警中心',
+            'type': 'category',
+            'desc': '告警中心',
+            'tag': ['login'],
+            'children': [
+                {
+                    'name': '告警列表',
+                    'type': 'link',
+                    'desc': '告警列表',
+                    'reverse_name': 'natrix_vue',
+                    'path': 'alarmList',
+                    'reverse_args': []
+                }
+            ]
+        },
+        {
+            'name': '组管理',
+            'type': 'link',
+            'desc': '组管理页面——成员列表',
+            'reverse_name': 'natrix_vue',
+            'path': 'groupList',
+            'reverse_args': [],
+            'tag': ['login']
+        },
 
-
-        }
-        # {
-        #     'name': u'组管理',
-        #     'type': 'link',
-        #     'reverse_name': 'user_manage',
-        #     'desc': u'组管理',
-        #     'reverse_args': [],
-        #     'tag': ['login']
-        # },
     ]
 }
 
 # 提供树莓派和职场的管理tab，主要用于管理员组
 ADMIN_MENU = {
     'name': u'管理系统',
-    'tag': ['administrator'],
+    'tag': ['login'],
     'menu': [
         {
-            'name': u'终端管理',
+            'name': '终端管理',
             'type': 'category',
-            'desc': u'终端管理',
+            'desc': '终端管理',
             'tag': ['login'],
             'children': [
                 {
-                    'name': u'终端概览',
+                    'name': '终端概览',
                     'type': 'link',
-                    'desc': u'终端信息概览',
+                    'desc': '终端信息概览',
                     'reverse_name': 'natrix_vue',
                     'path': 'terminalOverview',
                     'reverse_args': []
                 },
                 {
-                    'name': u'终端列表',
+                    'name': '终端设备列表',
                     'type': 'link',
-                    'desc': u'终端信息列表',
-                    'reverse_name': 'natrix_vue',
-                    'path': 'terminalSite',
-                    'reverse_args': []
-                },
-                {
-                    'name': u'终端设备列表',
-                    'type': 'link',
-                    'desc': u'终端设备列表信息',
+                    'desc': '终端设备列表信息',
                     'reverse_name': 'natrix_vue',
                     'path': 'terminalList',
                     'reverse_args': []
                 },
-                {
-                    'name': u'终端设备校验',
-                    'type': 'link',
-                    'desc': u'终端设备校验信息',
-                    'reverse_name': 'natrix_vue',
-                    'path': 'terminalCheckList',
-                    'reverse_args': []
-                }
+                # {
+                #     'name': '终端设备校验',
+                #     'type': 'link',
+                #     'desc': '终端设备校验信息',
+                #     'reverse_name': 'natrix_vue',
+                #     'path': 'terminalCheckList',
+                #     'reverse_args': []
+                # }
             ]
         },
 
         {
-            'name': u'组织管理',
+            'name': '组织管理',
             'type': 'category',
-            'desc': u'组织管理',
-            'tag': ['administrator'],
+            'desc': '组织管理',
+            'tag': ['login'],
             'children': [
                 {
-                    'name': u'组织信息管理',
+                    'name': '组织信息管理',
                     'type': 'link',
-                    'desc': u'组织信息管理',
+                    'desc': '组织信息管理',
                     'reverse_name': 'natrix_vue',
                     'path': 'workInfoManage',
                     'reverse_args': []
                 },
             ],
+        },
+        {
+            'name': '许可证管理',
+            'type': 'link',
+            'desc': '许可证管理',
+            'tag': ['login'],
+            'reverse_name': 'natrix_vue',
+            'path': 'licenseList',
+            'reverse_args': []
+
         },
     ]
 

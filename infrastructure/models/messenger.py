@@ -15,8 +15,8 @@ choice_method = lambda x: (x.get('name'), x.get('verbose_name'))
 
 
 # 通知方式
-TYPE_CHOICE = map(choice_method, configuration.NOTIFY_TYPE.values())
-LEVEL_CHOICE = map(choice_method, configuration.NOTIFY_LEVEL.values())
+TYPE_CHOICE = list(map(choice_method, configuration.NOTIFY_TYPE.values()))
+LEVEL_CHOICE = list(map(choice_method, configuration.NOTIFY_LEVEL.values()))
 
 class NotifyRecord(models.Model):
     notify_type = models.CharField(verbose_name=u'通知方式', choices=TYPE_CHOICE, max_length=16)

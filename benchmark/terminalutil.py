@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 # TODO: test
-def terminal_policy(switch, conditions=None):
+def terminal_policy(switch, conditions=None, group=None):
     """
 
     :param switch:
@@ -20,6 +20,7 @@ def terminal_policy(switch, conditions=None):
     """
     terminals = []
     if not switch:
+        # TODO: add sampling
         alive_terminals = terminalapi.TerminalAPI.get_alive_terminals()
         # terminals is a list, witch item with ip and mac
         terminals = [t.address_info() for t in alive_terminals]
@@ -33,8 +34,10 @@ def terminal_policy(switch, conditions=None):
                     logger.error('The temrinal ({}) is not exist!'.format(item))
         else:
             filter_terminals = terminalapi.TerminalAPI.filter_available_terminals(
+                group_own=conditions['group_own'],
                 type=conditions['filter_type'],
-                filter_condition=conditions['filter_condition']
+                filter_condition=conditions['filter_condition'],
+                group=group
             )
             for item in filter_terminals:
                 terminals.append(item.address_info())

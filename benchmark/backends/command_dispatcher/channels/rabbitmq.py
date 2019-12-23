@@ -7,6 +7,8 @@ import logging, json
 import pika
 
 from natrix.common import exception as natrix_exception
+from .base import DispachClient
+
 
 logger = logging.getLogger(__name__)
 
@@ -122,6 +124,19 @@ class RabbitMQChannel(object):
             logger.error('Command publish: terminal({}), error({})'.format(terminal, e))
 
 
+class RabbitMQClient(DispachClient):
+
+    def command_dispach(self, mac, command_info):
+        ...
+
+        # try:
+        #     with mqservice.MQService.get_purge_channel() as channel:
+        #         terminal_channel = RabbitMQChannel(channel=channel, type='request')
+        #         data['terminal'] = terminal
+        #         terminal_channel.publish_request(data=data, terminal=terminal)
+        # except Exception as e:
+        #     natrix_exception.natrix_traceback()
+        #     logger.error('Dispatch command with error: {}'.format(e))
 
 
 

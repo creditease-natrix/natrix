@@ -12,7 +12,6 @@ from django.http.response import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from natrix.common.natrix_views import views as natrix_views
-from natrix.common.natrix_views import permissions as natrix_permissions
 from natrix.common import exception as natrix_exception
 from natrix.common.errorcode import ErrorCode
 
@@ -22,10 +21,9 @@ from benchmark.models import Task, FollowedTask
 logger = logging.getLogger(__name__)
 
 
-class TimedTask(natrix_views.NatrixAPIView):
+class TimedTask(natrix_views.RoleBasedAPIView):
 
-    permission_classes = (natrix_permissions.LoginPermission, )
-    authentication_classes = []
+    natrix_roles = ['task_role', 'admin_role']
 
     def get(self, request):
         feedback = {
@@ -46,7 +44,7 @@ class TimedTask(natrix_views.NatrixAPIView):
                 logger.info('Timed task search with invalid parameters: {}'.format(serializer.format_errors()))
                 feedback['data'] = ErrorCode.parameter_invalid('Timed_task_info',
                                                                reason=serializer.format_errors())
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             feedback['data'] = ErrorCode.sp_code_bug('Get task info has a bug: {}'.format(e.get_log()))
             logger.error(e.get_log())
         except Exception as e:
@@ -60,6 +58,11 @@ class TimedTask(natrix_views.NatrixAPIView):
         feedback = {
             'permission': True
         }
+
+        if not self.has_permission(self.natrix_roles):
+            feedback['data'] = ErrorCode.permission_deny('You dont have permission')
+            return JsonResponse(data=feedback)
+
         try:
             post_data = request.data
             serializer = task_serializer.TimedTaskSerializer(data=post_data,
@@ -75,12 +78,12 @@ class TimedTask(natrix_views.NatrixAPIView):
                 logger.info('Timed task parameters is not available: {}'.format(serializer.format_errors()))
                 feedback['data'] = ErrorCode.parameter_invalid('Timed_task_creation',
                                                                reason=serializer.format_errors())
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             feedback['data'] = ErrorCode.sp_code_bug('Create instant has a bug: {}'.format(e.get_log()))
             logger.error(e.get_log())
         except Exception as e:
             natrix_exception.natrix_traceback()
-            feedback['data'] = ErrorCode.sp_db_fault(e)
+            feedback['data'] = ErrorCode.sp_code_bug(e)
 
         return JsonResponse(data=feedback)
 
@@ -88,6 +91,11 @@ class TimedTask(natrix_views.NatrixAPIView):
         feedback = {
             'permission': True
         }
+
+        if not self.has_permission(self.natrix_roles):
+            feedback['data'] = ErrorCode.permission_deny('You dont have permission')
+            return JsonResponse(data=feedback)
+
         try:
             request_data = request.data
 
@@ -106,8 +114,8 @@ class TimedTask(natrix_views.NatrixAPIView):
                     feedback['data'] = ErrorCode.parameter_invalid(
                         'Timed task edit', reason=serializer.format_errors())
             except Task.DoesNotExist:
-                feedback['data'] = ErrorCode.parameter_invalid('task_id', reason=u'Task is not exist')
-        except natrix_exception.BaseException as e:
+                feedback['data'] = ErrorCode.parameter_invalid('id', reason=u'Task is not exist')
+        except natrix_exception.NatrixBaseException as e:
             feedback['data'] = ErrorCode.sp_code_bug('Create instant has a bug: {}'.format(e.get_log()))
             logger.error(e.get_log())
         except Exception as e:
@@ -120,6 +128,11 @@ class TimedTask(natrix_views.NatrixAPIView):
         feedback = {
             'permission': True
         }
+
+        if not self.has_permission(self.natrix_roles):
+            feedback['data'] = ErrorCode.permission_deny('You dont have permission')
+            return JsonResponse(data=feedback)
+
         try:
             task_id = request.GET.get('task_id')
 
@@ -139,7 +152,7 @@ class TimedTask(natrix_views.NatrixAPIView):
                 feedback['data'] = ErrorCode.parameter_invalid(
                     'task_id', reason='The task({}) is not exist!'.format(task_id))
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             logger.info(e.get_log())
         except Exception as e:
             natrix_exception.natrix_traceback()
@@ -148,9 +161,7 @@ class TimedTask(natrix_views.NatrixAPIView):
         return JsonResponse(data=feedback)
 
 
-class TimedTaskList(natrix_views.NatrixAPIView):
-    permission_classes = (natrix_permissions.LoginPermission,)
-    authentication_classes = []
+class TimedTaskList(natrix_views.LoginAPIView):
 
     def get(self, request):
         feedback = {
@@ -166,8 +177,10 @@ class TimedTaskList(natrix_views.NatrixAPIView):
                 pagenum = serializer.validated_data.get('pagenum', 1)
 
                 tasks = []
-                group_tasks = Task.objects.filter(
-                    group=self.get_group(), purpose='benchmark', name__contains=search)
+                group_tasks = Task.objects.filter(group=self.get_group(),
+                                                  purpose='benchmark',
+                                                  time_type='timed',
+                                                  name__contains=search)
                 for t in group_tasks:
                     record = t.table_represent()
                     record['operations'] = ['analyse',
@@ -187,6 +200,11 @@ class TimedTaskList(natrix_views.NatrixAPIView):
                                             'unfollowed',
                                             'alert']
                     tasks.append(record)
+                feedback['data'] = {
+                    'code': 200,
+                    'message': u'Terminal list info',
+                    'item_count': len(tasks),
+                }
 
                 if is_paginate:
                     per_page = self.get_per_page()
@@ -200,17 +218,9 @@ class TimedTaskList(natrix_views.NatrixAPIView):
                         current_page_query = paginator.page(paginator.num_pages)
 
                     tasks = list(current_page_query)
-                    feedback['data'] = {
-                        'code': 200,
-                        'message': u'Terminal list info',
-                        'page_num': current_page_query.number,
-                        'page_count': paginator.num_pages,
-                    }
-                else:
-                    feedback['data'] = {
-                        'code': 200,
-                        'message': u'Terminal list info',
-                    }
+                    feedback['data']['page_num'] = current_page_query.number
+                    feedback['data']['page_count'] = paginator.num_pages
+
 
                 feedback['data']['info'] = tasks
             else:
@@ -219,7 +229,7 @@ class TimedTaskList(natrix_views.NatrixAPIView):
                 feedback['data'] = ErrorCode.parameter_invalid('timed_task_search',
                                                                reason=serializer.format_errors())
 
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             feedback['data'] = ErrorCode.sp_code_bug('Get time task list with bug: {}'.format(e.get_log()))
             logger.error(e.get_log())
         except Exception as e:
@@ -229,9 +239,7 @@ class TimedTaskList(natrix_views.NatrixAPIView):
         return JsonResponse(data=feedback)
 
 
-class UnfollowedTaskList(natrix_views.NatrixAPIView):
-    permission_classes = (natrix_permissions.LoginPermission,)
-    authentication_classes = []
+class UnfollowedTaskList(natrix_views.LoginAPIView):
 
     def get(self, request):
         feedback = {
@@ -266,15 +274,19 @@ class UnfollowedTaskList(natrix_views.NatrixAPIView):
         return JsonResponse(data=feedback)
 
 
-class TimedTaskOperation(natrix_views.NatrixAPIView):
+class TimedTaskOperation(natrix_views.RoleBasedAPIView):
 
-    permission_classes = (natrix_permissions.LoginPermission,)
-    authentication_classes = []
+    natrix_roles = ['task_role', 'admin_role']
 
     def put(self, request, format=None):
         feedback = {
             'permission': True
         }
+
+        if not self.has_permission(self.natrix_roles):
+            feedback['data'] = ErrorCode.permission_deny('You dont have permission')
+            return JsonResponse(data=feedback)
+
         try:
             put_data = request.data
             serializer = task_serializer.TimedTaskOperationSerializer(
@@ -288,7 +300,7 @@ class TimedTaskOperation(natrix_views.NatrixAPIView):
                 }
             else:
                 raise natrix_exception.ParameterInvalidException(parameter=serializer.format_errors())
-        except natrix_exception.BaseException as e:
+        except natrix_exception.NatrixBaseException as e:
             feedback['data'] = ErrorCode.permission_deny('Operation Task: {}'.format(e.get_log()))
             logger.error(e.get_log())
         except Exception as e:
@@ -298,10 +310,7 @@ class TimedTaskOperation(natrix_views.NatrixAPIView):
         return JsonResponse(data=feedback)
 
 
-class TimedTaskSelect(natrix_views.NatrixAPIView):
-
-    permission_classes = (natrix_permissions.LoginPermission,)
-    authentication_classes = []
+class TimedTaskSelect(natrix_views.LoginAPIView):
 
     def get(self, request):
         feedback = {
@@ -336,13 +345,10 @@ class TimedTaskSelect(natrix_views.NatrixAPIView):
         return JsonResponse(data=feedback)
 
 
-class TimedTaskAnalyse(natrix_views.NatrixAPIView):
+class TimedTaskAnalyse(natrix_views.LoginAPIView):
     """
 
     """
-
-    permission_classes = (natrix_permissions.LoginPermission,)
-    authentication_classes = []
 
     def get(self, request):
         feedback = {

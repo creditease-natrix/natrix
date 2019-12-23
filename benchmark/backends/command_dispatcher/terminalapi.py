@@ -7,7 +7,6 @@ from __future__ import unicode_literals, absolute_import
 from benchmark.api.imports import terminal as terminal_api
 
 
-
 class TerminalAPI(object):
 
     def __init__(self, mac):
@@ -30,10 +29,10 @@ class TerminalAPI(object):
         return '' if self.register_isp is None else self.register_isp
 
     def get_org_ids(self):
-        return map(lambda x: x['id'], self.register_orgs)
+        return list(map(lambda x: x['id'], self.register_orgs))
 
     def get_org_names(self):
-        return map(lambda x: x['name'], self.register_orgs)
+        return list(map(lambda x: x['name'], self.register_orgs))
 
     def get_register_province(self):
         if self.register_region is None:

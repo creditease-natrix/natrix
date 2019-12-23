@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 
 """
-from __future__ import unicode_literals
-import logging
 
 from collections import OrderedDict
 
@@ -12,17 +9,17 @@ from django.db.models import Q
 
 from rest_framework import serializers
 
-from natrix.common.utils.network import IPAddress
 from natrix.common import exception as natrix_exception
 from natrix.common.natrix_views import serializers as natrix_serializers
+from natrix.common.natrixlog import NatrixLogging
 
 from terminal.configurations import organization_conf
-from terminal.models import Address, Network, Contact, Broadband, Export, Region, Operator, Organization
-from terminal.models import OrganizationAddress, OrganizationContact, OrganizationNetwork, OrganizationBroadBand
-from terminal.models import SEGMENT_TYPES, IDENTITY_TYPE, BROADBAND, EXPORT_TYPE, EXPORT_DEVICE_TYPE
+from terminal.models import Address, Contact, Region, Organization
+from terminal.models import OrganizationAddress, OrganizationContact
+from terminal.models import IDENTITY_TYPE
 from terminal.models import HistorySave
 
-logger = logging.getLogger(__name__)
+logger = NatrixLogging(__name__)
 
 
 class OrgPKSerializer(serializers.Serializer):
@@ -123,46 +120,6 @@ class AddressSerializer(natrix_serializers.NatrixSerializer):
         return instance
 
 
-class NetworkSerializer(natrix_serializers.NatrixSerializer):
-    id = serializers.IntegerField(read_only=True)
-    segment = serializers.CharField(required=True, max_length=50)
-    segment_type = serializers.ChoiceField(required=True, choices=SEGMENT_TYPES)
-    gateway = serializers.IPAddressField(max_length=50, allow_blank=True)
-    comment = serializers.CharField(max_length=1000, allow_blank=True)
-
-    def is_valid(self, raise_exception=False):
-        flag = super(NetworkSerializer, self).is_valid()
-        if not flag:
-            return flag
-
-        try:
-            segment = IPAddress(self.initial_data.get('segment'))
-            if self.initial_data.get('gateway') not in segment:
-                self._errors['gateway'] = u'网关与网段不匹配！'
-                flag = False
-        except ValueError as e:
-            logger.info(e.message)
-            self._errors['segment'] = u'无效的网段信息！'
-            flag = False
-        return flag
-
-    def create(self, validated_data):
-        try:
-            network = Network.objects.get(segment=validated_data.get('segment'))
-        except Network.DoesNotExist:
-            network = Network.objects.create(**validated_data)
-
-        return network
-
-    def update(self, instance, validated_data):
-        instance.segment_type = validated_data.get('segment_type', instance.segment_type)
-        instance.gateway = validated_data.get('gateway', instance.gateway)
-        instance.comment = validated_data.get('comment', instance.comment)
-        instance.save(self.user, self.group)
-
-        return instance
-
-
 class ContactSerializer(natrix_serializers.NatrixSerializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(required=True, max_length=50)
@@ -192,118 +149,6 @@ class ContactSerializer(natrix_serializers.NatrixSerializer):
         return instance
 
 
-class BroadbandSerializer(natrix_serializers.NatrixSerializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(required=True, max_length=20)
-    operator = serializers.CharField(required=True, max_length=20)
-    access_type = serializers.ChoiceField(choices=BROADBAND, required=True)
-    speed = serializers.IntegerField(required=True)
-    isp_contact = serializers.CharField(max_length=20, allow_blank=True)
-    isp_contact_telephone = serializers.CharField(max_length=50, allow_blank=True)
-    isp_contact_email = serializers.CharField(max_length=50, allow_blank=True)
-    staff_contact = serializers.CharField(max_length=20, allow_blank=True)
-    staff_contact_telephone = serializers.CharField(max_length=50, allow_blank=True)
-    staff_contact_email = serializers.CharField(max_length=50, allow_blank=True)
-    start_time = serializers.DateField(allow_null=True, required=False)
-    end_time = serializers.DateField(allow_null=True, required=False)
-    comment = serializers.CharField(max_length=1000, allow_blank=True)
-
-    def is_valid(self, raise_exception=False):
-        flag = super(BroadbandSerializer, self).is_valid()
-        if not flag:
-            return flag
-        operator = Operator.objects.filter(name=self.initial_data.get('operator'))
-        if operator.count() == 1:
-            self._validated_data['operator'] = operator[0]
-        else:
-            self._errors['operator'] = [u'无效的运营商信息，请与管理员联系！']
-            flag = False
-
-        return flag
-
-    def create(self, validated_data):
-        try:
-            broadband = Broadband.objects.get(
-                Q(name=validated_data.get('name')) &
-                Q(operator=validated_data.get('operator')) &
-                Q(speed=validated_data.get('speed')) &
-                Q(start_time=validated_data.get('start_time')) &
-                Q(end_time=validated_data.get('end_time')) &
-                Q(staff_contact=validated_data.get('staff_contact')) &
-                Q(isp_contact=validated_data.get('isp_contact'))
-            )
-        except Broadband.DoesNotExist:
-            broadband = Broadband.objects.create(**validated_data)
-
-        return broadband
-
-    def update(self, instance, validated_data):
-        """Change fields beyond primary keys, because these fields can't be changed
-
-        :param instance:
-        :param validated_data:
-        :return:
-        """
-        instance.access_type = validated_data.get('access_type', instance.access_type)
-        instance.isp_contact_telephone = validated_data.get('isp_contact_telephone',
-                                                            instance.isp_contact_telephone)
-        instance.isp_contact_email = validated_data.get('isp_contact_email',
-                                                        instance.isp_contact_email)
-        instance.staff_contact_telephone = validated_data.get('staff_contact_telephone',
-                                                              instance.staff_contact_telephone)
-        instance.staff_contact_email = validated_data.get('staff_contact_email',
-                                                          instance.staff_contact_email)
-        instance.comment = validated_data.get('comment', instance.comment)
-
-        instance.save(self.user, self.group)
-
-        return instance
-
-
-class ExportSerializer(natrix_serializers.NatrixSerializer):
-    id = serializers.IntegerField(read_only=True)
-    type = serializers.ChoiceField(required=True, choices=EXPORT_TYPE)
-    ip = serializers.IPAddressField(required=True)
-    device = serializers.ChoiceField(required=True, choices=EXPORT_DEVICE_TYPE)
-    comment = serializers.CharField(max_length=1000, allow_blank=True)
-
-    def create(self, validated_data):
-        try:
-            # exportinfo = Export.objects.get(
-            #     Q(device=validated_data.get('device')) &
-            #     Q(type=validated_data.get('type')) &
-            #     Q(ip=validated_data.get('ip'))
-            # )
-            exportinfo = Export.objects.get(
-                device=validated_data.get('device'),
-                type=validated_data.get('type'),
-                ip=validated_data.get('ip')
-            )
-        except Export.DoesNotExist:
-            exportinfo = Export.objects.create(**validated_data)
-        except Export.MultipleObjectsReturned:
-            exportinfos = Export.objects.filter(
-                Q(device=validated_data.get('device')) &
-                Q(type=validated_data.get('type')) &
-                Q(ip=validated_data.get('ip'))
-            )
-            exportinfo = exportinfos.first()
-
-        return exportinfo
-
-    def update(self, instance, validated_data):
-        """
-
-        :param instance:
-        :param validated_data:
-        :return:
-        """
-        instance.comment = validated_data.get('comment', instance.comment)
-
-        instance.save(self.user, self.group)
-        return instance
-
-
 class OrganizationSerializer(natrix_serializers.NatrixSerializer):
     id = serializers.IntegerField(read_only=True)
     level = serializers.IntegerField(min_value=1, read_only=True, help_text=u'组织级别')
@@ -313,16 +158,13 @@ class OrganizationSerializer(natrix_serializers.NatrixSerializer):
 
     addresses = serializers.ListField(child=AddressSerializer(), required=False)
     contacts = serializers.ListField(child=ContactSerializer(), default=[])
-    networks = serializers.ListField(child=NetworkSerializer(), required=False)
-    broadbands = serializers.ListField(child=BroadbandSerializer(), required=False)
-    exports = serializers.ListField(child=ExportSerializer(), required=False)
 
     comment = serializers.CharField(max_length=1000, required=False,
                                     allow_null=True, allow_blank=True)
 
     def validate_id(self, value):
         try:
-            instance = Organization.objects.get(id=value)
+            instance = Organization.objects.get(id=value, group=self.group)
             self.instance = instance
         except Organization.DoesNotExist:
             raise serializers.ValidationError('The organization({}) is not exist'.format(value))
@@ -375,28 +217,6 @@ class OrganizationSerializer(natrix_serializers.NatrixSerializer):
 
         return values
 
-    def validate_networks(self, values):
-        """
-        Create network_list
-        :param values:
-        :return:
-        """
-        network_serializers = []
-        for value in values:
-            serializer = NetworkSerializer(self.user, self.group, data=value)
-
-            if serializer.is_valid():
-                network_serializers.append(serializer)
-            else:
-                logger.error('Create network error: {}'.format(serializer.format_errors()))
-                raise serializers.ValidationError(
-                    'Network is error: {}'.format(serializer.format_errors())
-                )
-
-        self.network_serializers = network_serializers
-
-        return values
-
     def validate_contacts(self, values):
         """
         Create contact_list.
@@ -422,47 +242,6 @@ class OrganizationSerializer(natrix_serializers.NatrixSerializer):
 
         return values
 
-    def validate_broadbands(self, values):
-        """
-        Create broadband_list.
-        :param values:
-        :return:
-        """
-        broadband_serializers = []
-        for value in values:
-            serializer = BroadbandSerializer(self.user, self.group, data=value)
-
-            if serializer.is_valid():
-                broadband_serializers.append(serializer)
-            else:
-                logger.error('Create broadband error: {}'.format(serializer.format_errors()))
-                raise serializers.ValidationError(
-                    'Broadband is error: {}'.format(serializer.format_errors())
-                )
-        self.broadband_serializers = broadband_serializers
-
-        return values
-
-    def validate_exports(self, values):
-        """
-        Create export_list.
-        :param values:
-        :return:
-        """
-        export_serializers = []
-        for value in values:
-            serializer = ExportSerializer(self.user, self.group, data=value)
-
-            if serializer.is_valid():
-                export_serializers.append(serializer)
-            else:
-                logger.error('Create export error: {}'.format(serializer.format_errors()))
-                raise serializers.ValidationError(
-                    'Export is error: {}'.format(serializer.format_errors())
-                )
-        self.export_serializers = export_serializers
-
-        return values
 
     def is_valid(self, raise_exception=False):
         flag = super(OrganizationSerializer, self).is_valid()
@@ -484,11 +263,11 @@ class OrganizationSerializer(natrix_serializers.NatrixSerializer):
         if hasattr(self, 'instance') and isinstance(self.instance, Organization):
             if self.instance.name != name:
                 if self.instance.parent.get_children().filter(name=name).count() > 0:
-                    self._errors['name'] = ['There is the same name organization!']
+                    self._errors['name'] = ['There is the same organization name!']
                     return False
         else:
             if self.parent_org.get_children().filter(name=name).count() > 0:
-                self._errors['name'] = ['There is the same name organization!']
+                self._errors['name'] = ['There is the same organization name with same organization level!']
                 return False
 
         return  flag
@@ -503,17 +282,13 @@ class OrganizationSerializer(natrix_serializers.NatrixSerializer):
                 parent=self.parent_org,
                 level=self.parent_org.level + 1,
                 comment=comment,
+                group=self.group,
                 region=self.address_region if hasattr(self, 'address_region') else None)
             if hasattr(self, 'address_serializers'):
                 for serializer in self.address_serializers:
                     OrganizationAddress.objects.create(address=serializer.save(),
                                                        organization=instance,
                                                        comment=serializer.validated_data.get('comment'))
-
-            if hasattr(self, 'network_serializers'):
-                for serializer in self.network_serializers:
-                    OrganizationNetwork.objects.create(network=serializer.save(),
-                                                       organization=instance)
 
             if hasattr(self, 'contact_serializers'):
                 for serializer, identity in self.contact_serializers:
@@ -522,17 +297,6 @@ class OrganizationSerializer(natrix_serializers.NatrixSerializer):
                         organization=instance,
                         identity=identity
                     )
-
-            if hasattr(self, 'broadband_serializers'):
-                for serializer in self.broadband_serializers:
-                    OrganizationBroadBand.objects.create(
-                        broadband=serializer.save(),
-                        organization=instance
-                    )
-
-            if hasattr(self, 'export_serializers'):
-                for serializer in self.export_serializers:
-                    instance.exports.add(serializer.save())
 
             instance.save()
             return instance
@@ -554,12 +318,6 @@ class OrganizationSerializer(natrix_serializers.NatrixSerializer):
                 relate_item.delete(self.user, self.group)
             for relate_item in instance.organizationcontact_set.all():
                 relate_item.delete(self.user, self.group)
-            for relate_item in instance.organizationnetwork_set.all():
-                relate_item.delete(self.user, self.group)
-            for relate_item in instance.organizationbroadband_set.all():
-                relate_item.delete(self.user, self.group)
-            for relate_item in list(instance.exports.all()):
-                instance.exports.remove(relate_item)
 
 
             if hasattr(self, 'address_serializers'):
@@ -568,10 +326,6 @@ class OrganizationSerializer(natrix_serializers.NatrixSerializer):
                                                        organization=instance,
                                                        comment=serializer.validated_data.get('comment'))
 
-            if hasattr(self, 'network_serializers'):
-                for serializer in self.network_serializers:
-                    OrganizationNetwork.objects.create(network=serializer.save(),
-                                                       organization=instance)
 
             if hasattr(self, 'contact_serializers'):
                 for serializer, identity in self.contact_serializers:
@@ -580,17 +334,6 @@ class OrganizationSerializer(natrix_serializers.NatrixSerializer):
                         organization=instance,
                         identity=identity
                     )
-
-            if hasattr(self, 'broadband_serializers'):
-                for serializer in self.broadband_serializers:
-                    OrganizationBroadBand.objects.create(
-                        broadband=serializer.save(),
-                        organization=instance
-                    )
-
-            if hasattr(self, 'export_serializers'):
-                for serializer in self.export_serializers:
-                    instance.exports.add(serializer.save())
 
             instance.save()
 
@@ -623,11 +366,10 @@ class OrganizationSerializer(natrix_serializers.NatrixSerializer):
 
         try:
             ret = OrderedDict()
-            ret['id'] = org_instance.id
+            ret['id'] = org_instance.pk
             ret['name'] = org_instance.name
             ret['full_name'] = org_instance.get_full_name()
-            ret['addresses'] = map(lambda addr: str(addr), org_instance.get_addresses())
-            ret['networks'] = map(lambda n: str(n), org_instance.get_networks())
+            ret['addresses'] = list(map(lambda addr: addr.address_desc(), org_instance.get_addresses()))
             return ret
 
         except Exception as e:

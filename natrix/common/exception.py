@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
+"""
 
-from __future__ import unicode_literals
+"""
 import sys, traceback
-from exceptions import Exception
 
 def natrix_traceback():
     ex, val, tb = sys.exc_info()
     traceback.print_exception(ex, val, tb)
 
-class BaseException(Exception):
+
+class NatrixBaseException(Exception):
     """This exception class is the basic class for all exception in raspi object.
     """
     def __init__(self, err='Natrix BaseException'):
         Exception.__init__(self, err)
 
-
     def get_log(self):
         pass
 
 
-class ParameterException(BaseException):
+class ParameterException(NatrixBaseException):
     """The exception about parameter.
 
     It was raised when you call a method, but some parameters aren't satisfactory.
@@ -75,7 +75,7 @@ class ParameterOutscopeException(ParameterInvalidException):
                                                          parameter=parameter)
 
 
-class DatabaseException(BaseException):
+class DatabaseException(NatrixBaseException):
     """The exception about db operation.
 
     """
@@ -110,7 +110,7 @@ class DatabaseTransactionException(DatabaseException):
                                                            business=business)
 
 
-class PermissionException(BaseException):
+class PermissionException(NatrixBaseException):
     """ The exception about permission
 
     """
@@ -122,7 +122,7 @@ class PermissionException(BaseException):
         return u'{}: {}'.format(self.err, self.reason)
 
 
-class ClassInsideException(BaseException):
+class ClassInsideException(NatrixBaseException):
     """
 
     """
@@ -134,7 +134,7 @@ class ClassInsideException(BaseException):
         return u'{0}: {1}'.format(self.err, self.message)
 
 
-class ApplicationException(BaseException):
+class ApplicationException(NatrixBaseException):
 
     def __init__(self, err='Natrix ApplicationException', message=''):
         self.err = err
@@ -144,7 +144,7 @@ class ApplicationException(BaseException):
         return u'{0}: {1}'.format(self.err, self.message)
 
 
-class TriggerBugException(BaseException):
+class TriggerBugException(NatrixBaseException):
     """
 
     """
@@ -156,11 +156,23 @@ class TriggerBugException(BaseException):
         return u'{}: {}'.format(self.err, self.message)
 
 
-class CeleryException(BaseException):
+class CeleryException(NatrixBaseException):
     """
 
     """
     def __init__(self, err='Natrix Celery Exception', message=''):
+        self.err = err
+        self.message = message
+
+    def get_log(self):
+        return u'{0}: {1}'.format(self.err, self.message)
+
+
+class NetworkException(NatrixBaseException):
+    """
+
+    """
+    def __init__(self, err='Natrix Network Exception', message=''):
         self.err = err
         self.message = message
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Synchronize district info from AMAP(高德）site.
 
 """

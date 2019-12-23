@@ -2,36 +2,45 @@
 """
 
 """
-from __future__ import unicode_literals
+import logging
 
-from elasticsearch import Elasticsearch
+from natrix.common import exception as natrix_exception
+from utils.elasticsearch import NatrixESClient
+from benchmark.backends.stores import eventhub_client
 
-from benchmark.configurations import adapter_conf
+
+logger = logging.getLogger(__name__)
 
 
-def store_message(type, data, index=adapter_conf.BENCHMARK_INDEX):
-    es_conn = Elasticsearch(host=adapter_conf.ES_SERVICE_URL,
-                            port=adapter_conf.ES_SERVICE_PORT)
+def store_message(type, data):
+    try:
+        record = {
+            '_type': type
+        }
+        record.update(data)
+        eventhub_client.put(record)
+    except natrix_exception.NatrixBaseException as e:
+        natrix_exception.natrix_traceback()
+        logger.error('store message with exception: {}'.format(e.get_log()))
 
-    res = es_conn.index(index=index, doc_type=type, body=data)
 
+# TODO: The count of records may exceed 1000
+def search_messages(body=None, size=1000):
+    """Get all data satisfy the condition.
+
+    :param body:
+    :param size:
+    :return:
+    """
+    if body is None:
+        body = {}
+    natrix_es_client = NatrixESClient(app='benchmark')
+    records = natrix_es_client.pull(condition=body, size=size)
+    return records
+
+
+def origin_search(body, size=1000):
+    natrix_es_client = NatrixESClient(app='benchmark')
+    res = natrix_es_client.origin_search(condition=body, size=size)
     return res
 
-def search_messages(index=adapter_conf.BENCHMARK_INDEX, body={}, size=1000):
-    es_conn = Elasticsearch(host=adapter_conf.ES_SERVICE_URL,
-                            port=adapter_conf.ES_SERVICE_PORT)
-
-    res = es_conn.search(index=index, size=size, body=body)
-
-    if res['hits']['total'] == 0:
-        return []
-
-    return res['hits']['hits']
-
-def origin_search(index=adapter_conf.BENCHMARK_INDEX, body={}, size=1000):
-    es_conn = Elasticsearch(host=adapter_conf.ES_SERVICE_URL,
-                            port=adapter_conf.ES_SERVICE_PORT)
-
-    res = es_conn.search(index=index, size=size, body=body)
-
-    return res
